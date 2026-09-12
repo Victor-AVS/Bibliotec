@@ -114,6 +114,24 @@ function updateUserUI() {
             document.getElementById('idVigencia').textContent = `Vigencia: ${currentUser.vigencia}`;
         }
 
+        // Renderizar Foto de Perfil si existe
+        const profileImg = document.getElementById('profileAvatarImg');
+        const profileDefIcon = document.getElementById('profileDefaultIcon');
+        const credImg = document.getElementById('idPhotoImg');
+        const credDefIcon = document.getElementById('idPhotoDefaultIcon');
+
+        if (currentUser.foto_url) {
+            if (profileImg) { profileImg.src = currentUser.foto_url; profileImg.style.display = 'block'; }
+            if (profileDefIcon) profileDefIcon.style.display = 'none';
+            if (credImg) { credImg.src = currentUser.foto_url; credImg.style.display = 'block'; }
+            if (credDefIcon) credDefIcon.style.display = 'none';
+        } else {
+            if (profileImg) profileImg.style.display = 'none';
+            if (profileDefIcon) profileDefIcon.style.display = 'block';
+            if (credImg) credImg.style.display = 'none';
+            if (credDefIcon) credDefIcon.style.display = 'block';
+        }
+
         // Vista Perfil
         document.getElementById('profileName').textContent = fullName;
         document.getElementById('profileCorreo').textContent = currentUser.correo;
@@ -126,6 +144,44 @@ function updateUserUI() {
         if (navLabel) navLabel.textContent = 'Cuenta';
         showAuthView('choice');
     }
+}
+
+// PROFILE PHOTO CHANGE HANDLER
+function handleProfilePhotoChange(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!currentUser || !currentUser.id_persona) {
+        alert('Debes iniciar sesión para actualizar tu foto de perfil.');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const base64Data = e.target.result;
+
+        currentUser.foto_url = base64Data;
+        localStorage.setItem('bibliotec_user', JSON.stringify(currentUser));
+        updateUserUI();
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/usuario/foto`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id_persona: currentUser.id_persona,
+                    foto_url: base64Data
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                console.log('✅ Foto de perfil actualizada en el servidor.');
+            }
+        } catch (err) {
+            console.error('Error enviando foto al servidor:', err);
+        }
+    };
+    reader.readAsDataURL(file);
 }
 
 function showAuthView(viewName) {

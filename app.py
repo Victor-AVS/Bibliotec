@@ -346,7 +346,7 @@ def login_usuario():
         cursor = get_cursor(conn)
         cursor.execute("""
             SELECT 
-                p.id_persona, p.nombre, p.a_paterno, p.a_materno, p.correo, p.correo_respaldo, p.telefono,
+                p.id_persona, p.nombre, p.a_paterno, p.a_materno, p.correo, p.correo_respaldo, p.telefono, p.foto_url,
                 u.id_usuario, u.matricula, u.puntos, u.es_deudor,
                 cd.licenciatura as carrera, cd.nss, cd.vigencia_inicio, cd.vigencia_fin
             FROM persona p
@@ -369,6 +369,32 @@ def login_usuario():
             "usuario": user
         })
     except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
+        release_db_connection(conn)
+
+@app.route('/api/usuario/foto', methods=['POST'])
+def actualizar_foto_perfil():
+    data = request.json or {}
+    id_persona = data.get('id_persona')
+    foto_url = data.get('foto_url')
+
+    if not id_persona or not foto_url:
+        return jsonify({"success": False, "mensaje": "id_persona y foto_url son requeridos."}), 400
+
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
+        cursor.execute("UPDATE persona SET foto_url = %s WHERE id_persona = %s;", (foto_url, id_persona))
+        conn.commit()
+        return jsonify({"success": True, "mensaje": "Foto de perfil actualizada correctamente."})
+    except Exception as e:
+        if conn: conn.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
     finally:
         if cursor:
@@ -453,6 +479,7 @@ def registro_usuario():
             "matricula": matricula,
             "carrera": carrera,
             "nss": nss,
+            "foto_url": None,
             "rol": rol,
             "vigencia": f"{v_inicio} - {v_fin}",
             "puntos": u_data['puntos']

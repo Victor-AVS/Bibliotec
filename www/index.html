@@ -405,8 +405,9 @@
                         <span>TECNOLÓGICO DE ESTUDIOS SUPERIORES DE CHIMALHUACÁN</span>
                     </div>
                     <div class="id-body">
-                        <div class="id-photo">
-                            <i class="fa-solid fa-user"></i>
+                        <div class="id-photo" id="idPhotoContainer">
+                            <img id="idPhotoImg" src="" alt="Foto Credencial" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                            <i id="idPhotoDefaultIcon" class="fa-solid fa-user"></i>
                         </div>
                         <div class="id-details">
                             <h4 id="idNombre">Carlos Maldonado</h4>
@@ -470,8 +471,15 @@
             </div>
             <div class="modal-body">
                 <div id="userLoggedInView" style="text-align: center;">
-                    <div style="font-size: 48px; color: #D77A9B; margin-bottom: 10px;">
-                        <i class="fa-solid fa-circle-user"></i>
+                    <div class="profile-avatar-wrapper">
+                        <div class="profile-avatar-box">
+                            <img id="profileAvatarImg" src="" alt="Foto de Perfil" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                            <i id="profileDefaultIcon" class="fa-solid fa-circle-user" style="font-size: 72px; color: #D77A9B;"></i>
+                        </div>
+                        <label for="profilePhotoInput" class="upload-photo-badge" title="Cambiar Foto de Perfil">
+                            <i class="fa-solid fa-camera"></i>
+                        </label>
+                        <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;" onchange="handleProfilePhotoChange(event)">
                     </div>
                     <h3 id="profileName" style="color: #6B4035; font-size: 20px; font-weight: 800;">-</h3>
                     <p id="profileCorreo" style="font-size: 13px; color: #A97862; margin-bottom: 4px;">-</p>
