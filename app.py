@@ -1,11 +1,18 @@
+import os
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 
 PSYCOPG_VER = 0
+ConnectionPool = None
+
 try:
     import psycopg
     from psycopg.rows import dict_row
     PSYCOPG_VER = 3
+    try:
+        from psycopg_pool import ConnectionPool
+    except Exception:
+        ConnectionPool = None
 except Exception:
     try:
         import psycopg2
@@ -17,13 +24,40 @@ except Exception:
 app = Flask(__name__)
 CORS(app)
 
-DB_URI = "postgresql://postgres.tovcoonzsecnnpnoekzw:Vesv050423..@aws-0-us-west-2.pooler.supabase.com:6543/postgres?sslmode=require&connect_timeout=10"
+DEFAULT_DB_URI = "postgresql://postgres.tovcoonzsecnnpnoekzw:Vesv050423..@aws-0-us-west-2.pooler.supabase.com:6543/postgres?sslmode=require&connect_timeout=10"
+
+_pool = None
+
+def get_pool():
+    global _pool
+    if _pool is None and ConnectionPool is not None:
+        try:
+            db_uri = os.environ.get("DATABASE_URL", DEFAULT_DB_URI)
+            _pool = ConnectionPool(
+                conninfo=db_uri,
+                min_size=1,
+                max_size=5,
+                open=True,
+                kwargs={"connect_timeout": 10}
+            )
+        except Exception as e:
+            print(f"[Warning] ConnectionPool init failed: {e}")
+            _pool = None
+    return _pool
 
 def get_db_connection():
+    db_uri = os.environ.get("DATABASE_URL", DEFAULT_DB_URI)
+    pool = get_pool()
+    if pool is not None:
+        try:
+            return pool.getconn(timeout=10)
+        except Exception as e:
+            print(f"[Warning] Pool getconn failed, falling back to direct connect: {e}")
+
     if PSYCOPG_VER == 3:
-        return psycopg.connect(DB_URI)
+        return psycopg.connect(db_uri)
     elif PSYCOPG_VER == 2:
-        return psycopg2.connect(DB_URI)
+        return psycopg2.connect(db_uri)
     else:
         raise RuntimeError("Neither psycopg nor psycopg2 could be loaded.")
 
@@ -34,11 +68,19 @@ def get_cursor(conn):
         return conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 def release_db_connection(conn):
+    if not conn:
+        return
     try:
-        if conn:
+        pool = get_pool()
+        if pool is not None:
+            pool.putconn(conn)
+        else:
             conn.close()
     except Exception:
-        pass
+        try:
+            conn.close()
+        except Exception:
+            pass
 
 @app.route('/')
 def index():
@@ -46,7 +88,12 @@ def index():
 
 @app.route('/ping', methods=['GET'])
 def ping():
-    return jsonify({"status": "ok", "message": "Bibliotec backend is online", "driver": f"psycopg_v{PSYCOPG_VER}"})
+    return jsonify({
+        "status": "ok", 
+        "message": "Bibliotec backend is online", 
+        "driver": f"psycopg_v{PSYCOPG_VER}",
+        "pool_enabled": ConnectionPool is not None
+    })
 
 @app.route('/api/stats', methods=['GET'])
 def get_stats():
@@ -361,12 +408,12 @@ def registro_usuario():
             "mensaje": "Registro completado exitosamente", 
             "usuario": user_payload
         })
-    except psycopg2.IntegrityError as ie:
-        conn.rollback()
-        return jsonify({"success": False, "mensaje": "El correo o la matrícula ya se encuentran registrados."}), 400
     except Exception as e:
         conn.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
+        err_msg = str(e)
+        if "duplicate" in err_msg.lower() or "unique" in err_msg.lower() or "already exists" in err_msg.lower():
+            return jsonify({"success": False, "mensaje": "El correo o la matrícula ya se encuentran registrados."}), 400
+        return jsonify({"success": False, "error": err_msg}), 500
     finally:
         cursor.close()
         release_db_connection(conn)
