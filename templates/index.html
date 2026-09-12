@@ -486,140 +486,237 @@
                     <hr class="banner-divider">
                 </div>
 
-                <!-- BARRA DE FILTRADO ("Filtrar por") -->
-                <div class="insignia-filter-bar">
-                    <span class="filter-title"><i class="fa-solid fa-filter"></i> Filtrar por:</span>
-                    <div class="filter-pills">
-                        <button class="filter-pill active" onclick="applyInsigniaFilter('all', this)">Todas</button>
-                        <button class="filter-pill" onclick="applyInsigniaFilter('obtained', this)"><i class="fa-solid fa-circle-check"></i> Obtenidas</button>
-                        <button class="filter-pill" onclick="applyInsigniaFilter('locked', this)"><i class="fa-solid fa-lock"></i> No obtenidas</button>
+                <!-- PESTAÑAS PRINCIPALES: INSIGNIAS Y METAS DE LECTURA -->
+                <div class="gamification-main-tabs">
+                    <button class="gamification-tab-btn active" id="tabBtnInsignias" onclick="switchGamificationTab('insignias')">
+                        <i class="fa-solid fa-award"></i> Insignias
+                    </button>
+                    <button class="gamification-tab-btn" id="tabBtnMetas" onclick="switchGamificationTab('metas')">
+                        <i class="fa-solid fa-bullseye"></i> Metas de Lectura
+                    </button>
+                </div>
+
+                <!-- PESTAÑA 1: CATÁLOGO DE INSIGNIAS Y FILTROS -->
+                <div id="tabContentInsignias">
+                    <!-- BARRA DE FILTRADO ("Filtrar por") -->
+                    <div class="insignia-filter-bar">
+                        <span class="filter-title"><i class="fa-solid fa-filter"></i> Filtrar por:</span>
+                        <div class="filter-pills">
+                            <button class="filter-pill active" onclick="applyInsigniaFilter('all', this)">Todas</button>
+                            <button class="filter-pill" onclick="applyInsigniaFilter('obtained', this)"><i class="fa-solid fa-circle-check"></i> Obtenidas</button>
+                            <button class="filter-pill" onclick="applyInsigniaFilter('locked', this)"><i class="fa-solid fa-lock"></i> No obtenidas</button>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN 1: INSIGNIAS DE LECTURA -->
+                    <div class="insignias-section">
+                        <div class="section-badge-header">
+                            <i class="fa-solid fa-book-open-reader"></i>
+                            <h4>Insignias de Lectura</h4>
+                        </div>
+                        <div class="badges-detailed-grid" id="gridInsigniasLectura">
+                            <div class="badge-card locked" id="badge-bronce">
+                                <div class="badge-icon-circle bronze">
+                                    <i class="fa-solid fa-medal"></i>
+                                </div>
+                                <div class="badge-card-info">
+                                    <h5>Lector Bronce</h5>
+                                    <p>100 Puntos de Lectura</p>
+                                    <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 100 Pts</span>
+                                </div>
+                            </div>
+
+                            <div class="badge-card locked" id="badge-oro">
+                                <div class="badge-icon-circle gold">
+                                    <i class="fa-solid fa-award"></i>
+                                </div>
+                                <div class="badge-card-info">
+                                    <h5>Lector Oro</h5>
+                                    <p>250 Puntos de Lectura</p>
+                                    <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 250 Pts</span>
+                                </div>
+                            </div>
+
+                            <div class="badge-card locked" id="badge-esmeralda">
+                                <div class="badge-icon-circle emerald">
+                                    <i class="fa-solid fa-gem"></i>
+                                </div>
+                                <div class="badge-card-info">
+                                    <h5>Lector Esmeralda</h5>
+                                    <p>400 Puntos de Lectura</p>
+                                    <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 400 Pts</span>
+                                </div>
+                            </div>
+
+                            <div class="badge-card locked" id="badge-diamante1">
+                                <div class="badge-icon-circle diamond">
+                                    <i class="fa-solid fa-gem"></i>
+                                </div>
+                                <div class="badge-card-info">
+                                    <h5>Lector Diamante I</h5>
+                                    <p>500 Puntos de Lectura</p>
+                                    <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 500 Pts</span>
+                                </div>
+                            </div>
+
+                            <div class="badge-card locked" id="badge-diamante2">
+                                <div class="badge-icon-circle diamond-glow">
+                                    <i class="fa-solid fa-crown"></i>
+                                </div>
+                                <div class="badge-card-info">
+                                    <h5>Lector Diamante II</h5>
+                                    <p>600 Puntos de Lectura</p>
+                                    <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 600 Pts</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN 2: INSIGNIAS DE DONANTE -->
+                    <div class="insignias-section" style="margin-top: 24px;">
+                        <div class="section-badge-header">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                            <h4>Insignias de Donante</h4>
+                        </div>
+                        <div class="badges-detailed-grid" id="gridInsigniasDonante">
+                            <div class="badge-card locked" id="badge-donante1">
+                                <div class="badge-icon-circle donor-1">
+                                    <i class="fa-solid fa-heart"></i>
+                                </div>
+                                <div class="badge-card-info">
+                                    <h5>Donante Nivel 1</h5>
+                                    <p>1 Libro Donado</p>
+                                    <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 1 Donación</span>
+                                </div>
+                            </div>
+
+                            <div class="badge-card locked" id="badge-donante2">
+                                <div class="badge-icon-circle donor-2">
+                                    <i class="fa-solid fa-star"></i>
+                                </div>
+                                <div class="badge-card-info">
+                                    <h5>Donante Nivel 2</h5>
+                                    <p>3 Libros Donados</p>
+                                    <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 3 Donaciones</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN 3: INSIGNIAS DE PARTICIPACIÓN Y EVENTOS -->
+                    <div class="insignias-section" style="margin-top: 24px;">
+                        <div class="section-badge-header">
+                            <i class="fa-solid fa-calendar-check"></i>
+                            <h4>Insignias de Participación y Eventos</h4>
+                        </div>
+                        <div class="badges-detailed-grid" id="gridInsigniasEventos">
+                            <div class="badge-card locked" id="badge-evento1">
+                                <div class="badge-icon-circle event-1">
+                                    <i class="fa-solid fa-ticket"></i>
+                                </div>
+                                <div class="badge-card-info">
+                                    <h5>Asistente a Eventos</h5>
+                                    <p>1 Evento / Taller Registrado</p>
+                                    <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 1 Evento</span>
+                                </div>
+                            </div>
+
+                            <div class="badge-card locked" id="badge-lector-frecuente">
+                                <div class="badge-icon-circle event-2">
+                                    <i class="fa-solid fa-book-bookmark"></i>
+                                </div>
+                                <div class="badge-card-info">
+                                    <h5>Lector Frecuente</h5>
+                                    <p>5 Préstamos Realizados</p>
+                                    <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 5 Préstamos</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- SECCIÓN 1: INSIGNIAS DE LECTURA -->
-                <div class="insignias-section">
-                    <div class="section-badge-header">
-                        <i class="fa-solid fa-book-open-reader"></i>
-                        <h4>Insignias de Lectura</h4>
-                    </div>
-                    <div class="badges-detailed-grid" id="gridInsigniasLectura">
-                        <div class="badge-card locked" id="badge-bronce">
-                            <div class="badge-icon-circle bronze">
-                                <i class="fa-solid fa-medal"></i>
-                            </div>
-                            <div class="badge-card-info">
-                                <h5>Lector Bronce</h5>
-                                <p>100 Puntos de Lectura</p>
-                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 100 Pts</span>
-                            </div>
-                        </div>
-
-                        <div class="badge-card locked" id="badge-oro">
-                            <div class="badge-icon-circle gold">
-                                <i class="fa-solid fa-award"></i>
-                            </div>
-                            <div class="badge-card-info">
-                                <h5>Lector Oro</h5>
-                                <p>250 Puntos de Lectura</p>
-                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 250 Pts</span>
-                            </div>
-                        </div>
-
-                        <div class="badge-card locked" id="badge-esmeralda">
-                            <div class="badge-icon-circle emerald">
-                                <i class="fa-solid fa-gem"></i>
-                            </div>
-                            <div class="badge-card-info">
-                                <h5>Lector Esmeralda</h5>
-                                <p>400 Puntos de Lectura</p>
-                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 400 Pts</span>
-                            </div>
-                        </div>
-
-                        <div class="badge-card locked" id="badge-diamante1">
-                            <div class="badge-icon-circle diamond">
-                                <i class="fa-solid fa-gem"></i>
-                            </div>
-                            <div class="badge-card-info">
-                                <h5>Lector Diamante I</h5>
-                                <p>500 Puntos de Lectura</p>
-                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 500 Pts</span>
-                            </div>
-                        </div>
-
-                        <div class="badge-card locked" id="badge-diamante2">
-                            <div class="badge-icon-circle diamond-glow">
-                                <i class="fa-solid fa-crown"></i>
-                            </div>
-                            <div class="badge-card-info">
-                                <h5>Lector Diamante II</h5>
-                                <p>600 Puntos de Lectura</p>
-                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 600 Pts</span>
+                <!-- PESTAÑA 2: METAS DE LECTURA (MEDIALUNA SVG + MÉTRICAS) -->
+                <div id="tabContentMetas" style="display: none;">
+                    
+                    <!-- MEDIDOR MEDIALUNA SVG -->
+                    <div class="goals-gauge-card">
+                        <h4 class="goals-gauge-title"><i class="fa-solid fa-chart-pie"></i> Progreso de Meta</h4>
+                        <div class="half-circle-gauge-container">
+                            <svg class="gauge-svg" viewBox="0 0 200 110">
+                                <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" />
+                                <path class="gauge-fill" id="readingGoalGaugeFill" d="M 20 100 A 80 80 0 0 1 180 100" />
+                            </svg>
+                            <div class="gauge-center-info">
+                                <span class="gauge-percent" id="readingGoalPercentText">0%</span>
+                                <span class="gauge-subtext" id="readingGoalStatusText">0 de 30 libros leídos</span>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- SECCIÓN 2: INSIGNIAS DE DONANTE -->
-                <div class="insignias-section" style="margin-top: 24px;">
-                    <div class="section-badge-header">
-                        <i class="fa-solid fa-hand-holding-heart"></i>
-                        <h4>Insignias de Donante</h4>
-                    </div>
-                    <div class="badges-detailed-grid" id="gridInsigniasDonante">
-                        <div class="badge-card locked" id="badge-donante1">
-                            <div class="badge-icon-circle donor-1">
-                                <i class="fa-solid fa-heart"></i>
-                            </div>
-                            <div class="badge-card-info">
-                                <h5>Donante Nivel 1</h5>
-                                <p>1 Libro Donado</p>
-                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 1 Donación</span>
+                    <!-- PANEL DE CONTROLES DE LA META -->
+                    <div class="goals-controls-card">
+                        <div class="control-group">
+                            <label class="control-label"><i class="fa-solid fa-calendar-days"></i> Período:</label>
+                            <div class="period-toggle-buttons">
+                                <button class="period-btn active" id="btnPeriodMensual" onclick="setGoalPeriod('mensual')">Mensual</button>
+                                <button class="period-btn" id="btnPeriodAnual" onclick="setGoalPeriod('anual')">Anual</button>
                             </div>
                         </div>
 
-                        <div class="badge-card locked" id="badge-donante2">
-                            <div class="badge-icon-circle donor-2">
-                                <i class="fa-solid fa-star"></i>
-                            </div>
-                            <div class="badge-card-info">
-                                <h5>Donante Nivel 2</h5>
-                                <p>3 Libros Donados</p>
-                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 3 Donaciones</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SECCIÓN 3: INSIGNIAS DE PARTICIPACIÓN Y EVENTOS -->
-                <div class="insignias-section" style="margin-top: 24px;">
-                    <div class="section-badge-header">
-                        <i class="fa-solid fa-calendar-check"></i>
-                        <h4>Insignias de Participación y Eventos</h4>
-                    </div>
-                    <div class="badges-detailed-grid" id="gridInsigniasEventos">
-                        <div class="badge-card locked" id="badge-evento1">
-                            <div class="badge-icon-circle event-1">
-                                <i class="fa-solid fa-ticket"></i>
-                            </div>
-                            <div class="badge-card-info">
-                                <h5>Asistente a Eventos</h5>
-                                <p>1 Evento / Taller Registrado</p>
-                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 1 Evento</span>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fa-solid fa-flag-checkered"></i> Meta de Libros:</label>
+                            <div class="goal-input-stepper">
+                                <button class="stepper-btn" onclick="adjustGoalTarget(-1)"><i class="fa-solid fa-minus"></i></button>
+                                <input type="number" id="inputGoalTarget" value="30" min="1" max="500" onchange="onGoalTargetInputChange()">
+                                <button class="stepper-btn" onclick="adjustGoalTarget(1)"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>
 
-                        <div class="badge-card locked" id="badge-lector-frecuente">
-                            <div class="badge-icon-circle event-2">
-                                <i class="fa-solid fa-book-bookmark"></i>
-                            </div>
-                            <div class="badge-card-info">
-                                <h5>Lector Frecuente</h5>
-                                <p>5 Préstamos Realizados</p>
-                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 5 Préstamos</span>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fa-solid fa-book-bookmark"></i> Libros Leídos:</label>
+                            <div class="goal-input-stepper">
+                                <button class="stepper-btn" onclick="adjustGoalRead(-1)"><i class="fa-solid fa-minus"></i></button>
+                                <span class="read-count-display" id="displayGoalRead">0</span>
+                                <button class="stepper-btn add-read" onclick="adjustGoalRead(1)"><i class="fa-solid fa-plus"></i> +1 Leer</button>
                             </div>
                         </div>
                     </div>
+
+                    <!-- TARJETAS DE MÉTRICAS -->
+                    <div class="goals-metrics-grid">
+                        <div class="metric-card">
+                            <i class="fa-solid fa-bullseye metric-icon font-gold"></i>
+                            <div class="metric-info">
+                                <span class="metric-value" id="metricGoalTarget">30</span>
+                                <span class="metric-label">Meta Objetivo</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <i class="fa-solid fa-book-open metric-icon font-emerald"></i>
+                            <div class="metric-info">
+                                <span class="metric-value" id="metricGoalRead">0</span>
+                                <span class="metric-label">Completados</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <i class="fa-solid fa-clock-rotate-left metric-icon font-purple"></i>
+                            <div class="metric-info">
+                                <span class="metric-value" id="metricGoalRemaining">30</span>
+                                <span class="metric-label">Libros Faltantes</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <i class="fa-solid fa-chart-line metric-icon font-blue"></i>
+                            <div class="metric-info">
+                                <span class="metric-value" id="metricGoalPace">0%</span>
+                                <span class="metric-label">Avance Total</span>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>

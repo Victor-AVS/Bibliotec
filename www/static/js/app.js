@@ -1062,3 +1062,131 @@ function applyInsigniaFilter(filterType, btn) {
         }
     });
 }
+
+// 7. Pestañas Principales: Insignias vs Metas
+function switchGamificationTab(tabName) {
+    const btnInsignias = document.getElementById('tabBtnInsignias');
+    const btnMetas = document.getElementById('tabBtnMetas');
+    const contentInsignias = document.getElementById('tabContentInsignias');
+    const contentMetas = document.getElementById('tabContentMetas');
+
+    if (tabName === 'insignias') {
+        if (btnInsignias) btnInsignias.classList.add('active');
+        if (btnMetas) btnMetas.classList.remove('active');
+        if (contentInsignias) contentInsignias.style.display = 'block';
+        if (contentMetas) contentMetas.style.display = 'none';
+    } else if (tabName === 'metas') {
+        if (btnMetas) btnMetas.classList.add('active');
+        if (btnInsignias) btnInsignias.classList.remove('active');
+        if (contentMetas) contentMetas.style.display = 'block';
+        if (contentInsignias) contentInsignias.style.display = 'none';
+        updateReadingGoalsUI();
+    }
+}
+
+// 8. Módulo de Metas de Lectura (Medialuna SVG + Métricas)
+let readingGoalData = JSON.parse(localStorage.getItem('bibliotec_user_goals')) || {
+    period: 'mensual',
+    target: 30,
+    read: 0
+};
+
+function saveReadingGoalData() {
+    localStorage.setItem('bibliotec_user_goals', JSON.stringify(readingGoalData));
+}
+
+function setGoalPeriod(period) {
+    readingGoalData.period = period;
+    saveReadingGoalData();
+
+    const btnMensual = document.getElementById('btnPeriodMensual');
+    const btnAnual = document.getElementById('btnPeriodAnual');
+
+    if (period === 'mensual') {
+        if (btnMensual) btnMensual.classList.add('active');
+        if (btnAnual) btnAnual.classList.remove('active');
+    } else {
+        if (btnAnual) btnAnual.classList.add('active');
+        if (btnMensual) btnMensual.classList.remove('active');
+    }
+
+    updateReadingGoalsUI();
+}
+
+function adjustGoalTarget(delta) {
+    readingGoalData.target = Math.max(1, (parseInt(readingGoalData.target) || 30) + delta);
+    saveReadingGoalData();
+    const inputEl = document.getElementById('inputGoalTarget');
+    if (inputEl) inputEl.value = readingGoalData.target;
+    updateReadingGoalsUI();
+}
+
+function onGoalTargetInputChange() {
+    const inputEl = document.getElementById('inputGoalTarget');
+    if (inputEl) {
+        let val = parseInt(inputEl.value) || 1;
+        readingGoalData.target = Math.max(1, val);
+        saveReadingGoalData();
+        updateReadingGoalsUI();
+    }
+}
+
+function adjustGoalRead(delta) {
+    readingGoalData.read = Math.max(0, (parseInt(readingGoalData.read) || 0) + delta);
+    saveReadingGoalData();
+    updateReadingGoalsUI();
+}
+
+function updateReadingGoalsUI() {
+    const target = readingGoalData.target || 30;
+    const read = readingGoalData.read || 0;
+    const period = readingGoalData.period || 'mensual';
+
+    const percent = Math.min(100, Math.round((read / target) * 100));
+
+    // Update SVG Half-Circle Arc ("Medialuna")
+    const gaugeFill = document.getElementById('readingGoalGaugeFill');
+    if (gaugeFill) {
+        const circumference = 251.33;
+        const offset = circumference - (circumference * percent / 100);
+        gaugeFill.style.strokeDashoffset = offset;
+    }
+
+    const percentText = document.getElementById('readingGoalPercentText');
+    if (percentText) percentText.textContent = `${percent}%`;
+
+    const statusText = document.getElementById('readingGoalStatusText');
+    if (statusText) statusText.textContent = `${read} de ${target} libros leídos este ${period}`;
+
+    // Update Controls Display
+    const inputTarget = document.getElementById('inputGoalTarget');
+    if (inputTarget) inputTarget.value = target;
+
+    const displayRead = document.getElementById('displayGoalRead');
+    if (displayRead) displayRead.textContent = read;
+
+    const btnMensual = document.getElementById('btnPeriodMensual');
+    const btnAnual = document.getElementById('btnPeriodAnual');
+    if (btnMensual && btnAnual) {
+        if (period === 'mensual') {
+            btnMensual.classList.add('active');
+            btnAnual.classList.remove('active');
+        } else {
+            btnAnual.classList.add('active');
+            btnMensual.classList.remove('active');
+        }
+    }
+
+    // Update Metrics Cards
+    const metricTarget = document.getElementById('metricGoalTarget');
+    if (metricTarget) metricTarget.textContent = target;
+
+    const metricRead = document.getElementById('metricGoalRead');
+    if (metricRead) metricRead.textContent = read;
+
+    const metricRemaining = document.getElementById('metricGoalRemaining');
+    if (metricRemaining) metricRemaining.textContent = Math.max(0, target - read);
+
+    const metricPace = document.getElementById('metricGoalPace');
+    if (metricPace) metricPace.textContent = `${percent}%`;
+}
