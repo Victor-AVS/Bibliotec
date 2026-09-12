@@ -481,6 +481,21 @@
                     </div>
                 </div>
 
+                <!-- LÍNEA DIVISORIA ESTILIZADA (HR) -->
+                <div class="banner-divider-container">
+                    <hr class="banner-divider">
+                </div>
+
+                <!-- BARRA DE FILTRADO ("Filtrar por") -->
+                <div class="insignia-filter-bar">
+                    <span class="filter-title"><i class="fa-solid fa-filter"></i> Filtrar por:</span>
+                    <div class="filter-pills">
+                        <button class="filter-pill active" onclick="applyInsigniaFilter('all', this)">Todas</button>
+                        <button class="filter-pill" onclick="applyInsigniaFilter('obtained', this)"><i class="fa-solid fa-circle-check"></i> Obtenidas</button>
+                        <button class="filter-pill" onclick="applyInsigniaFilter('locked', this)"><i class="fa-solid fa-lock"></i> No obtenidas</button>
+                    </div>
+                </div>
+
                 <!-- SECCIÓN 1: INSIGNIAS DE LECTURA -->
                 <div class="insignias-section">
                     <div class="section-badge-header">
@@ -571,6 +586,37 @@
                                 <h5>Donante Nivel 2</h5>
                                 <p>3 Libros Donados</p>
                                 <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 3 Donaciones</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3: INSIGNIAS DE PARTICIPACIÓN Y EVENTOS -->
+                <div class="insignias-section" style="margin-top: 24px;">
+                    <div class="section-badge-header">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <h4>Insignias de Participación y Eventos</h4>
+                    </div>
+                    <div class="badges-detailed-grid" id="gridInsigniasEventos">
+                        <div class="badge-card locked" id="badge-evento1">
+                            <div class="badge-icon-circle event-1">
+                                <i class="fa-solid fa-ticket"></i>
+                            </div>
+                            <div class="badge-card-info">
+                                <h5>Asistente a Eventos</h5>
+                                <p>1 Evento / Taller Registrado</p>
+                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 1 Evento</span>
+                            </div>
+                        </div>
+
+                        <div class="badge-card locked" id="badge-lector-frecuente">
+                            <div class="badge-icon-circle event-2">
+                                <i class="fa-solid fa-book-bookmark"></i>
+                            </div>
+                            <div class="badge-card-info">
+                                <h5>Lector Frecuente</h5>
+                                <p>5 Préstamos Realizados</p>
+                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 5 Préstamos</span>
                             </div>
                         </div>
                     </div>

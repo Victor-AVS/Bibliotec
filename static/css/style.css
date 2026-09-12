@@ -1692,6 +1692,81 @@ body.dark-mode .badge-card {
 .badge-icon-circle.diamond-glow { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: #ffffff; }
 .badge-icon-circle.donor-1 { background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: #ffffff; }
 .badge-icon-circle.donor-2 { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); color: #ffffff; }
+.badge-icon-circle.event-1 { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: #ffffff; }
+.badge-icon-circle.event-2 { background: linear-gradient(135deg, #f97316 0%, #c2410c 100%); color: #ffffff; }
+
+/* BANNER DIVIDER HR LINE */
+.banner-divider-container {
+    width: 100%;
+    margin: 12px 0 20px 0;
+}
+
+.banner-divider {
+    border: 0;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(239, 169, 190, 0.6) 50%, rgba(255, 255, 255, 0.05) 100%);
+    margin: 0;
+}
+
+body.dark-mode .banner-divider {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(169, 79, 112, 0.7) 50%, rgba(255, 255, 255, 0.05) 100%);
+}
+
+/* INSIGNIA FILTER BAR ("Filtrar por") */
+.insignia-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+    background: rgba(0, 0, 0, 0.15);
+    padding: 8px 14px;
+    border-radius: 16px;
+    backdrop-filter: blur(4px);
+    flex-wrap: wrap;
+}
+
+.filter-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: #FCEEF3;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.3px;
+}
+
+.filter-pills {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.filter-pill {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.filter-pill:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.filter-pill.active {
+    background: #D77A9B;
+    border-color: #EFA9BE;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(215, 122, 155, 0.4);
+}
 
 .badge-card-info h5 {
     font-size: 15px;

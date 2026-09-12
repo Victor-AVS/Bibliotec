@@ -1004,6 +1004,11 @@ function updateInsigniasProgressUI() {
 
     setBadgeState('badge-donante1', userDonations >= 1, '1 Donación');
     setBadgeState('badge-donante2', userDonations >= 3, '3 Donaciones');
+
+    const userEvents = currentUser ? (currentUser.total_eventos || 0) : 0;
+    const userLoans = currentUser ? (currentUser.total_prestamos || 0) : 0;
+    setBadgeState('badge-evento1', userEvents >= 1, '1 Evento');
+    setBadgeState('badge-lector-frecuente', userLoans >= 5, '5 Préstamos');
 }
 
 function getBadgeNameByThreshold(pts) {
@@ -1028,4 +1033,32 @@ function setBadgeState(cardId, isUnlocked, reqText) {
         card.classList.add('locked');
         if (tag) tag.innerHTML = `<i class="fa-solid fa-lock"></i> ${reqText}`;
     }
+}
+
+// 6. Insignias Filtering Function ("Filtrar por")
+function applyInsigniaFilter(filterType, btn) {
+    if (btn) {
+        const pills = document.querySelectorAll('.filter-pill');
+        pills.forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    const allCards = document.querySelectorAll('.badge-card');
+    allCards.forEach(card => {
+        if (filterType === 'all') {
+            card.style.display = 'flex';
+        } else if (filterType === 'obtained') {
+            if (card.classList.contains('unlocked')) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        } else if (filterType === 'locked') {
+            if (card.classList.contains('locked')) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        }
+    });
 }
