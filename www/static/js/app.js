@@ -778,7 +778,7 @@ async function handleRegistro(event) {
 
             if (form) form.reset();
         } else {
-            const errMsg = data.mensaje || 'La matrícula o correo ya están registrados con anterioridad.';
+            const errMsg = data.mensaje || data.error || 'La matrícula o correo ya están registrados con anterioridad.';
             resBox.style.display = 'block';
             resBox.style.backgroundColor = '#fef2f2';
             resBox.style.color = '#991b1b';

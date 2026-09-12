@@ -438,7 +438,7 @@ def registro_usuario():
         err_msg = str(e)
         if "duplicate" in err_msg.lower() or "unique" in err_msg.lower() or "already exists" in err_msg.lower():
             return jsonify({"success": False, "mensaje": "La matrícula o correo ya están registrados con anterioridad."}), 400
-        return jsonify({"success": False, "error": err_msg}), 500
+        return jsonify({"success": False, "mensaje": f"Error al registrar: {err_msg}", "error": err_msg}), 500
     finally:
         if cursor:
             try: cursor.close()
