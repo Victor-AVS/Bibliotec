@@ -107,6 +107,12 @@ function updateUserUI() {
         if (currentUser.carrera && document.getElementById('idCarrera')) {
             document.getElementById('idCarrera').textContent = currentUser.carrera;
         }
+        if (currentUser.nss && document.getElementById('idNss')) {
+            document.getElementById('idNss').textContent = currentUser.nss;
+        }
+        if (currentUser.vigencia && document.getElementById('idVigencia')) {
+            document.getElementById('idVigencia').textContent = `Vigencia: ${currentUser.vigencia}`;
+        }
 
         // Vista Perfil
         document.getElementById('profileName').textContent = fullName;
@@ -745,11 +751,13 @@ async function handleRegistro(event) {
     }
 
     const carreraEl = document.getElementById('regCarrera');
+    const nssEl = document.getElementById('regNss');
     const body = {
         nombre: document.getElementById('regNombre').value.trim(),
         a_paterno: document.getElementById('regPaterno').value.trim(),
         a_materno: document.getElementById('regMaterno') ? document.getElementById('regMaterno').value.trim() : '',
         carrera: carreraEl ? carreraEl.value : 'Ing. Sistemas Computacionales',
+        nss: nssEl ? nssEl.value.trim() : '',
         correo: document.getElementById('regCorreo').value.trim(),
         correo_respaldo: document.getElementById('regRespaldo').value.trim(),
         matricula: document.getElementById('regMatricula').value.trim(),

@@ -347,15 +347,21 @@ def login_usuario():
         cursor.execute("""
             SELECT 
                 p.id_persona, p.nombre, p.a_paterno, p.a_materno, p.correo, p.correo_respaldo, p.telefono,
-                u.id_usuario, u.matricula, u.puntos, u.es_deudor
+                u.id_usuario, u.matricula, u.puntos, u.es_deudor,
+                cd.licenciatura as carrera, cd.nss, cd.vigencia_inicio, cd.vigencia_fin
             FROM persona p
             JOIN usuario u ON p.id_persona = u.id_persona
+            LEFT JOIN credencial_digital cd ON u.id_usuario = cd.id_usuario
             WHERE (p.correo = %s OR p.correo_respaldo = %s) AND p.contrasena = %s;
         """, (correo_login, correo_login, contrasena))
         user = cursor.fetchone()
 
         if not user:
             return jsonify({"success": False, "mensaje": "Correo o contraseña incorrectos."}), 401
+
+        v_ini = str(user.get('vigencia_inicio', ''))[:4] if user.get('vigencia_inicio') else '2026'
+        v_fin = str(user.get('vigencia_fin', ''))[:4] if user.get('vigencia_fin') else '2029'
+        user['vigencia'] = f"{v_ini} - {v_fin}"
 
         return jsonify({
             "success": True,
@@ -382,6 +388,8 @@ def registro_usuario():
     contrasena = data.get('contrasena', '').strip()
     matricula = data.get('matricula', '').strip()
     carrera = data.get('carrera', 'Ing. Sistemas Computacionales').strip()
+    nss = data.get('nss', '').strip() or None
+    rol = data.get('rol', 'usuario').strip().lower()
 
     if not (correo.endswith('@teschi.edu.mx') or correo.endswith('@tesch.edu.mx')):
         return jsonify({"success": False, "mensaje": "El correo principal debe ser institucional (@teschi.edu.mx)."}), 400
@@ -401,19 +409,38 @@ def registro_usuario():
         """, (nombre, a_paterno, a_materno, correo, correo_respaldo, telefono, contrasena))
         id_persona = cursor.fetchone()['id_persona']
 
-        cursor.execute("""
-            INSERT INTO usuario (id_persona, matricula)
-            VALUES (%s, %s)
-            RETURNING id_usuario, matricula, puntos;
-        """, (id_persona, matricula))
-        u_data = cursor.fetchone()
+        if rol == 'administrador':
+            cursor.execute("""
+                INSERT INTO administrador (id_persona)
+                VALUES (%s)
+                RETURNING id_admi;
+            """, (id_persona,))
+            
+            cursor.execute("""
+                INSERT INTO usuario (id_persona, matricula)
+                VALUES (%s, %s)
+                RETURNING id_usuario, matricula, puntos;
+            """, (id_persona, matricula))
+            u_data = cursor.fetchone()
+        else:
+            cursor.execute("""
+                INSERT INTO usuario (id_persona, matricula)
+                VALUES (%s, %s)
+                RETURNING id_usuario, matricula, puntos;
+            """, (id_persona, matricula))
+            u_data = cursor.fetchone()
 
         cursor.execute("""
-            INSERT INTO credencial_digital (id_usuario, licenciatura)
-            VALUES (%s, %s);
-        """, (u_data['id_usuario'], carrera))
+            INSERT INTO credencial_digital (id_usuario, licenciatura, nss, vigencia_inicio, vigencia_fin, fecha_expedicion)
+            VALUES (%s, %s, %s, CURRENT_DATE, CURRENT_DATE + INTERVAL '3 years', CURRENT_TIMESTAMP)
+            RETURNING id_credencial, vigencia_inicio, vigencia_fin;
+        """, (u_data['id_usuario'], carrera, nss))
+        cred_data = cursor.fetchone()
 
         conn.commit()
+
+        v_inicio = str(cred_data['vigencia_inicio'])[:4] if cred_data.get('vigencia_inicio') else '2026'
+        v_fin = str(cred_data['vigencia_fin'])[:4] if cred_data.get('vigencia_fin') else '2029'
 
         user_payload = {
             "id_persona": id_persona,
@@ -425,6 +452,9 @@ def registro_usuario():
             "correo_respaldo": correo_respaldo,
             "matricula": matricula,
             "carrera": carrera,
+            "nss": nss,
+            "rol": rol,
+            "vigencia": f"{v_inicio} - {v_fin}",
             "puntos": u_data['puntos']
         }
 
