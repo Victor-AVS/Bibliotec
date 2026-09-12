@@ -3,16 +3,11 @@ from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 
 PSYCOPG_VER = 0
-ConnectionPool = None
 
 try:
     import psycopg
     from psycopg.rows import dict_row
     PSYCOPG_VER = 3
-    try:
-        from psycopg_pool import ConnectionPool
-    except Exception:
-        ConnectionPool = None
 except Exception:
     try:
         import psycopg2
@@ -24,42 +19,35 @@ except Exception:
 app = Flask(__name__)
 CORS(app)
 
-DEFAULT_DB_URI = "postgresql://postgres.tovcoonzsecnnpnoekzw:Vesv050423..@aws-0-us-west-2.pooler.supabase.com:6543/postgres?sslmode=require&connect_timeout=10"
+DEFAULT_DB_URI = "postgresql://postgres.tovcoonzsecnnpnoekzw:Vesv050423..@aws-0-us-west-2.pooler.supabase.com:6543/postgres?sslmode=require&connect_timeout=5"
 
-_pool = None
+def get_connection_string():
+    env_uri = os.environ.get("DATABASE_URL", "").strip()
+    if not env_uri:
+        return DEFAULT_DB_URI
+    
+    # Auto-fix direct Supabase hostname to IPv4 Pooler if direct IPv6 hostname was configured
+    if "db.tovcoonzsecnnpnoekzw.supabase.co" in env_uri:
+        env_uri = env_uri.replace("db.tovcoonzsecnnpnoekzw.supabase.co", "aws-0-us-west-2.pooler.supabase.com").replace(":5432", ":6543")
+    
+    if "sslmode" not in env_uri:
+        delim = "&" if "?" in env_uri else "?"
+        env_uri += f"{delim}sslmode=require"
 
-def get_pool():
-    global _pool
-    if _pool is None and ConnectionPool is not None:
-        try:
-            db_uri = os.environ.get("DATABASE_URL", DEFAULT_DB_URI)
-            _pool = ConnectionPool(
-                conninfo=db_uri,
-                min_size=1,
-                max_size=5,
-                open=True,
-                kwargs={"connect_timeout": 10}
-            )
-        except Exception as e:
-            print(f"[Warning] ConnectionPool init failed: {e}")
-            _pool = None
-    return _pool
+    if "connect_timeout" not in env_uri:
+        delim = "&" if "?" in env_uri else "?"
+        env_uri += f"{delim}connect_timeout=5"
+        
+    return env_uri
 
 def get_db_connection():
-    db_uri = os.environ.get("DATABASE_URL", DEFAULT_DB_URI)
-    pool = get_pool()
-    if pool is not None:
-        try:
-            return pool.getconn(timeout=10)
-        except Exception as e:
-            print(f"[Warning] Pool getconn failed, falling back to direct connect: {e}")
-
+    db_uri = get_connection_string()
     if PSYCOPG_VER == 3:
-        return psycopg.connect(db_uri)
+        return psycopg.connect(db_uri, connect_timeout=5)
     elif PSYCOPG_VER == 2:
-        return psycopg2.connect(db_uri)
+        return psycopg2.connect(db_uri, connect_timeout=5)
     else:
-        raise RuntimeError("Neither psycopg nor psycopg2 could be loaded.")
+        raise RuntimeError("Neither psycopg nor psycopg2 driver could be loaded.")
 
 def get_cursor(conn):
     if PSYCOPG_VER == 3:
@@ -68,19 +56,11 @@ def get_cursor(conn):
         return conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 def release_db_connection(conn):
-    if not conn:
-        return
     try:
-        pool = get_pool()
-        if pool is not None:
-            pool.putconn(conn)
-        else:
+        if conn:
             conn.close()
     except Exception:
-        try:
-            conn.close()
-        except Exception:
-            pass
+        pass
 
 @app.route('/')
 def index():
@@ -91,15 +71,16 @@ def ping():
     return jsonify({
         "status": "ok", 
         "message": "Bibliotec backend is online", 
-        "driver": f"psycopg_v{PSYCOPG_VER}",
-        "pool_enabled": ConnectionPool is not None
+        "driver": f"psycopg_v{PSYCOPG_VER}"
     })
 
 @app.route('/api/stats', methods=['GET'])
 def get_stats():
-    conn = get_db_connection()
-    cursor = get_cursor(conn)
+    conn = None
+    cursor = None
     try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
         cursor.execute("SELECT COUNT(*) as total_libros, SUM(stock_disponible) as total_disponibles FROM libro;")
         res = cursor.fetchone()
         return jsonify({
@@ -110,14 +91,18 @@ def get_stats():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
     finally:
-        cursor.close()
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
         release_db_connection(conn)
 
 @app.route('/api/eventos', methods=['GET'])
 def get_eventos():
-    conn = get_db_connection()
-    cursor = get_cursor(conn)
+    conn = None
+    cursor = None
     try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
         cursor.execute("""
             SELECT id_evento, titulo, descripcion, imagen_url, fecha_inicio, fecha_fin
             FROM evento
@@ -129,21 +114,27 @@ def get_eventos():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
     finally:
-        cursor.close()
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
         release_db_connection(conn)
 
 @app.route('/api/categorias', methods=['GET'])
 def get_categorias():
-    conn = get_db_connection()
-    cursor = get_cursor(conn)
+    conn = None
+    cursor = None
     try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
         cursor.execute("SELECT id_categoria, categoria FROM categoria ORDER BY id_categoria ASC;")
         categorias = cursor.fetchall()
         return jsonify({"success": True, "categorias": categorias})
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
     finally:
-        cursor.close()
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
         release_db_connection(conn)
 
 @app.route('/api/libros', methods=['GET'])
@@ -152,9 +143,11 @@ def get_libros():
     cat_filter = request.args.get('categoria', '').strip()
     limit = request.args.get('limit', 20, type=int)
 
-    conn = get_db_connection()
-    cursor = get_cursor(conn)
+    conn = None
+    cursor = None
     try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
         sql = """
             SELECT 
                 l.id_libro,
@@ -201,14 +194,18 @@ def get_libros():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
     finally:
-        cursor.close()
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
         release_db_connection(conn)
 
 @app.route('/api/libros/<int:id_libro>/resenas', methods=['GET'])
 def get_resenas_libro(id_libro):
-    conn = get_db_connection()
-    cursor = get_cursor(conn)
+    conn = None
+    cursor = None
     try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
         cursor.execute("""
             SELECT 
                 r.id_resena,
@@ -227,7 +224,9 @@ def get_resenas_libro(id_libro):
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
     finally:
-        cursor.close()
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
         release_db_connection(conn)
 
 @app.route('/api/wishlist/agregar', methods=['POST'])
@@ -239,9 +238,11 @@ def agregar_wishlist():
     if not id_usuario or not id_libro:
         return jsonify({"success": False, "mensaje": "Usuario y libro requeridos."}), 400
 
-    conn = get_db_connection()
-    cursor = get_cursor(conn)
+    conn = None
+    cursor = None
     try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
         cursor.execute("""
             INSERT INTO lista_deseos (id_usuario, id_libro)
             VALUES (%s, %s)
@@ -254,17 +255,21 @@ def agregar_wishlist():
             "mensaje": "¡Libro agregado a tu Lista de Deseos (Quiero leer)!"
         })
     except Exception as e:
-        conn.rollback()
+        if conn: conn.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
     finally:
-        cursor.close()
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
         release_db_connection(conn)
 
 @app.route('/api/wishlist/<int:id_usuario>', methods=['GET'])
 def get_wishlist(id_usuario):
-    conn = get_db_connection()
-    cursor = get_cursor(conn)
+    conn = None
+    cursor = None
     try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
         cursor.execute("""
             SELECT l.id_libro, l.titulo, l.portada_url, c.categoria, ld.fecha_agregado
             FROM lista_deseos ld
@@ -278,7 +283,9 @@ def get_wishlist(id_usuario):
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
     finally:
-        cursor.close()
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
         release_db_connection(conn)
 
 @app.route('/api/libros/<int:id_libro>/calificar', methods=['POST'])
@@ -291,9 +298,11 @@ def calificar_libro(id_libro):
     if not (1 <= calificacion <= 5):
         return jsonify({"success": False, "mensaje": "La calificación debe estar entre 1 y 5 estrellas."}), 400
 
-    conn = get_db_connection()
-    cursor = get_cursor(conn)
+    conn = None
+    cursor = None
     try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
         cursor.execute("""
             INSERT INTO resena_libro (id_usuario, id_libro, calificacion, comentario)
             VALUES (%s, %s, %s, %s)
@@ -313,10 +322,12 @@ def calificar_libro(id_libro):
             "promedio_calificacion": float(prom['promedio_calificacion'])
         })
     except Exception as e:
-        conn.rollback()
+        if conn: conn.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
     finally:
-        cursor.close()
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
         release_db_connection(conn)
 
 @app.route('/api/auth/login', methods=['POST'])
@@ -328,9 +339,11 @@ def login_usuario():
     if not correo_login or not contrasena:
         return jsonify({"success": False, "mensaje": "Correo y contraseña requeridos."}), 400
 
-    conn = get_db_connection()
-    cursor = get_cursor(conn)
+    conn = None
+    cursor = None
     try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
         cursor.execute("""
             SELECT 
                 p.id_persona, p.nombre, p.a_paterno, p.a_materno, p.correo, p.correo_respaldo, p.telefono,
@@ -352,7 +365,9 @@ def login_usuario():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
     finally:
-        cursor.close()
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
         release_db_connection(conn)
 
 @app.route('/api/auth/registro', methods=['POST'])
@@ -373,9 +388,11 @@ def registro_usuario():
     if len(contrasena) < 8:
         return jsonify({"success": False, "mensaje": "La contraseña debe tener al menos 8 caracteres."}), 400
 
-    conn = get_db_connection()
-    cursor = get_cursor(conn)
+    conn = None
+    cursor = None
     try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
         cursor.execute("""
             INSERT INTO persona (nombre, a_paterno, a_materno, correo, correo_respaldo, telefono, contrasena)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
@@ -409,13 +426,15 @@ def registro_usuario():
             "usuario": user_payload
         })
     except Exception as e:
-        conn.rollback()
+        if conn: conn.rollback()
         err_msg = str(e)
         if "duplicate" in err_msg.lower() or "unique" in err_msg.lower() or "already exists" in err_msg.lower():
             return jsonify({"success": False, "mensaje": "El correo o la matrícula ya se encuentran registrados."}), 400
         return jsonify({"success": False, "error": err_msg}), 500
     finally:
-        cursor.close()
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
         release_db_connection(conn)
 
 if __name__ == '__main__':

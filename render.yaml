@@ -3,7 +3,7 @@ services:
     name: Bibliotec
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --bind 0.0.0.0:$PORT --timeout 120 app:app
+    startCommand: gunicorn --workers 3 --bind 0.0.0.0:$PORT --timeout 30 app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.8
