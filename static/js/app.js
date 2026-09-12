@@ -700,6 +700,30 @@ function closeModal(modalId) {
     if (el) el.classList.remove('active');
 }
 
+// ROLE SELECTION IN REGISTRATION FORM
+let currentRegistrationRole = 'usuario';
+
+function selectRegistrationRole(role) {
+    const btnDocente = document.getElementById('btnRoleDocente');
+    const btnAdmin = document.getElementById('btnRoleAdmin');
+    const lblMatricula = document.getElementById('lblMatricula');
+    const inputMatricula = document.getElementById('regMatricula');
+
+    if (role === 'admin') {
+        currentRegistrationRole = 'administrador';
+        if (btnDocente) btnDocente.classList.remove('active');
+        if (btnAdmin) btnAdmin.classList.add('active');
+        if (lblMatricula) lblMatricula.textContent = 'Clave de Trabajador:';
+        if (inputMatricula) inputMatricula.placeholder = 'EMP-202645';
+    } else {
+        currentRegistrationRole = 'usuario';
+        if (btnAdmin) btnAdmin.classList.remove('active');
+        if (btnDocente) btnDocente.classList.add('active');
+        if (lblMatricula) lblMatricula.textContent = 'Matrícula:';
+        if (inputMatricula) inputMatricula.placeholder = '2023452074';
+    }
+}
+
 // REGISTRO FORM SUBMIT
 async function handleRegistro(event) {
     event.preventDefault();
@@ -713,7 +737,8 @@ async function handleRegistro(event) {
         correo_respaldo: document.getElementById('regRespaldo').value.trim(),
         matricula: document.getElementById('regMatricula').value.trim(),
         telefono: document.getElementById('regTelefono').value.trim(),
-        contrasena: document.getElementById('regPass').value.trim()
+        contrasena: document.getElementById('regPass').value.trim(),
+        rol: currentRegistrationRole
     };
 
     try {
