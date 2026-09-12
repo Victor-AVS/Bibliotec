@@ -704,21 +704,21 @@ function closeModal(modalId) {
 let currentRegistrationRole = 'usuario';
 
 function selectRegistrationRole(role) {
-    const btnDocente = document.getElementById('btnRoleDocente');
+    const btnAlumno = document.getElementById('btnRoleAlumno');
     const btnAdmin = document.getElementById('btnRoleAdmin');
     const lblMatricula = document.getElementById('lblMatricula');
     const inputMatricula = document.getElementById('regMatricula');
 
     if (role === 'admin') {
         currentRegistrationRole = 'administrador';
-        if (btnDocente) btnDocente.classList.remove('active');
+        if (btnAlumno) btnAlumno.classList.remove('active');
         if (btnAdmin) btnAdmin.classList.add('active');
         if (lblMatricula) lblMatricula.textContent = 'Clave de Trabajador:';
         if (inputMatricula) inputMatricula.placeholder = 'EMP-202645';
     } else {
         currentRegistrationRole = 'usuario';
         if (btnAdmin) btnAdmin.classList.remove('active');
-        if (btnDocente) btnDocente.classList.add('active');
+        if (btnAlumno) btnAlumno.classList.add('active');
         if (lblMatricula) lblMatricula.textContent = 'Matrícula:';
         if (inputMatricula) inputMatricula.placeholder = '2023452074';
     }
