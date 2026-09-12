@@ -457,27 +457,23 @@
                             </div>
                         </div>
 
-                        <!-- ESQUINA SUPERIOR DERECHA: FOTO DE PERFIL + BARRA DE PROGRESO POR TRAMOS -->
+                        <!-- ESQUINA SUPERIOR DERECHA: FOTO DE PERFIL CON ARO CIRCULAR DE CARGA ALREDEDOR -->
                         <div class="banner-right-user">
                             <div class="banner-user-header">
                                 <div class="banner-user-points-info">
-                                    <span class="banner-sub-label">Puntos Acumulados</span>
+                                    <span class="banner-sub-label" id="insigniaProgressLabel">Progreso hacia Lector Bronce</span>
                                     <h2 class="banner-points-count" id="insigniaTotalPoints">0 Pts</h2>
+                                    <span class="banner-progress-percent-badge" id="insigniaProgressPercent">0%</span>
                                 </div>
-                                <div class="banner-user-avatar-box">
-                                    <img id="insigniaUserPhoto" src="" alt="Foto de perfil" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                                    <i id="insigniaDefaultAvatar" class="fa-solid fa-circle-user"></i>
-                                </div>
-                            </div>
-
-                            <!-- BARRA DE PROGRESO DINÁMICA POR TRAMOS -->
-                            <div class="banner-progress-box">
-                                <div class="progress-labels">
-                                    <span id="insigniaProgressLabel">Progreso hacia Lector Bronce</span>
-                                    <span id="insigniaProgressPercent">0%</span>
-                                </div>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" id="insigniaProgressBarFill" style="width: 0%;"></div>
+                                <div class="avatar-ring-container">
+                                    <svg class="avatar-progress-svg" viewBox="0 0 100 100">
+                                        <circle class="ring-bg" cx="50" cy="50" r="44" />
+                                        <circle class="ring-fill" id="insigniaUserPhotoRing" cx="50" cy="50" r="44" />
+                                    </svg>
+                                    <div class="banner-user-avatar-box">
+                                        <img id="insigniaUserPhoto" src="" alt="Foto de perfil" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                        <i id="insigniaDefaultAvatar" class="fa-solid fa-circle-user"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>

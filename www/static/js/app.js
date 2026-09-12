@@ -928,8 +928,12 @@ function updateInsigniasProgressUI() {
         percent = Math.min(100, Math.max(0, Math.round((currentInSegment / range) * 100)));
     }
 
-    const fillEl = document.getElementById('insigniaProgressBarFill');
-    if (fillEl) fillEl.style.width = `${percent}%`;
+    const ringEl = document.getElementById('insigniaUserPhotoRing');
+    if (ringEl) {
+        const circumference = 276.46;
+        const offset = circumference - (circumference * percent / 100);
+        ringEl.style.strokeDashoffset = offset;
+    }
 
     const percentEl = document.getElementById('insigniaProgressPercent');
     if (percentEl) percentEl.textContent = `${percent}%`;
@@ -937,9 +941,9 @@ function updateInsigniasProgressUI() {
     const labelEl = document.getElementById('insigniaProgressLabel');
     if (labelEl) {
         if (userPoints >= 600) {
-            labelEl.textContent = '¡Máximo Nivel Alcanzado!';
+            labelEl.textContent = '¡Máximo Nivel!';
         } else {
-            labelEl.textContent = `Progreso a ${nextBadgeName} (${maxPts} Pts)`;
+            labelEl.textContent = `${nextBadgeName}`;
         }
     }
 

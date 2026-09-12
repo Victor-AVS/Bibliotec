@@ -1558,9 +1558,45 @@ body.dark-mode .gamification-banner-card {
     line-height: 1.1;
 }
 
+.avatar-ring-container {
+    position: relative;
+    width: 68px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.avatar-progress-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+    pointer-events: none;
+}
+
+.avatar-progress-svg .ring-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.25);
+    stroke-width: 6;
+}
+
+.avatar-progress-svg .ring-fill {
+    fill: none;
+    stroke: #fcd34d;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 276.46;
+    stroke-dashoffset: 276.46;
+    transition: stroke-dashoffset 0.6s ease;
+}
+
 .banner-user-avatar-box {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     overflow: hidden;
     background-color: #FCEEF3;
@@ -1569,37 +1605,21 @@ body.dark-mode .gamification-banner-card {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 44px;
     color: #D77A9B;
     flex-shrink: 0;
+    z-index: 1;
 }
 
-.banner-progress-box {
+.banner-progress-percent-badge {
+    display: inline-block;
     margin-top: 4px;
-}
-
-.progress-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    font-weight: 700;
-    margin-bottom: 5px;
-    opacity: 0.95;
-}
-
-.progress-bar-bg {
-    width: 100%;
-    height: 10px;
-    background-color: rgba(255, 255, 255, 0.25);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    background-color: #fcd34d;
-    border-radius: 10px;
-    transition: width 0.5s ease;
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #ffffff;
 }
 
 /* DETAILED BADGES GRID */
