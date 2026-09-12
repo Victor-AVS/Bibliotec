@@ -1451,7 +1451,7 @@ body.dark-mode .header-page-title span {
 /* GAMIFICATION BANNER CARD (SEAMLESS INTEGRATED HEADER) */
 .gamification-banner-card {
     background: transparent;
-    color: #ffffff;
+    color: #6B4035;
     border-radius: 0;
     padding: 10px 4px 20px 4px;
     margin-bottom: 20px;
@@ -1461,6 +1461,7 @@ body.dark-mode .header-page-title span {
 
 body.dark-mode .gamification-banner-card {
     background: transparent;
+    color: #ffffff;
 }
 
 .banner-flex-layout {
@@ -1486,7 +1487,7 @@ body.dark-mode .gamification-banner-card {
 .insignia-dashed-box {
     width: 100px;
     height: 105px;
-    border: 2px dashed rgba(255, 248, 245, 0.6);
+    border: 2px dashed #D77A9B;
     border-radius: 16px;
     display: flex;
     flex-direction: column;
@@ -1494,26 +1495,39 @@ body.dark-mode .gamification-banner-card {
     justify-content: center;
     padding: 8px;
     text-align: center;
+    background-color: rgba(215, 122, 155, 0.08);
+}
+
+body.dark-mode .insignia-dashed-box {
+    border: 2px dashed rgba(255, 248, 245, 0.6);
     background-color: rgba(0, 0, 0, 0.1);
 }
 
 .dashed-icon {
     font-size: 32px;
-    color: rgba(255, 255, 255, 0.5);
+    color: #D77A9B;
     margin-bottom: 6px;
+}
+
+body.dark-mode .dashed-icon {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .insignia-label-title {
     font-size: 10px;
     font-weight: 700;
     line-height: 1.2;
+    color: #6B4035;
+}
+
+body.dark-mode .insignia-label-title {
     color: rgba(255, 255, 255, 0.85);
 }
 
 .insignia-obtained-box {
     width: 100px;
     height: 105px;
-    border: 2px solid rgba(255, 255, 255, 0.8);
+    border: 2px solid #D77A9B;
     border-radius: 16px;
     display: flex;
     flex-direction: column;
@@ -1521,8 +1535,13 @@ body.dark-mode .gamification-banner-card {
     justify-content: center;
     padding: 8px;
     text-align: center;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(107, 64, 53, 0.1);
+}
+
+body.dark-mode .insignia-obtained-box {
+    border: 2px solid rgba(255, 255, 255, 0.8);
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(4px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -1548,14 +1567,23 @@ body.dark-mode .gamification-banner-card {
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.5px;
-    opacity: 0.85;
+    color: #A97862;
     text-transform: uppercase;
+}
+
+body.dark-mode .banner-sub-label {
+    color: rgba(255, 255, 255, 0.85);
 }
 
 .banner-points-count {
     font-size: 28px;
     font-weight: 800;
     line-height: 1.1;
+    color: #6B4035;
+}
+
+body.dark-mode .banner-points-count {
+    color: #ffffff;
 }
 
 .avatar-ring-container {
@@ -1580,18 +1608,26 @@ body.dark-mode .gamification-banner-card {
 
 .avatar-progress-svg .ring-bg {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.2);
+    stroke: rgba(107, 64, 53, 0.15);
     stroke-width: 10;
+}
+
+body.dark-mode .avatar-progress-svg .ring-bg {
+    stroke: rgba(255, 255, 255, 0.2);
 }
 
 .avatar-progress-svg .ring-fill {
     fill: none;
-    stroke: #fcd34d;
+    stroke: #D77A9B;
     stroke-width: 10;
     stroke-linecap: round;
     stroke-dasharray: 257.61;
     stroke-dashoffset: 257.61;
     transition: stroke-dashoffset 0.6s ease;
+}
+
+body.dark-mode .avatar-progress-svg .ring-fill {
+    stroke: #fcd34d;
 }
 
 .banner-user-avatar-box {
@@ -1600,8 +1636,8 @@ body.dark-mode .gamification-banner-card {
     border-radius: 50%;
     overflow: hidden;
     background-color: #FCEEF3;
-    border: 3px solid #ffffff;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    border: 3px solid #D77A9B;
+    box-shadow: 0 4px 14px rgba(107, 64, 53, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1611,14 +1647,26 @@ body.dark-mode .gamification-banner-card {
     z-index: 1;
 }
 
+body.dark-mode .banner-user-avatar-box {
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
 .banner-progress-percent-badge {
     display: inline-block;
     margin-top: 4px;
     padding: 2px 8px;
-    background: rgba(255, 255, 255, 0.2);
+    background: #FCEEF3;
+    border: 1px solid #EFA9BE;
     border-radius: 12px;
     font-size: 11px;
     font-weight: 800;
+    color: #6B4035;
+}
+
+body.dark-mode .banner-progress-percent-badge {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
     color: #ffffff;
 }
 
@@ -1719,21 +1767,32 @@ body.dark-mode .banner-divider {
     justify-content: space-between;
     gap: 12px;
     margin-bottom: 20px;
-    background: rgba(0, 0, 0, 0.15);
+    background: #ffffff;
+    border: 1px solid #EFA9BE;
     padding: 8px 14px;
     border-radius: 16px;
-    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 10px rgba(107, 64, 53, 0.05);
     flex-wrap: wrap;
+}
+
+body.dark-mode .insignia-filter-bar {
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: none;
 }
 
 .filter-title {
     font-size: 12px;
     font-weight: 800;
-    color: #FCEEF3;
+    color: #6B4035;
     display: flex;
     align-items: center;
     gap: 6px;
     letter-spacing: 0.3px;
+}
+
+body.dark-mode .filter-title {
+    color: #FCEEF3;
 }
 
 .filter-pills {
@@ -1743,9 +1802,9 @@ body.dark-mode .banner-divider {
 }
 
 .filter-pill {
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #ffffff;
+    background: #FCEEF3;
+    border: 1px solid #EFA9BE;
+    color: #6B4035;
     padding: 5px 12px;
     border-radius: 20px;
     font-size: 11px;
@@ -1757,8 +1816,15 @@ body.dark-mode .banner-divider {
     gap: 4px;
 }
 
+body.dark-mode .filter-pill {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
 .filter-pill:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: #EFA9BE;
+    color: #ffffff;
 }
 
 .filter-pill.active {
@@ -1809,7 +1875,7 @@ body.dark-mode .badge-card-info p {
     color: #b91c1c;
 }
 
-/* GAMIFICATION MAIN TABS (INSIGNIAS VS METAS) */
+/* GAMIFICATION MAIN TABS (METAS VS INSIGNIAS) */
 .gamification-main-tabs {
     display: flex;
     gap: 10px;
@@ -1818,11 +1884,11 @@ body.dark-mode .badge-card-info p {
 
 .gamification-tab-btn {
     flex: 1;
-    padding: 10px 14px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.85);
+    padding: 11px 14px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid #EFA9BE;
+    color: #6B4035;
     font-size: 13px;
     font-weight: 800;
     cursor: pointer;
@@ -1830,10 +1896,23 @@ body.dark-mode .badge-card-info p {
     align-items: center;
     justify-content: center;
     gap: 8px;
+    box-shadow: 0 4px 10px rgba(107, 64, 53, 0.06);
     transition: all 0.25s ease;
 }
 
+body.dark-mode .gamification-tab-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+    box-shadow: none;
+}
+
 .gamification-tab-btn:hover {
+    background: #FCEEF3;
+    color: #6B4035;
+}
+
+body.dark-mode .gamification-tab-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     color: #ffffff;
 }
@@ -1847,24 +1926,34 @@ body.dark-mode .badge-card-info p {
 
 /* METAS DE LECTURA: GAUGE MEDIALUNA SVG */
 .goals-gauge-card {
-    background: rgba(0, 0, 0, 0.2);
+    background: #ffffff;
     border-radius: 20px;
     padding: 18px;
     margin-bottom: 20px;
     text-align: center;
+    border: 1px solid #EFA9BE;
+    box-shadow: 0 4px 14px rgba(107, 64, 53, 0.08);
+}
+
+body.dark-mode .goals-gauge-card {
+    background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(6px);
+    box-shadow: none;
 }
 
 .goals-gauge-title {
     font-size: 14px;
     font-weight: 800;
-    color: #FCEEF3;
+    color: #6B4035;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+}
+
+body.dark-mode .goals-gauge-title {
+    color: #FCEEF3;
 }
 
 .half-circle-gauge-container {
@@ -1884,19 +1973,27 @@ body.dark-mode .badge-card-info p {
 
 .gauge-svg .gauge-bg {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.15);
+    stroke: #e2e8f0;
     stroke-width: 14;
     stroke-linecap: round;
 }
 
+body.dark-mode .gauge-svg .gauge-bg {
+    stroke: rgba(255, 255, 255, 0.15);
+}
+
 .gauge-svg .gauge-fill {
     fill: none;
-    stroke: #fcd34d;
+    stroke: #D77A9B;
     stroke-width: 14;
     stroke-linecap: round;
     stroke-dasharray: 251.33;
     stroke-dashoffset: 251.33;
     transition: stroke-dashoffset 0.6s ease;
+}
+
+body.dark-mode .gauge-svg .gauge-fill {
+    stroke: #fcd34d;
 }
 
 .gauge-center-info {
@@ -1912,29 +2009,44 @@ body.dark-mode .badge-card-info p {
 .gauge-percent {
     font-size: 32px;
     font-weight: 900;
-    color: #ffffff;
+    color: #6B4035;
     line-height: 1;
+}
+
+body.dark-mode .gauge-percent {
+    color: #ffffff;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .gauge-subtext {
     font-size: 11px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.85);
+    color: #A97862;
     margin-top: 4px;
     white-space: nowrap;
 }
 
+body.dark-mode .gauge-subtext {
+    color: rgba(255, 255, 255, 0.85);
+}
+
 /* PANEL DE CONTROLES DE LA META */
 .goals-controls-card {
-    background: rgba(0, 0, 0, 0.15);
+    background: #ffffff;
     border-radius: 20px;
     padding: 16px;
     margin-bottom: 20px;
     display: flex;
     flex-direction: column;
     gap: 14px;
+    border: 1px solid #EFA9BE;
+    box-shadow: 0 4px 14px rgba(107, 64, 53, 0.08);
+}
+
+body.dark-mode .goals-controls-card {
+    background: rgba(0, 0, 0, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: none;
 }
 
 .control-group {
@@ -1946,30 +2058,42 @@ body.dark-mode .badge-card-info p {
 .control-label {
     font-size: 12px;
     font-weight: 800;
-    color: #FCEEF3;
+    color: #6B4035;
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
+body.dark-mode .control-label {
+    color: #FCEEF3;
+}
+
 .period-toggle-buttons {
     display: flex;
     gap: 4px;
-    background: rgba(0, 0, 0, 0.2);
+    background: #FCEEF3;
     padding: 3px;
     border-radius: 12px;
+}
+
+body.dark-mode .period-toggle-buttons {
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .period-btn {
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.7);
+    color: #6B4035;
     font-size: 11px;
     font-weight: 700;
     padding: 5px 10px;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
+}
+
+body.dark-mode .period-btn {
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .period-btn.active {
@@ -1988,9 +2112,9 @@ body.dark-mode .badge-card-info p {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+    border: 1px solid #EFA9BE;
+    background: #FCEEF3;
+    color: #6B4035;
     font-size: 12px;
     font-weight: 800;
     cursor: pointer;
@@ -2000,8 +2124,15 @@ body.dark-mode .badge-card-info p {
     transition: background 0.2s ease;
 }
 
+body.dark-mode .stepper-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
 .stepper-btn:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: #EFA9BE;
+    color: #ffffff;
 }
 
 .stepper-btn.add-read {
@@ -2010,6 +2141,7 @@ body.dark-mode .badge-card-info p {
     padding: 0 10px;
     background: #10b981;
     border-color: #34d399;
+    color: #ffffff;
 }
 
 .stepper-btn.add-read:hover {
@@ -2019,21 +2151,31 @@ body.dark-mode .badge-card-info p {
 #inputGoalTarget {
     width: 55px;
     text-align: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: #ffffff;
+    background: #FCEEF3;
+    border: 1px solid #EFA9BE;
+    color: #6B4035;
     font-size: 14px;
     font-weight: 800;
     border-radius: 10px;
     padding: 4px;
 }
 
+body.dark-mode #inputGoalTarget {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+
 .read-count-display {
     font-size: 16px;
     font-weight: 800;
-    color: #ffffff;
+    color: #6B4035;
     min-width: 24px;
     text-align: center;
+}
+
+body.dark-mode .read-count-display {
+    color: #ffffff;
 }
 
 /* MÉTRICAS GRID */
@@ -2044,13 +2186,20 @@ body.dark-mode .badge-card-info p {
 }
 
 .metric-card {
-    background: rgba(255, 255, 255, 0.1);
+    background: #ffffff;
     border-radius: 16px;
     padding: 12px 14px;
     display: flex;
     align-items: center;
     gap: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid #EFA9BE;
+    box-shadow: 0 4px 10px rgba(107, 64, 53, 0.06);
+}
+
+body.dark-mode .metric-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: none;
 }
 
 .metric-icon {
@@ -2070,15 +2219,23 @@ body.dark-mode .badge-card-info p {
 .metric-value {
     font-size: 18px;
     font-weight: 900;
-    color: #ffffff;
+    color: #6B4035;
     line-height: 1.1;
+}
+
+body.dark-mode .metric-value {
+    color: #ffffff;
 }
 
 .metric-label {
     font-size: 10px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.75);
+    color: #A97862;
     text-transform: uppercase;
+}
+
+body.dark-mode .metric-label {
+    color: rgba(255, 255, 255, 0.75);
 }
 
 /* READ BOOK PREVIEW CARD MODAL */
@@ -2125,8 +2282,8 @@ body.dark-mode .read-book-preview-card {
 
 /* MONTHLY GOAL LOCK BANNER */
 .monthly-lock-card {
-    background: rgba(234, 179, 8, 0.15);
-    border: 1px solid rgba(234, 179, 8, 0.4);
+    background: #fffbeb;
+    border: 1px solid #fde68a;
     border-radius: 16px;
     padding: 12px 16px;
     margin-bottom: 16px;
@@ -2134,6 +2291,11 @@ body.dark-mode .read-book-preview-card {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+}
+
+body.dark-mode .monthly-lock-card {
+    background: rgba(234, 179, 8, 0.15);
+    border: 1px solid rgba(234, 179, 8, 0.4);
 }
 
 .lock-card-header {
@@ -2144,29 +2306,95 @@ body.dark-mode .read-book-preview-card {
 
 .lock-icon {
     font-size: 20px;
+    color: #b45309;
+}
+
+body.dark-mode .lock-icon {
     color: #facc15;
 }
 
 .lock-card-header h5 {
     font-size: 13px;
     font-weight: 800;
-    color: #ffffff;
+    color: #92400e;
     margin-bottom: 2px;
+}
+
+body.dark-mode .lock-card-header h5 {
+    color: #ffffff;
 }
 
 .lock-card-header p {
     font-size: 11px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: #b45309;
     margin: 0;
 }
 
+body.dark-mode .lock-card-header p {
+    color: rgba(255, 255, 255, 0.8);
+}
+
 .lock-badge-status {
-    background: rgba(234, 179, 8, 0.3);
-    color: #fef08a;
+    background: #fef3c7;
+    color: #92400e;
     font-size: 10px;
     font-weight: 800;
     padding: 4px 10px;
     border-radius: 12px;
     white-space: nowrap;
+}
+
+body.dark-mode .lock-badge-status {
+    background: rgba(234, 179, 8, 0.3);
+    color: #fef08a;
+}
+
+/* RESPONSIVE LAYOUT FOR MOBILE DEVICES (< 480px) */
+@media (max-width: 480px) {
+    .banner-flex-layout {
+        gap: 8px;
+        justify-content: space-between;
+    }
+    
+    .banner-left-insignia {
+        flex: 0 0 85px;
+    }
+
+    .insignia-dashed-box, .insignia-obtained-box {
+        width: 85px;
+        height: 90px;
+    }
+
+    .avatar-ring-container {
+        width: 85px;
+        height: 85px;
+    }
+
+    .banner-user-avatar-box {
+        width: 64px;
+        height: 64px;
+        font-size: 50px;
+    }
+
+    .banner-points-count {
+        font-size: 22px;
+    }
+
+    .banner-sub-label {
+        font-size: 10px;
+    }
+
+    .half-circle-gauge-container {
+        width: 190px;
+        height: 105px;
+    }
+
+    .gauge-percent {
+        font-size: 26px;
+    }
+
+    .gauge-subtext {
+        font-size: 10px;
+    }
 }
