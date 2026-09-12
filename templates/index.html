@@ -445,25 +445,43 @@
 
                 <!-- TARJETA BANNER DE RESUMEN DE PUNTOS Y NIVEL -->
                 <div class="gamification-banner-card">
-                    <div class="banner-top">
-                        <div class="banner-user-info">
-                            <span class="banner-level-badge" id="insigniaCurrentLevelTitle">Nivel: Lector Principiante</span>
-                            <h2 class="banner-points-count" id="insigniaTotalPoints">0 Pts</h2>
+                    <div class="banner-flex-layout">
+                        
+                        <!-- ESQUINA SUPERIOR IZQUIERDA: INSIGNIA OBTENIDA ACTUAL O SILUETA GRIS PUNTEADA -->
+                        <div class="banner-left-insignia">
+                            <div class="insignia-current-display" id="insigniaCurrentBadgeBox">
+                                <div class="insignia-dashed-box" id="insigniaDashedBox">
+                                    <i class="fa-solid fa-ribbon dashed-icon"></i>
+                                    <span class="insignia-label-title" id="insigniaCurrentTitleLabel">Sin insignia obtenida</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="banner-trophy-box">
-                            <i class="fa-solid fa-trophy"></i>
-                        </div>
-                    </div>
 
-                    <!-- BARRA DE PROGRESO HACIA SIGUIENTE INSIGNIA -->
-                    <div class="banner-progress-box">
-                        <div class="progress-labels">
-                            <span id="insigniaProgressLabel">Progreso hacia Lector Bronce</span>
-                            <span id="insigniaProgressPercent">0%</span>
+                        <!-- ESQUINA SUPERIOR DERECHA: FOTO DE PERFIL + BARRA DE PROGRESO POR TRAMOS -->
+                        <div class="banner-right-user">
+                            <div class="banner-user-header">
+                                <div class="banner-user-points-info">
+                                    <span class="banner-sub-label">Puntos Acumulados</span>
+                                    <h2 class="banner-points-count" id="insigniaTotalPoints">0 Pts</h2>
+                                </div>
+                                <div class="banner-user-avatar-box">
+                                    <img id="insigniaUserPhoto" src="" alt="Foto de perfil" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                    <i id="insigniaDefaultAvatar" class="fa-solid fa-circle-user"></i>
+                                </div>
+                            </div>
+
+                            <!-- BARRA DE PROGRESO DINÁMICA POR TRAMOS -->
+                            <div class="banner-progress-box">
+                                <div class="progress-labels">
+                                    <span id="insigniaProgressLabel">Progreso hacia Lector Bronce</span>
+                                    <span id="insigniaProgressPercent">0%</span>
+                                </div>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" id="insigniaProgressBarFill" style="width: 0%;"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" id="insigniaProgressBarFill" style="width: 0%;"></div>
-                        </div>
+
                     </div>
                 </div>
 

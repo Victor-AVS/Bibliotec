@@ -885,33 +885,49 @@ function updateInsigniasProgressUI() {
     const userPoints = currentUser ? (currentUser.puntos || 0) : 0;
     const userDonations = currentUser ? (currentUser.total_donaciones || 0) : 0;
 
+    // 1. Total Points Display
     const pointsEl = document.getElementById('insigniaTotalPoints');
     if (pointsEl) pointsEl.textContent = `${userPoints} Pts`;
 
-    let nextThreshold = 100;
-    let currentLevelName = 'Lector Principiante';
-
-    if (userPoints >= 600) {
-        currentLevelName = 'Lector Diamante II 👑';
-        nextThreshold = 600;
-    } else if (userPoints >= 500) {
-        currentLevelName = 'Lector Diamante I 💎';
-        nextThreshold = 600;
-    } else if (userPoints >= 400) {
-        currentLevelName = 'Lector Esmeralda ❇️';
-        nextThreshold = 500;
-    } else if (userPoints >= 250) {
-        currentLevelName = 'Lector Oro 🥇';
-        nextThreshold = 400;
-    } else if (userPoints >= 100) {
-        currentLevelName = 'Lector Bronce 🥉';
-        nextThreshold = 250;
+    // 2. User Avatar photo on top right
+    const userPhotoImg = document.getElementById('insigniaUserPhoto');
+    const defaultAvatarIcon = document.getElementById('insigniaDefaultAvatar');
+    if (currentUser && currentUser.foto_url) {
+        if (userPhotoImg) { userPhotoImg.src = currentUser.foto_url; userPhotoImg.style.display = 'block'; }
+        if (defaultAvatarIcon) defaultAvatarIcon.style.display = 'none';
+    } else {
+        if (userPhotoImg) userPhotoImg.style.display = 'none';
+        if (defaultAvatarIcon) defaultAvatarIcon.style.display = 'block';
     }
 
-    const levelTitleEl = document.getElementById('insigniaCurrentLevelTitle');
-    if (levelTitleEl) levelTitleEl.textContent = `Nivel: ${currentLevelName}`;
+    // 3. Segmented Progress Bar Calculation
+    let minPts = 0;
+    let maxPts = 100;
+    let nextBadgeName = 'Lector Bronce';
 
-    const percent = Math.min(100, Math.round((userPoints / nextThreshold) * 100));
+    if (userPoints >= 600) {
+        minPts = 600; maxPts = 600; nextBadgeName = 'Máximo Nivel';
+    } else if (userPoints >= 500) {
+        minPts = 500; maxPts = 600; nextBadgeName = 'Lector Diamante II';
+    } else if (userPoints >= 400) {
+        minPts = 400; maxPts = 500; nextBadgeName = 'Lector Diamante I';
+    } else if (userPoints >= 250) {
+        minPts = 250; maxPts = 400; nextBadgeName = 'Lector Esmeralda';
+    } else if (userPoints >= 100) {
+        minPts = 100; maxPts = 250; nextBadgeName = 'Lector Oro';
+    } else {
+        minPts = 0; maxPts = 100; nextBadgeName = 'Lector Bronce';
+    }
+
+    let percent = 0;
+    if (userPoints >= 600) {
+        percent = 100;
+    } else {
+        const range = maxPts - minPts;
+        const currentInSegment = userPoints - minPts;
+        percent = Math.min(100, Math.max(0, Math.round((currentInSegment / range) * 100)));
+    }
+
     const fillEl = document.getElementById('insigniaProgressBarFill');
     if (fillEl) fillEl.style.width = `${percent}%`;
 
@@ -923,10 +939,59 @@ function updateInsigniasProgressUI() {
         if (userPoints >= 600) {
             labelEl.textContent = '¡Máximo Nivel Alcanzado!';
         } else {
-            labelEl.textContent = `Progreso hacia ${getBadgeNameByThreshold(nextThreshold)}`;
+            labelEl.textContent = `Progreso a ${nextBadgeName} (${maxPts} Pts)`;
         }
     }
 
+    // 4. Left Side Insignia Display (Obtained Badge or Dashed Silhouette)
+    const currentBadgeBox = document.getElementById('insigniaCurrentBadgeBox');
+    if (currentBadgeBox) {
+        if (userPoints < 100) {
+            currentBadgeBox.innerHTML = `
+                <div class="insignia-dashed-box">
+                    <i class="fa-solid fa-ribbon dashed-icon"></i>
+                    <span class="insignia-label-title">Sin insignia obtenida</span>
+                </div>
+            `;
+        } else if (userPoints >= 600) {
+            currentBadgeBox.innerHTML = `
+                <div class="insignia-obtained-box">
+                    <i class="fa-solid fa-crown" style="color: #8b5cf6;"></i>
+                    <span class="insignia-label-title">Insignia Diamante II</span>
+                </div>
+            `;
+        } else if (userPoints >= 500) {
+            currentBadgeBox.innerHTML = `
+                <div class="insignia-obtained-box">
+                    <i class="fa-solid fa-gem" style="color: #3b82f6;"></i>
+                    <span class="insignia-label-title">Insignia Diamante I</span>
+                </div>
+            `;
+        } else if (userPoints >= 400) {
+            currentBadgeBox.innerHTML = `
+                <div class="insignia-obtained-box">
+                    <i class="fa-solid fa-gem" style="color: #10b981;"></i>
+                    <span class="insignia-label-title">Insignia Esmeralda</span>
+                </div>
+            `;
+        } else if (userPoints >= 250) {
+            currentBadgeBox.innerHTML = `
+                <div class="insignia-obtained-box">
+                    <i class="fa-solid fa-award" style="color: #f59e0b;"></i>
+                    <span class="insignia-label-title">Insignia Oro</span>
+                </div>
+            `;
+        } else if (userPoints >= 100) {
+            currentBadgeBox.innerHTML = `
+                <div class="insignia-obtained-box">
+                    <i class="fa-solid fa-medal" style="color: #cd7f32;"></i>
+                    <span class="insignia-label-title">Insignia Bronce</span>
+                </div>
+            `;
+        }
+    }
+
+    // 5. Detailed Badges List States
     setBadgeState('badge-bronce', userPoints >= 100, '100 Pts');
     setBadgeState('badge-oro', userPoints >= 250, '250 Pts');
     setBadgeState('badge-esmeralda', userPoints >= 400, '400 Pts');
