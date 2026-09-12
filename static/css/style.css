@@ -648,43 +648,43 @@ body.dark-mode .modal-box {
     transform: translateY(0);
 }
 
-/* POP-UP CENTRADO EN EL MEDIO DE LA PANTALLA (CUENTA REQUERIDA) */
-#modalAuthRequired {
-    z-index: 3000 !important; /* SUPERPONE CON TOTAL PRIORIDAD SOBRE CUALQUIER MODAL */
+/* POP-UP CENTRADO EN EL MEDIO DE LA PANTALLA (CUENTA REQUERIDA, LOGIN Y REGISTRO) */
+#modalAuthRequired,
+#modalLogin,
+#modalRegistro {
+    z-index: 3100 !important;
     align-items: center !important;
+    justify-content: center !important;
     background-color: rgba(15, 8, 12, 0.75) !important;
     backdrop-filter: blur(10px) !important;
 }
 
-#modalAuthRequired .modal-box {
+#modalAuthRequired .modal-box,
+#modalLogin .modal-box,
+#modalRegistro .modal-box {
     border-radius: 28px !important;
-    max-width: 360px !important;
+    max-width: 380px !important;
+    width: 90% !important;
     margin: auto !important;
-    padding: 28px 22px !important;
-    transform: scale(0.85) !important;
+    padding: 24px 20px !important;
+    transform: scale(0.9) !important;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
     border: 2px solid #EFA9BE;
+    max-height: 85vh !important;
 }
 
-body.dark-mode #modalAuthRequired .modal-box {
+body.dark-mode #modalAuthRequired .modal-box,
+body.dark-mode #modalLogin .modal-box,
+body.dark-mode #modalRegistro .modal-box {
     border-color: #542b49;
+    background-color: #24141f;
 }
 
-#modalAuthRequired.active .modal-box {
+#modalAuthRequired.active .modal-box,
+#modalLogin.active .modal-box,
+#modalRegistro.active .modal-box {
     transform: scale(1) !important;
-}
-
-#modalLogin {
-    z-index: 3100 !important;
-    align-items: center !important;
-}
-
-#modalLogin .modal-box {
-    border-radius: 28px !important;
-    max-width: 380px !important;
-    margin: auto !important;
-    border: 2px solid #EFA9BE;
 }
 
 .modal-close {
