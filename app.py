@@ -7,28 +7,14 @@ from psycopg2 import pool
 app = Flask(__name__)
 CORS(app)
 
-DB_URI = "postgresql://postgres.tovcoonzsecnnpnoekzw:Vesv050423..@aws-0-us-west-2.pooler.supabase.com:6543/postgres"
-
-db_pool = None
+DB_URI = "postgresql://postgres.tovcoonzsecnnpnoekzw:Vesv050423..@aws-0-us-west-2.pooler.supabase.com:6543/postgres?sslmode=require&connect_timeout=10"
 
 def get_db_connection():
-    global db_pool
-    if db_pool is None or db_pool.closed:
-        try:
-            db_pool = pool.ThreadedConnectionPool(1, 5, DB_URI)
-        except Exception as pool_err:
-            print("[POOL ERR]", pool_err)
-            return psycopg2.connect(DB_URI)
-    try:
-        return db_pool.getconn()
-    except Exception:
-        return psycopg2.connect(DB_URI)
+    return psycopg2.connect(DB_URI)
 
 def release_db_connection(conn):
     try:
-        if db_pool and conn:
-            db_pool.putconn(conn)
-        elif conn:
+        if conn:
             conn.close()
     except Exception:
         pass
@@ -36,6 +22,10 @@ def release_db_connection(conn):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/ping', methods=['GET'])
+def ping():
+    return jsonify({"status": "ok", "message": "Bibliotec backend is online"})
 
 @app.route('/api/stats', methods=['GET'])
 def get_stats():
