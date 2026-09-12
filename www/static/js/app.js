@@ -1009,6 +1009,9 @@ function updateInsigniasProgressUI() {
     const userLoans = currentUser ? (currentUser.total_prestamos || 0) : 0;
     setBadgeState('badge-evento1', userEvents >= 1, '1 Evento');
     setBadgeState('badge-lector-frecuente', userLoans >= 5, '5 Préstamos');
+
+    const cumplidorLvl = readingGoalData ? (readingGoalData.cumplidorLevel || 0) : 0;
+    setBadgeState('badge-cumplidor1', cumplidorLvl >= 1, '1 Meta Cumplida');
 }
 
 function getBadgeNameByThreshold(pts) {
@@ -1084,15 +1087,32 @@ function switchGamificationTab(tabName) {
     }
 }
 
-// 8. Módulo de Metas de Lectura (Medialuna SVG + Métricas)
+// 8. Módulo de Metas de Lectura (Medialuna SVG + Métricas con Bloqueo de 1 Mes)
 let readingGoalData = JSON.parse(localStorage.getItem('bibliotec_user_goals')) || {
     period: 'mensual',
     target: 30,
-    read: 0
+    read: 0,
+    startDate: null,
+    endDate: null,
+    isLocked: false,
+    cumplidorLevel: 0
 };
 
 function saveReadingGoalData() {
     localStorage.setItem('bibliotec_user_goals', JSON.stringify(readingGoalData));
+}
+
+function ensureMonthlyGoalDates() {
+    if (!readingGoalData.startDate || !readingGoalData.endDate) {
+        const now = new Date();
+        readingGoalData.startDate = now.toISOString();
+        
+        let end = new Date(now);
+        end.setMonth(end.getMonth() + 1);
+        readingGoalData.endDate = end.toISOString();
+        readingGoalData.isLocked = true;
+        saveReadingGoalData();
+    }
 }
 
 function setGoalPeriod(period) {
@@ -1114,6 +1134,11 @@ function setGoalPeriod(period) {
 }
 
 function adjustGoalTarget(delta) {
+    ensureMonthlyGoalDates();
+    if (readingGoalData.isLocked) {
+        alert("🔒 La meta mensual está congelada por 1 mes y no se puede modificar durante el reto activo.");
+        return;
+    }
     readingGoalData.target = Math.max(1, (parseInt(readingGoalData.target) || 30) + delta);
     saveReadingGoalData();
     const inputEl = document.getElementById('inputGoalTarget');
@@ -1122,6 +1147,13 @@ function adjustGoalTarget(delta) {
 }
 
 function onGoalTargetInputChange() {
+    ensureMonthlyGoalDates();
+    if (readingGoalData.isLocked) {
+        alert("🔒 La meta mensual está congelada por 1 mes y no se puede modificar durante el reto activo.");
+        const inputEl = document.getElementById('inputGoalTarget');
+        if (inputEl) inputEl.value = readingGoalData.target;
+        return;
+    }
     const inputEl = document.getElementById('inputGoalTarget');
     if (inputEl) {
         let val = parseInt(inputEl.value) || 1;
@@ -1132,17 +1164,67 @@ function onGoalTargetInputChange() {
 }
 
 function adjustGoalRead(delta) {
+    if (delta < 0 && readingGoalData.isLocked) {
+        alert("🔒 No puedes restar libros leídos durante un reto activo.");
+        return;
+    }
     readingGoalData.read = Math.max(0, (parseInt(readingGoalData.read) || 0) + delta);
     saveReadingGoalData();
     updateReadingGoalsUI();
 }
 
 function updateReadingGoalsUI() {
+    ensureMonthlyGoalDates();
+
+    const now = new Date();
+    const endDate = new Date(readingGoalData.endDate);
+
+    // Month Expiration Check!
+    if (now >= endDate && readingGoalData.isLocked) {
+        const achieved = readingGoalData.read >= readingGoalData.target;
+        if (achieved) {
+            readingGoalData.cumplidorLevel = (readingGoalData.cumplidorLevel || 0) + 1;
+            saveReadingGoalData();
+            alert(`🎉 ¡FELICIDADES!\n¡Completaste tu Reto Mensual de Lectura! Leíste ${readingGoalData.read} de ${readingGoalData.target} libros.\nHas obtenido la "Insignia Cumplidor Nivel 1".`);
+        } else {
+            alert(`⏰ RETO MENSUAL CONCLUIDO\nTranscurrió exactamente 1 mes. Leíste ${readingGoalData.read} de ${readingGoalData.target} libros.\nNo alcanzaste la meta esta vez, el reto se reinicia para tu nuevo intento.`);
+        }
+
+        // Reset for new cycle
+        readingGoalData.read = 0;
+        const newNow = new Date();
+        readingGoalData.startDate = newNow.toISOString();
+        let newEnd = new Date(newNow);
+        newEnd.setMonth(newEnd.getMonth() + 1);
+        readingGoalData.endDate = newEnd.toISOString();
+        readingGoalData.isLocked = true;
+        saveReadingGoalData();
+    }
+
     const target = readingGoalData.target || 30;
     const read = readingGoalData.read || 0;
     const period = readingGoalData.period || 'mensual';
 
     const percent = Math.min(100, Math.round((read / target) * 100));
+
+    // Lock Display & Banner Updates
+    const lockSubtext = document.getElementById('monthlyLockSubtext');
+    const lockBadge = document.getElementById('monthlyLockStatusBadge');
+    const inputTarget = document.getElementById('inputGoalTarget');
+
+    if (readingGoalData.startDate && readingGoalData.endDate) {
+        const startStr = new Date(readingGoalData.startDate).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+        const endStr = new Date(readingGoalData.endDate).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+        if (lockSubtext) lockSubtext.textContent = `Iniciado: ${startStr} — Concluye: ${endStr}`;
+    }
+
+    if (readingGoalData.isLocked) {
+        if (inputTarget) inputTarget.disabled = true;
+        if (lockBadge) lockBadge.innerHTML = '🔒 Meta Fija por 1 Mes';
+    } else {
+        if (inputTarget) inputTarget.disabled = false;
+        if (lockBadge) lockBadge.innerHTML = '🔓 Meta Configurable';
+    }
 
     // Update SVG Half-Circle Arc ("Medialuna")
     const gaugeFill = document.getElementById('readingGoalGaugeFill');
@@ -1159,7 +1241,6 @@ function updateReadingGoalsUI() {
     if (statusText) statusText.textContent = `${read} de ${target} libros leídos este ${period}`;
 
     // Update Controls Display
-    const inputTarget = document.getElementById('inputGoalTarget');
     if (inputTarget) inputTarget.value = target;
 
     const displayRead = document.getElementById('displayGoalRead');

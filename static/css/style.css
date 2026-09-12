@@ -2120,3 +2120,53 @@ body.dark-mode .read-book-preview-card {
     font-size: 26px;
     color: #64748b;
 }
+
+.badge-icon-circle.cumplidor-1 { background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%); color: #ffffff; }
+
+/* MONTHLY GOAL LOCK BANNER */
+.monthly-lock-card {
+    background: rgba(234, 179, 8, 0.15);
+    border: 1px solid rgba(234, 179, 8, 0.4);
+    border-radius: 16px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.lock-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lock-icon {
+    font-size: 20px;
+    color: #facc15;
+}
+
+.lock-card-header h5 {
+    font-size: 13px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 2px;
+}
+
+.lock-card-header p {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+.lock-badge-status {
+    background: rgba(234, 179, 8, 0.3);
+    color: #fef08a;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+}

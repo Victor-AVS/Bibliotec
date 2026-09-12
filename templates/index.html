@@ -715,12 +715,35 @@
                                     <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 5 Préstamos</span>
                                 </div>
                             </div>
+
+                            <div class="badge-card locked" id="badge-cumplidor1">
+                                <div class="badge-icon-circle cumplidor-1">
+                                    <i class="fa-solid fa-crown"></i>
+                                </div>
+                                <div class="badge-card-info">
+                                    <h5>Cumplidor Nivel 1</h5>
+                                    <p>Completar 1 Meta Mensual</p>
+                                    <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 1 Meta Cumplida</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- PESTAÑA 2: METAS DE LECTURA (MEDIALUNA SVG + MÉTRICAS) -->
-                <div id="tabContentMetas" style="display: none;">
+                <div id="tabContentMetas" style="display: block;">
+                    
+                    <!-- BANNER DE CANDADO Y VIGENCIA DEL RETO MENSUAL (1 MES ESTRICTO) -->
+                    <div class="monthly-lock-card" id="monthlyGoalLockBanner">
+                        <div class="lock-card-header">
+                            <i class="fa-solid fa-lock lock-icon"></i>
+                            <div>
+                                <h5 id="monthlyLockTitle">Reto Mensual Activo (1 Mes)</h5>
+                                <p id="monthlyLockSubtext">Iniciado: -- — Concluye: --</p>
+                            </div>
+                        </div>
+                        <span class="lock-badge-status" id="monthlyLockStatusBadge">🔒 Objetivo Bloqueado</span>
+                    </div>
                     
                     <!-- MEDIDOR MEDIALUNA SVG -->
                     <div class="goals-gauge-card">
