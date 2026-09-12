@@ -3,7 +3,7 @@ const getApiBaseUrl = () => {
     if (window.location.protocol === 'capacitor:' || window.location.protocol === 'file:' || (window.location.hostname === 'localhost' && window.location.port !== '5000')) {
         const customUrl = localStorage.getItem('bibliotec_server_url');
         if (customUrl) return customUrl.replace(/\/+$/, '');
-        return 'http://192.168.100.134:5000';
+        return 'https://bibliotec-z6in.onrender.com';
     }
     return '';
 };
@@ -13,7 +13,7 @@ let API_BASE_URL = getApiBaseUrl();
 function initServerIpUI() {
     const input = document.getElementById('serverIpInput');
     if (input) {
-        input.value = API_BASE_URL || 'http://192.168.100.134:5000';
+        input.value = API_BASE_URL || 'https://bibliotec-z6in.onrender.com';
     }
 }
 
@@ -23,15 +23,15 @@ function saveServerUrlSetting() {
 
     let val = input.value.trim();
     if (!val) {
-        val = 'http://192.168.100.134:5000';
+        val = 'https://bibliotec-z6in.onrender.com';
     }
     if (!val.startsWith('http://') && !val.startsWith('https://')) {
-        val = 'http://' + val;
+        val = 'https://' + val;
     }
     val = val.replace(/\/+$/, '');
     localStorage.setItem('bibliotec_server_url', val);
     API_BASE_URL = val;
-    alert(`✅ IP del servidor actualizada a: ${val}\nReintentando conexión...`);
+    alert(`✅ URL del servidor actualizada a: ${val}\nReintentando conexión...`);
     loadStats();
     loadEventos();
     loadLibros();
@@ -267,10 +267,26 @@ function updateStarPickerVisual(val) {
     });
 }
 
+// FETCH CON REINTENTO AUTOMÁTICO PARA DESPERTAR EL SERVIDOR EN LA NUBE (RENDER COLD START)
+async function fetchWithRetry(url, options = {}, retries = 6, delayMs = 2500) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(url, options);
+            if (response.ok) return response;
+        } catch (err) {
+            console.log(`[API RETRY ${i + 1}/${retries}] Conectando con servidor en la nube...`);
+        }
+        if (i < retries - 1) {
+            await new Promise(resolve => setTimeout(resolve, delayMs));
+        }
+    }
+    return await fetch(url, options);
+}
+
 // FETCH STATS
 async function loadStats() {
     try {
-        const res = await fetch(`${API_BASE_URL}/api/stats`);
+        const res = await fetchWithRetry(`${API_BASE_URL}/api/stats`);
         const data = await res.json();
         if (data.success) {
             const counterEl = document.getElementById('catalogCounter');
@@ -284,7 +300,7 @@ async function loadStats() {
 // FETCH CAROUSEL EVENTOS (Cambio automático cada 7 segundos)
 async function loadEventos() {
     try {
-        const res = await fetch(`${API_BASE_URL}/api/eventos`);
+        const res = await fetchWithRetry(`${API_BASE_URL}/api/eventos`);
         const data = await res.json();
         if (data.success && data.eventos.length > 0) {
             eventosList = data.eventos;
@@ -334,15 +350,16 @@ function startCarouselTimer() {
 async function loadLibros() {
     const bookListEl = document.getElementById('bookList');
     bookListEl.innerHTML = `
-        <div style="text-align: center; padding: 30px; color: #64748b;">
-            <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px;"></i>
-            <p style="margin-top: 8px; font-size: 13px;">Cargando catálogo en biblioteca...</p>
+        <div style="text-align: center; padding: 40px 20px; color: #6B4035;">
+            <i class="fa-solid fa-cloud-arrow-up fa-bounce" style="font-size: 32px; color: #D77A9B; margin-bottom: 12px;"></i>
+            <h4 style="font-size: 14px; font-weight: 800; color: #6B4035;">Conectando con la Nube...</h4>
+            <p style="margin-top: 4px; font-size: 11px; color: #A97862;">Despertando servidores 24/7 de Bibliotec</p>
         </div>
     `;
 
     try {
         const url = `${API_BASE_URL}/api/libros?q=${encodeURIComponent(searchQuery)}&categoria=${encodeURIComponent(currentCategory)}`;
-        const res = await fetch(url);
+        const res = await fetchWithRetry(url);
         const data = await res.json();
 
         if (data.success) {
@@ -354,7 +371,15 @@ async function loadLibros() {
         }
     } catch (err) {
         console.error("Error cargando libros:", err);
-        bookListEl.innerHTML = `<p style="text-align:center; color: #ef4444; padding: 20px;">Error de conexión con el servidor.</p>`;
+        bookListEl.innerHTML = `
+            <div style="text-align: center; padding: 30px; color: #991b1b;">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 28px; margin-bottom: 8px;"></i>
+                <p style="font-size: 13px; font-weight: 700;">No se pudo conectar al servidor en la nube.</p>
+                <button class="btn-secondary btn-sm" onclick="loadLibros()" style="margin-top: 12px; font-size: 12px;">
+                    <i class="fa-solid fa-rotate-right"></i> Reintentar Conexión
+                </button>
+            </div>
+        `;
     }
 }
 

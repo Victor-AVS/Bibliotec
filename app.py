@@ -11,20 +11,27 @@ DB_URI = "postgresql://postgres.tovcoonzsecnnpnoekzw:Vesv050423..@aws-0-us-west-
 
 db_pool = None
 
-def init_pool():
+def get_db_connection():
     global db_pool
     if db_pool is None or db_pool.closed:
-        db_pool = pool.ThreadedConnectionPool(1, 10, DB_URI)
-
-init_pool()
-
-def get_db_connection():
-    init_pool()
-    return db_pool.getconn()
+        try:
+            db_pool = pool.ThreadedConnectionPool(1, 5, DB_URI)
+        except Exception as pool_err:
+            print("[POOL ERR]", pool_err)
+            return psycopg2.connect(DB_URI)
+    try:
+        return db_pool.getconn()
+    except Exception:
+        return psycopg2.connect(DB_URI)
 
 def release_db_connection(conn):
-    if db_pool and conn:
-        db_pool.putconn(conn)
+    try:
+        if db_pool and conn:
+            db_pool.putconn(conn)
+        elif conn:
+            conn.close()
+    except Exception:
+        pass
 
 @app.route('/')
 def index():
