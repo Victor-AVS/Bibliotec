@@ -1,8 +1,18 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
-import psycopg2
-import psycopg2.extras
-from psycopg2 import pool
+
+PSYCOPG_VER = 0
+try:
+    import psycopg
+    from psycopg.rows import dict_row
+    PSYCOPG_VER = 3
+except Exception:
+    try:
+        import psycopg2
+        import psycopg2.extras
+        PSYCOPG_VER = 2
+    except Exception:
+        pass
 
 app = Flask(__name__)
 CORS(app)
@@ -10,7 +20,18 @@ CORS(app)
 DB_URI = "postgresql://postgres.tovcoonzsecnnpnoekzw:Vesv050423..@aws-0-us-west-2.pooler.supabase.com:6543/postgres?sslmode=require&connect_timeout=10"
 
 def get_db_connection():
-    return psycopg2.connect(DB_URI)
+    if PSYCOPG_VER == 3:
+        return psycopg.connect(DB_URI)
+    elif PSYCOPG_VER == 2:
+        return psycopg2.connect(DB_URI)
+    else:
+        raise RuntimeError("Neither psycopg nor psycopg2 could be loaded.")
+
+def get_cursor(conn):
+    if PSYCOPG_VER == 3:
+        return conn.cursor(row_factory=dict_row)
+    else:
+        return conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 def release_db_connection(conn):
     try:
@@ -25,12 +46,12 @@ def index():
 
 @app.route('/ping', methods=['GET'])
 def ping():
-    return jsonify({"status": "ok", "message": "Bibliotec backend is online"})
+    return jsonify({"status": "ok", "message": "Bibliotec backend is online", "driver": f"psycopg_v{PSYCOPG_VER}"})
 
 @app.route('/api/stats', methods=['GET'])
 def get_stats():
     conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cursor = get_cursor(conn)
     try:
         cursor.execute("SELECT COUNT(*) as total_libros, SUM(stock_disponible) as total_disponibles FROM libro;")
         res = cursor.fetchone()
@@ -48,7 +69,7 @@ def get_stats():
 @app.route('/api/eventos', methods=['GET'])
 def get_eventos():
     conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cursor = get_cursor(conn)
     try:
         cursor.execute("""
             SELECT id_evento, titulo, descripcion, imagen_url, fecha_inicio, fecha_fin
@@ -67,7 +88,7 @@ def get_eventos():
 @app.route('/api/categorias', methods=['GET'])
 def get_categorias():
     conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cursor = get_cursor(conn)
     try:
         cursor.execute("SELECT id_categoria, categoria FROM categoria ORDER BY id_categoria ASC;")
         categorias = cursor.fetchall()
@@ -85,7 +106,7 @@ def get_libros():
     limit = request.args.get('limit', 20, type=int)
 
     conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cursor = get_cursor(conn)
     try:
         sql = """
             SELECT 
@@ -139,7 +160,7 @@ def get_libros():
 @app.route('/api/libros/<int:id_libro>/resenas', methods=['GET'])
 def get_resenas_libro(id_libro):
     conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cursor = get_cursor(conn)
     try:
         cursor.execute("""
             SELECT 
@@ -172,7 +193,7 @@ def agregar_wishlist():
         return jsonify({"success": False, "mensaje": "Usuario y libro requeridos."}), 400
 
     conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cursor = get_cursor(conn)
     try:
         cursor.execute("""
             INSERT INTO lista_deseos (id_usuario, id_libro)
@@ -195,7 +216,7 @@ def agregar_wishlist():
 @app.route('/api/wishlist/<int:id_usuario>', methods=['GET'])
 def get_wishlist(id_usuario):
     conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cursor = get_cursor(conn)
     try:
         cursor.execute("""
             SELECT l.id_libro, l.titulo, l.portada_url, c.categoria, ld.fecha_agregado
@@ -224,7 +245,7 @@ def calificar_libro(id_libro):
         return jsonify({"success": False, "mensaje": "La calificación debe estar entre 1 y 5 estrellas."}), 400
 
     conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cursor = get_cursor(conn)
     try:
         cursor.execute("""
             INSERT INTO resena_libro (id_usuario, id_libro, calificacion, comentario)
@@ -261,7 +282,7 @@ def login_usuario():
         return jsonify({"success": False, "mensaje": "Correo y contraseña requeridos."}), 400
 
     conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cursor = get_cursor(conn)
     try:
         cursor.execute("""
             SELECT 
@@ -306,7 +327,7 @@ def registro_usuario():
         return jsonify({"success": False, "mensaje": "La contraseña debe tener al menos 8 caracteres."}), 400
 
     conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cursor = get_cursor(conn)
     try:
         cursor.execute("""
             INSERT INTO persona (nombre, a_paterno, a_materno, correo, correo_respaldo, telefono, contrasena)
