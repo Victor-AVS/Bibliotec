@@ -97,13 +97,16 @@ function updateUserUI() {
         if (loggedView) loggedView.style.display = 'block';
         if (navLabel) navLabel.textContent = currentUser.nombre.split(' ')[0];
 
+        const aMaterno = currentUser.a_materno ? ` ${currentUser.a_materno}` : '';
+        const fullName = `${currentUser.nombre} ${currentUser.a_paterno}${aMaterno}`;
+
         // Credencial Digital
-        document.getElementById('idNombre').textContent = `${currentUser.nombre} ${currentUser.a_paterno}`;
+        document.getElementById('idNombre').textContent = fullName;
         document.getElementById('idMatricula').textContent = currentUser.matricula;
         document.getElementById('idCorreo').textContent = currentUser.correo;
 
         // Vista Perfil
-        document.getElementById('profileName').textContent = `${currentUser.nombre} ${currentUser.a_paterno}`;
+        document.getElementById('profileName').textContent = fullName;
         document.getElementById('profileCorreo').textContent = currentUser.correo;
         document.getElementById('profileMatricula').textContent = `Matrícula: ${currentUser.matricula}`;
 
@@ -112,6 +115,25 @@ function updateUserUI() {
         if (guestView) guestView.style.display = 'block';
         if (loggedView) loggedView.style.display = 'none';
         if (navLabel) navLabel.textContent = 'Cuenta';
+        showAuthView('choice');
+    }
+}
+
+function showAuthView(viewName) {
+    const choiceView = document.getElementById('authChoiceView');
+    const loginView = document.getElementById('authLoginView');
+    const registerView = document.getElementById('authRegisterView');
+
+    if (choiceView) choiceView.style.display = 'none';
+    if (loginView) loginView.style.display = 'none';
+    if (registerView) registerView.style.display = 'none';
+
+    if (viewName === 'login') {
+        if (loginView) loginView.style.display = 'block';
+    } else if (viewName === 'register') {
+        if (registerView) registerView.style.display = 'block';
+    } else {
+        if (choiceView) choiceView.style.display = 'block';
     }
 }
 
@@ -124,17 +146,15 @@ function handleAuthProtectedAction(callback) {
 }
 
 function openAuthRequiredModal() {
-    document.getElementById('modalAuthRequired').classList.add('active');
+    openPerfilModal('choice');
 }
 
 function openLoginModalFromAuth() {
-    closeModal('modalAuthRequired');
-    document.getElementById('modalLogin').classList.add('active');
+    openPerfilModal('login');
 }
 
 function openRegisterModalFromAuth() {
-    closeModal('modalAuthRequired');
-    openPerfilModal();
+    openPerfilModal('register');
 }
 
 // LOGIN SUBMIT
@@ -657,9 +677,11 @@ function openInsigniasModal() {
     document.getElementById('modalInsignias').classList.add('active');
 }
 
-function openPerfilModal() {
+function openPerfilModal(defaultView = 'choice') {
     if (isLoggedIn()) {
         loadUserWishlist();
+    } else {
+        showAuthView(defaultView);
     }
     document.getElementById('modalPerfil').classList.add('active');
 }
@@ -674,13 +696,14 @@ async function handleRegistro(event) {
     const resBox = document.getElementById('registroResultado');
 
     const body = {
-        nombre: document.getElementById('regNombre').value,
-        a_paterno: document.getElementById('regPaterno').value,
-        correo: document.getElementById('regCorreo').value,
-        correo_respaldo: document.getElementById('regRespaldo').value,
-        matricula: document.getElementById('regMatricula').value,
-        telefono: document.getElementById('regTelefono').value,
-        contrasena: document.getElementById('regPass').value
+        nombre: document.getElementById('regNombre').value.trim(),
+        a_paterno: document.getElementById('regPaterno').value.trim(),
+        a_materno: document.getElementById('regMaterno') ? document.getElementById('regMaterno').value.trim() : '',
+        correo: document.getElementById('regCorreo').value.trim(),
+        correo_respaldo: document.getElementById('regRespaldo').value.trim(),
+        matricula: document.getElementById('regMatricula').value.trim(),
+        telefono: document.getElementById('regTelefono').value.trim(),
+        contrasena: document.getElementById('regPass').value.trim()
     };
 
     try {

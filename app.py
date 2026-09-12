@@ -414,6 +414,7 @@ def registro_usuario():
             "id_usuario": u_data['id_usuario'],
             "nombre": nombre,
             "a_paterno": a_paterno,
+            "a_materno": a_materno,
             "correo": correo,
             "correo_respaldo": correo_respaldo,
             "matricula": matricula,

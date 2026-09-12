@@ -369,43 +369,94 @@
                 </div>
 
                 <div id="userGuestView">
-                    <form id="formRegistro" onsubmit="handleRegistro(event)">
-                        <div class="input-group">
-                            <label>Nombre(s):</label>
-                            <input type="text" id="regNombre" required placeholder="Carlos">
+                    <!-- SELECCIÓN INICIAL DE ACCESO -->
+                    <div id="authChoiceView" style="text-align: center; padding: 10px 0;">
+                        <div style="font-size: 42px; color: #D77A9B; margin-bottom: 10px;">
+                            <i class="fa-solid fa-user-lock"></i>
                         </div>
-                        <div class="input-group">
-                            <label>Apellido Paterno:</label>
-                            <input type="text" id="regPaterno" required placeholder="Maldonado">
-                        </div>
-                        <div class="input-group">
-                            <label>Correo Institucional (@teschi.edu.mx):</label>
-                            <input type="email" id="regCorreo" required placeholder="2023452074@teschi.edu.mx">
-                        </div>
-                        <div class="input-group">
-                            <label>Correo de Respaldo (Gmail/Outlook):</label>
-                            <input type="email" id="regRespaldo" placeholder="carlos.personal@gmail.com">
-                        </div>
-                        <div class="input-group">
-                            <label>Matrícula:</label>
-                            <input type="text" id="regMatricula" required placeholder="2023452074">
-                        </div>
-                        <div class="input-group">
-                            <label>Teléfono:</label>
-                            <input type="tel" id="regTelefono" required placeholder="5512345678">
-                        </div>
-                        <div class="input-group">
-                            <label>Contraseña (mínimo 8 caracteres):</label>
-                            <input type="password" id="regPass" required placeholder="••••••••">
-                        </div>
-                        <button type="submit" class="btn-primary mb-2">
-                            <i class="fa-solid fa-user-plus"></i> Registrarme Ahora
+                        <h4 style="font-weight: 800; color: #6B4035; margin-bottom: 6px;">Acceso a Bibliotec</h4>
+                        <p style="font-size: 13px; color: #A97862; margin-bottom: 20px;">
+                            Elige una opción para ingresar a tu cuenta institucional o registrarte como alumno.
+                        </p>
+                        <button type="button" class="btn-primary mb-2" onclick="showAuthView('login')">
+                            <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
                         </button>
-                        <button type="button" class="btn-secondary" onclick="openLoginModalFromAuth()">
-                            ¿Ya tienes cuenta? Iniciar Sesión
+                        <button type="button" class="btn-secondary" onclick="showAuthView('register')">
+                            <i class="fa-solid fa-user-plus"></i> Registrarse
                         </button>
-                    </form>
-                    <div id="registroResultado" class="result-alert" style="display: none;"></div>
+                    </div>
+
+                    <!-- VISTA FORMULARIO INICIAR SESIÓN -->
+                    <div id="authLoginView" style="display: none;">
+                        <h4 style="font-weight: 800; color: #6B4035; margin-bottom: 14px; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-right-to-bracket" style="color: #D77A9B;"></i> Iniciar Sesión
+                        </h4>
+                        <form id="formLogin" onsubmit="handleLogin(event)">
+                            <div class="input-group">
+                                <label>Correo Institucional (@teschi.edu.mx):</label>
+                                <input type="email" id="loginCorreo" required placeholder="2023452074@teschi.edu.mx">
+                            </div>
+                            <div class="input-group">
+                                <label>Contraseña:</label>
+                                <input type="password" id="loginPass" required placeholder="••••••••">
+                            </div>
+                            <button type="submit" class="btn-primary mb-2">
+                                <i class="fa-solid fa-right-to-bracket"></i> Entrar a mi Cuenta
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="showAuthView('register')">
+                                ¿No tienes cuenta? Registrarse
+                            </button>
+                        </form>
+                        <div id="loginResultado" class="result-alert" style="display: none; margin-top: 10px;"></div>
+                    </div>
+
+                    <!-- VISTA FORMULARIO REGISTRARSE -->
+                    <div id="authRegisterView" style="display: none;">
+                        <h4 style="font-weight: 800; color: #6B4035; margin-bottom: 14px; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-user-plus" style="color: #D77A9B;"></i> Registro de Alumno
+                        </h4>
+                        <form id="formRegistro" onsubmit="handleRegistro(event)">
+                            <div class="input-group">
+                                <label>Nombre(s):</label>
+                                <input type="text" id="regNombre" required placeholder="Carlos">
+                            </div>
+                            <div class="input-group">
+                                <label>Apellido Paterno:</label>
+                                <input type="text" id="regPaterno" required placeholder="Maldonado">
+                            </div>
+                            <div class="input-group">
+                                <label>Apellido Materno:</label>
+                                <input type="text" id="regMaterno" placeholder="Sánchez">
+                            </div>
+                            <div class="input-group">
+                                <label>Correo Institucional (@teschi.edu.mx):</label>
+                                <input type="email" id="regCorreo" required placeholder="2023452074@teschi.edu.mx">
+                            </div>
+                            <div class="input-group">
+                                <label>Correo de Respaldo (Gmail/Outlook):</label>
+                                <input type="email" id="regRespaldo" placeholder="carlos.personal@gmail.com">
+                            </div>
+                            <div class="input-group">
+                                <label>Matrícula:</label>
+                                <input type="text" id="regMatricula" required placeholder="2023452074">
+                            </div>
+                            <div class="input-group">
+                                <label>Teléfono:</label>
+                                <input type="tel" id="regTelefono" required placeholder="5512345678">
+                            </div>
+                            <div class="input-group">
+                                <label>Contraseña (mínimo 8 caracteres):</label>
+                                <input type="password" id="regPass" required placeholder="••••••••">
+                            </div>
+                            <button type="submit" class="btn-primary mb-2">
+                                <i class="fa-solid fa-user-plus"></i> Registrarme Ahora
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="showAuthView('login')">
+                                ¿Ya tienes cuenta? Iniciar Sesión
+                            </button>
+                        </form>
+                        <div id="registroResultado" class="result-alert" style="display: none; margin-top: 10px;"></div>
+                    </div>
                 </div>
 
                 <!-- CONFIGURACIÓN DE CONEXIÓN AL SERVIDOR (PARA APK MÓVIL) -->
