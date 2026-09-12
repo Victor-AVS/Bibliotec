@@ -1448,19 +1448,19 @@ body.dark-mode .header-page-title span {
     padding: 20px;
 }
 
-/* GAMIFICATION BANNER CARD */
+/* GAMIFICATION BANNER CARD (SEAMLESS INTEGRATED HEADER) */
 .gamification-banner-card {
-    background: linear-gradient(135deg, #6B4035 0%, #D77A9B 100%);
+    background: transparent;
     color: #ffffff;
-    border-radius: 24px;
-    padding: 16px 18px;
-    margin-bottom: 24px;
-    box-shadow: 0 10px 25px rgba(107, 64, 53, 0.3);
-    border: 1px solid #EFA9BE;
+    border-radius: 0;
+    padding: 10px 4px 20px 4px;
+    margin-bottom: 20px;
+    box-shadow: none;
+    border: none;
 }
 
 body.dark-mode .gamification-banner-card {
-    background: linear-gradient(135deg, #331b2c 0%, #A94F70 100%);
+    background: transparent;
 }
 
 .banner-flex-layout {
@@ -1545,7 +1545,7 @@ body.dark-mode .gamification-banner-card {
 }
 
 .banner-sub-label {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.5px;
     opacity: 0.85;
@@ -1553,15 +1553,15 @@ body.dark-mode .gamification-banner-card {
 }
 
 .banner-points-count {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 800;
     line-height: 1.1;
 }
 
 .avatar-ring-container {
     position: relative;
-    width: 68px;
-    height: 68px;
+    width: 110px;
+    height: 110px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1580,32 +1580,32 @@ body.dark-mode .gamification-banner-card {
 
 .avatar-progress-svg .ring-bg {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.25);
-    stroke-width: 6;
+    stroke: rgba(255, 255, 255, 0.2);
+    stroke-width: 10;
 }
 
 .avatar-progress-svg .ring-fill {
     fill: none;
     stroke: #fcd34d;
-    stroke-width: 6;
+    stroke-width: 10;
     stroke-linecap: round;
-    stroke-dasharray: 276.46;
-    stroke-dashoffset: 276.46;
+    stroke-dasharray: 257.61;
+    stroke-dashoffset: 257.61;
     transition: stroke-dashoffset 0.6s ease;
 }
 
 .banner-user-avatar-box {
-    width: 52px;
-    height: 52px;
+    width: 84px;
+    height: 84px;
     border-radius: 50%;
     overflow: hidden;
     background-color: #FCEEF3;
-    border: 2px solid #ffffff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 44px;
+    font-size: 70px;
     color: #D77A9B;
     flex-shrink: 0;
     z-index: 1;

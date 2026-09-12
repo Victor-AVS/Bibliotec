@@ -930,7 +930,7 @@ function updateInsigniasProgressUI() {
 
     const ringEl = document.getElementById('insigniaUserPhotoRing');
     if (ringEl) {
-        const circumference = 276.46;
+        const circumference = 257.61;
         const offset = circumference - (circumference * percent / 100);
         ringEl.style.strokeDashoffset = offset;
     }
