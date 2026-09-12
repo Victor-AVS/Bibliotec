@@ -7,7 +7,7 @@ from psycopg2 import pool
 app = Flask(__name__)
 CORS(app)
 
-DB_URI = "postgresql://postgres:Vesv050423..@db.tovcoonzsecnnpnoekzw.supabase.co:5432/postgres"
+DB_URI = "postgresql://postgres.tovcoonzsecnnpnoekzw:Vesv050423..@aws-0-us-west-2.pooler.supabase.com:6543/postgres"
 
 db_pool = None
 
