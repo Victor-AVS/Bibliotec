@@ -3,8 +3,7 @@
   "appName": "Bibliotec",
   "webDir": "www",
   "server": {
-    "url": "https://bibliotec-z6in.onrender.com",
-    "androidScheme": "https",
+    "androidScheme": "http",
     "cleartext": true
   },
   "plugins": {
