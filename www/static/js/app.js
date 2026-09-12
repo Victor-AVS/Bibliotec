@@ -871,3 +871,92 @@ async function handleRegistro(event) {
         }
     }
 }
+
+// FULLSCREEN INSIGNIAS & GAMIFICATION LOGIC
+function openInsigniasModal() {
+    const modal = document.getElementById('modalInsignias');
+    if (modal) {
+        modal.classList.add('active');
+        updateInsigniasProgressUI();
+    }
+}
+
+function updateInsigniasProgressUI() {
+    const userPoints = currentUser ? (currentUser.puntos || 0) : 0;
+    const userDonations = currentUser ? (currentUser.total_donaciones || 0) : 0;
+
+    const pointsEl = document.getElementById('insigniaTotalPoints');
+    if (pointsEl) pointsEl.textContent = `${userPoints} Pts`;
+
+    let nextThreshold = 100;
+    let currentLevelName = 'Lector Principiante';
+
+    if (userPoints >= 600) {
+        currentLevelName = 'Lector Diamante II 👑';
+        nextThreshold = 600;
+    } else if (userPoints >= 500) {
+        currentLevelName = 'Lector Diamante I 💎';
+        nextThreshold = 600;
+    } else if (userPoints >= 400) {
+        currentLevelName = 'Lector Esmeralda ❇️';
+        nextThreshold = 500;
+    } else if (userPoints >= 250) {
+        currentLevelName = 'Lector Oro 🥇';
+        nextThreshold = 400;
+    } else if (userPoints >= 100) {
+        currentLevelName = 'Lector Bronce 🥉';
+        nextThreshold = 250;
+    }
+
+    const levelTitleEl = document.getElementById('insigniaCurrentLevelTitle');
+    if (levelTitleEl) levelTitleEl.textContent = `Nivel: ${currentLevelName}`;
+
+    const percent = Math.min(100, Math.round((userPoints / nextThreshold) * 100));
+    const fillEl = document.getElementById('insigniaProgressBarFill');
+    if (fillEl) fillEl.style.width = `${percent}%`;
+
+    const percentEl = document.getElementById('insigniaProgressPercent');
+    if (percentEl) percentEl.textContent = `${percent}%`;
+
+    const labelEl = document.getElementById('insigniaProgressLabel');
+    if (labelEl) {
+        if (userPoints >= 600) {
+            labelEl.textContent = '¡Máximo Nivel Alcanzado!';
+        } else {
+            labelEl.textContent = `Progreso hacia ${getBadgeNameByThreshold(nextThreshold)}`;
+        }
+    }
+
+    setBadgeState('badge-bronce', userPoints >= 100, '100 Pts');
+    setBadgeState('badge-oro', userPoints >= 250, '250 Pts');
+    setBadgeState('badge-esmeralda', userPoints >= 400, '400 Pts');
+    setBadgeState('badge-diamante1', userPoints >= 500, '500 Pts');
+    setBadgeState('badge-diamante2', userPoints >= 600, '600 Pts');
+
+    setBadgeState('badge-donante1', userDonations >= 1, '1 Donación');
+    setBadgeState('badge-donante2', userDonations >= 3, '3 Donaciones');
+}
+
+function getBadgeNameByThreshold(pts) {
+    if (pts === 100) return 'Lector Bronce';
+    if (pts === 250) return 'Lector Oro';
+    if (pts === 400) return 'Lector Esmeralda';
+    if (pts === 500) return 'Lector Diamante I';
+    if (pts === 600) return 'Lector Diamante II';
+    return 'Siguiente Nivel';
+}
+
+function setBadgeState(cardId, isUnlocked, reqText) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    const tag = card.querySelector('.badge-status-tag');
+    if (isUnlocked) {
+        card.classList.remove('locked');
+        card.classList.add('unlocked');
+        if (tag) tag.innerHTML = '<i class="fa-solid fa-circle-check"></i> Desbloqueada';
+    } else {
+        card.classList.remove('unlocked');
+        card.classList.add('locked');
+        if (tag) tag.innerHTML = `<i class="fa-solid fa-lock"></i> ${reqText}`;
+    }
+}

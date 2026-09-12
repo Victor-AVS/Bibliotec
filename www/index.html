@@ -426,36 +426,142 @@
         </div>
     </div>
 
-    <!-- MODAL INSIGNIAS -->
-    <div class="modal-overlay" id="modalInsignias">
-        <div class="modal-box">
-            <button class="modal-close" onclick="closeModal('modalInsignias')">&times;</button>
-            <div class="modal-header">
-                <i class="fa-solid fa-trophy modal-icon"></i>
-                <h3>Gamificación e Insignias</h3>
-                <p>Gana puntos leyendo libros y realizando donaciones</p>
+    <!-- 4. PANTALLA COMPLETA: GAMIFICACIÓN E INSIGNIAS (FULLSCREEN OVERLAY) -->
+    <div class="modal-overlay modal-overlay-fullscreen" id="modalInsignias">
+        <div class="fullscreen-page-container">
+            <!-- HEADER DE PANTALLA COMPLETA -->
+            <div class="fullscreen-page-header">
+                <button class="header-back-btn" onclick="closeModal('modalInsignias')">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="header-page-title">
+                    <h3>Gamificación e Insignias</h3>
+                    <span>Sistema Institucional de Reconocimientos</span>
+                </div>
             </div>
-            <div class="modal-body badges-grid">
-                <div class="badge-item unlocked">
-                    <i class="fa-solid fa-medal bronze"></i>
-                    <h4>Lector Bronce</h4>
-                    <span>100 Puntos</span>
+
+            <!-- CONTENIDO SCROLLABLE DE PANTALLA COMPLETA -->
+            <div class="fullscreen-page-body">
+
+                <!-- TARJETA BANNER DE RESUMEN DE PUNTOS Y NIVEL -->
+                <div class="gamification-banner-card">
+                    <div class="banner-top">
+                        <div class="banner-user-info">
+                            <span class="banner-level-badge" id="insigniaCurrentLevelTitle">Nivel: Lector Principiante</span>
+                            <h2 class="banner-points-count" id="insigniaTotalPoints">0 Pts</h2>
+                        </div>
+                        <div class="banner-trophy-box">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                    </div>
+
+                    <!-- BARRA DE PROGRESO HACIA SIGUIENTE INSIGNIA -->
+                    <div class="banner-progress-box">
+                        <div class="progress-labels">
+                            <span id="insigniaProgressLabel">Progreso hacia Lector Bronce</span>
+                            <span id="insigniaProgressPercent">0%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="insigniaProgressBarFill" style="width: 0%;"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="badge-item unlocked">
-                    <i class="fa-solid fa-award gold"></i>
-                    <h4>Lector Oro</h4>
-                    <span>250 Puntos</span>
+
+                <!-- SECCIÓN 1: INSIGNIAS DE LECTURA -->
+                <div class="insignias-section">
+                    <div class="section-badge-header">
+                        <i class="fa-solid fa-book-open-reader"></i>
+                        <h4>Insignias de Lectura</h4>
+                    </div>
+                    <div class="badges-detailed-grid" id="gridInsigniasLectura">
+                        <div class="badge-card locked" id="badge-bronce">
+                            <div class="badge-icon-circle bronze">
+                                <i class="fa-solid fa-medal"></i>
+                            </div>
+                            <div class="badge-card-info">
+                                <h5>Lector Bronce</h5>
+                                <p>100 Puntos de Lectura</p>
+                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 100 Pts</span>
+                            </div>
+                        </div>
+
+                        <div class="badge-card locked" id="badge-oro">
+                            <div class="badge-icon-circle gold">
+                                <i class="fa-solid fa-award"></i>
+                            </div>
+                            <div class="badge-card-info">
+                                <h5>Lector Oro</h5>
+                                <p>250 Puntos de Lectura</p>
+                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 250 Pts</span>
+                            </div>
+                        </div>
+
+                        <div class="badge-card locked" id="badge-esmeralda">
+                            <div class="badge-icon-circle emerald">
+                                <i class="fa-solid fa-gem"></i>
+                            </div>
+                            <div class="badge-card-info">
+                                <h5>Lector Esmeralda</h5>
+                                <p>400 Puntos de Lectura</p>
+                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 400 Pts</span>
+                            </div>
+                        </div>
+
+                        <div class="badge-card locked" id="badge-diamante1">
+                            <div class="badge-icon-circle diamond">
+                                <i class="fa-solid fa-gem"></i>
+                            </div>
+                            <div class="badge-card-info">
+                                <h5>Lector Diamante I</h5>
+                                <p>500 Puntos de Lectura</p>
+                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 500 Pts</span>
+                            </div>
+                        </div>
+
+                        <div class="badge-card locked" id="badge-diamante2">
+                            <div class="badge-icon-circle diamond-glow">
+                                <i class="fa-solid fa-crown"></i>
+                            </div>
+                            <div class="badge-card-info">
+                                <h5>Lector Diamante II</h5>
+                                <p>600 Puntos de Lectura</p>
+                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 600 Pts</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="badge-item locked">
-                    <i class="fa-solid fa-gem emerald"></i>
-                    <h4>Lector Esmeralda</h4>
-                    <span>400 Puntos</span>
+
+                <!-- SECCIÓN 2: INSIGNIAS DE DONANTE -->
+                <div class="insignias-section" style="margin-top: 24px;">
+                    <div class="section-badge-header">
+                        <i class="fa-solid fa-hand-holding-heart"></i>
+                        <h4>Insignias de Donante</h4>
+                    </div>
+                    <div class="badges-detailed-grid" id="gridInsigniasDonante">
+                        <div class="badge-card locked" id="badge-donante1">
+                            <div class="badge-icon-circle donor-1">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                            <div class="badge-card-info">
+                                <h5>Donante Nivel 1</h5>
+                                <p>1 Libro Donado</p>
+                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 1 Donación</span>
+                            </div>
+                        </div>
+
+                        <div class="badge-card locked" id="badge-donante2">
+                            <div class="badge-icon-circle donor-2">
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                            <div class="badge-card-info">
+                                <h5>Donante Nivel 2</h5>
+                                <p>3 Libros Donados</p>
+                                <span class="badge-status-tag"><i class="fa-solid fa-lock"></i> 3 Donaciones</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="badge-item locked">
-                    <i class="fa-solid fa-gem diamond"></i>
-                    <h4>Lector Diamante I</h4>
-                    <span>500 Puntos</span>
-                </div>
+
             </div>
         </div>
     </div>
