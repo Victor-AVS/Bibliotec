@@ -146,15 +146,24 @@ function handleAuthProtectedAction(callback) {
 }
 
 function openAuthRequiredModal() {
-    openPerfilModal('choice');
+    closeModal('modalLogin');
+    closeModal('modalRegistro');
+    closeModal('modalPerfil');
+    document.getElementById('modalAuthRequired').classList.add('active');
 }
 
-function openLoginModalFromAuth() {
-    openPerfilModal('login');
+function openLoginModal() {
+    closeModal('modalAuthRequired');
+    closeModal('modalRegistro');
+    closeModal('modalPerfil');
+    document.getElementById('modalLogin').classList.add('active');
 }
 
-function openRegisterModalFromAuth() {
-    openPerfilModal('register');
+function openRegisterModal() {
+    closeModal('modalAuthRequired');
+    closeModal('modalLogin');
+    closeModal('modalPerfil');
+    document.getElementById('modalRegistro').classList.add('active');
 }
 
 // LOGIN SUBMIT
@@ -677,17 +686,18 @@ function openInsigniasModal() {
     document.getElementById('modalInsignias').classList.add('active');
 }
 
-function openPerfilModal(defaultView = 'choice') {
-    if (isLoggedIn()) {
-        loadUserWishlist();
-    } else {
-        showAuthView(defaultView);
+function openPerfilModal() {
+    if (!isLoggedIn()) {
+        openAuthRequiredModal();
+        return;
     }
+    loadUserWishlist();
     document.getElementById('modalPerfil').classList.add('active');
 }
 
 function closeModal(modalId) {
-    document.getElementById(modalId).classList.remove('active');
+    const el = document.getElementById(modalId);
+    if (el) el.classList.remove('active');
 }
 
 // REGISTRO FORM SUBMIT
@@ -725,7 +735,7 @@ async function handleRegistro(event) {
             updateUserUI();
 
             setTimeout(() => {
-                closeModal('modalPerfil');
+                closeModal('modalRegistro');
             }, 1000);
         } else {
             resBox.style.backgroundColor = '#fef2f2';
