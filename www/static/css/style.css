@@ -648,10 +648,11 @@ body.dark-mode .modal-box {
     transform: translateY(0);
 }
 
-/* POP-UP CENTRADO EN EL MEDIO DE LA PANTALLA (CUENTA REQUERIDA, LOGIN Y REGISTRO) */
+/* POP-UP CENTRADO EN EL MEDIO DE LA PANTALLA (CUENTA REQUERIDA, LOGIN, REGISTRO Y REGISTRO EXITOSO) */
 #modalAuthRequired,
 #modalLogin,
-#modalRegistro {
+#modalRegistro,
+#modalRegistroExito {
     z-index: 3100 !important;
     align-items: center !important;
     justify-content: center !important;
@@ -661,7 +662,8 @@ body.dark-mode .modal-box {
 
 #modalAuthRequired .modal-box,
 #modalLogin .modal-box,
-#modalRegistro .modal-box {
+#modalRegistro .modal-box,
+#modalRegistroExito .modal-box {
     border-radius: 28px !important;
     max-width: 380px !important;
     width: 90% !important;
@@ -676,14 +678,16 @@ body.dark-mode .modal-box {
 
 body.dark-mode #modalAuthRequired .modal-box,
 body.dark-mode #modalLogin .modal-box,
-body.dark-mode #modalRegistro .modal-box {
+body.dark-mode #modalRegistro .modal-box,
+body.dark-mode #modalRegistroExito .modal-box {
     border-color: #542b49;
     background-color: #24141f;
 }
 
 #modalAuthRequired.active .modal-box,
 #modalLogin.active .modal-box,
-#modalRegistro.active .modal-box {
+#modalRegistro.active .modal-box,
+#modalRegistroExito.active .modal-box {
     transform: scale(1) !important;
 }
 

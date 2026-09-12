@@ -221,6 +221,23 @@
                 <div id="registroResultado" class="result-alert" style="display: none; margin-top: 10px;"></div>
             </div>
         </div>
+    <!-- 3.5. POP-UP MODAL: REGISTRO EXITOSO -->
+    <div class="modal-overlay" id="modalRegistroExito">
+        <div class="modal-box" style="text-align: center;">
+            <button class="modal-close" onclick="closeRegisterSuccessModal()">&times;</button>
+            <div class="modal-header" style="margin-bottom: 12px;">
+                <div style="font-size: 58px; color: #22c55e; margin-bottom: 12px; display: flex; justify-content: center; align-items: center;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h3 style="font-size: 20px; font-weight: 800; color: #6B4035;">Registro finalizado correctamente</h3>
+                <p style="font-size: 13px; color: #A97862; margin-top: 6px;">¡Bienvenido a Bibliotec! Tu cuenta ha sido creada exitosamente.</p>
+            </div>
+            <div class="modal-body" style="padding-top: 10px;">
+                <button type="button" class="btn-primary" onclick="closeRegisterSuccessModal()">
+                    <i class="fa-solid fa-check"></i> Cerrar
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL DETALLE DEL LIBRO -->

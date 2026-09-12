@@ -724,10 +724,22 @@ function selectRegistrationRole(role) {
     }
 }
 
+function closeRegisterSuccessModal() {
+    closeModal('modalRegistroExito');
+    closeModal('modalRegistro');
+}
+
 // REGISTRO FORM SUBMIT
 async function handleRegistro(event) {
     event.preventDefault();
     const resBox = document.getElementById('registroResultado');
+    const form = document.getElementById('formRegistro');
+    const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registrando...';
+    }
 
     const body = {
         nombre: document.getElementById('regNombre').value.trim(),
@@ -749,28 +761,32 @@ async function handleRegistro(event) {
         });
         const data = await res.json();
 
-        resBox.style.display = 'block';
         if (data.success) {
-            resBox.style.backgroundColor = '#f0fdf4';
-            resBox.style.color = '#166534';
-            resBox.textContent = data.mensaje;
+            resBox.style.display = 'none';
 
             currentUser = data.usuario;
             localStorage.setItem('bibliotec_user', JSON.stringify(currentUser));
             updateUserUI();
 
-            setTimeout(() => {
-                closeModal('modalRegistro');
-            }, 1000);
+            closeModal('modalRegistro');
+            document.getElementById('modalRegistroExito').classList.add('active');
+
+            if (form) form.reset();
         } else {
+            resBox.style.display = 'block';
             resBox.style.backgroundColor = '#fef2f2';
             resBox.style.color = '#991b1b';
-            resBox.textContent = data.mensaje || 'Error en el registro.';
+            resBox.textContent = data.mensaje || 'El correo o la matrícula ya están registrados.';
         }
     } catch (err) {
         resBox.style.display = 'block';
         resBox.style.backgroundColor = '#fef2f2';
         resBox.style.color = '#991b1b';
         resBox.textContent = 'Error de conexión con el servidor.';
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Registrarme Ahora';
+        }
     }
 }
