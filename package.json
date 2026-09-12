@@ -1,0 +1,16 @@
+{
+  "name": "bibliotec",
+  "version": "1.0.0",
+  "description": "Bibliotec - Aplicación Móvil de Biblioteca Institucional TESCHI",
+  "main": "app.py",
+  "scripts": {
+    "build": "node build_www.js",
+    "cap:sync": "npx cap sync",
+    "cap:open": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
+  }
+}

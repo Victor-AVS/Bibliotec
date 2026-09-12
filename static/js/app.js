@@ -1,0 +1,693 @@
+// API BASE URL CONFIGURATION FOR CAPACITOR AND MOBILE WEBVIEW
+const getApiBaseUrl = () => {
+    if (window.location.protocol === 'capacitor:' || window.location.protocol === 'file:' || (window.location.hostname === 'localhost' && window.location.port !== '5000')) {
+        const customUrl = localStorage.getItem('bibliotec_server_url');
+        if (customUrl) return customUrl.replace(/\/+$/, '');
+        return 'http://192.168.100.134:5000';
+    }
+    return '';
+};
+
+let API_BASE_URL = getApiBaseUrl();
+
+function initServerIpUI() {
+    const input = document.getElementById('serverIpInput');
+    if (input) {
+        input.value = API_BASE_URL || 'http://192.168.100.134:5000';
+    }
+}
+
+function saveServerUrlSetting() {
+    const input = document.getElementById('serverIpInput');
+    if (!input) return;
+
+    let val = input.value.trim();
+    if (!val) {
+        val = 'http://192.168.100.134:5000';
+    }
+    if (!val.startsWith('http://') && !val.startsWith('https://')) {
+        val = 'http://' + val;
+    }
+    val = val.replace(/\/+$/, '');
+    localStorage.setItem('bibliotec_server_url', val);
+    API_BASE_URL = val;
+    alert(`✅ IP del servidor actualizada a: ${val}\nReintentando conexión...`);
+    loadStats();
+    loadEventos();
+    loadLibros();
+}
+
+// APP STATE
+let currentCategory = 'Todos';
+let searchQuery = '';
+let eventosList = [];
+let booksMap = {};
+let currentSelectedBook = null;
+let currentCarouselIndex = 0;
+let carouselTimer = null;
+let currentUser = null; // null = Usuario invitado (no registrado)
+
+let selectedRatingValue = 5;
+
+const FALLBACK_COVER = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&q=80';
+
+document.addEventListener('DOMContentLoaded', () => {
+    initApp();
+});
+
+function initApp() {
+    initTheme();
+    initUserSession();
+    initServerIpUI();
+    setupPills();
+    setupSearch();
+    setupStarPicker();
+    loadStats();
+    loadEventos();
+    loadLibros();
+}
+
+// USER SESSION MANAGEMENT
+function initUserSession() {
+    const savedUser = localStorage.getItem('bibliotec_user');
+    if (savedUser) {
+        try {
+            currentUser = JSON.parse(savedUser);
+            updateUserUI();
+        } catch (e) {
+            currentUser = null;
+        }
+    } else {
+        currentUser = null;
+        updateUserUI();
+    }
+}
+
+function isLoggedIn() {
+    return currentUser !== null;
+}
+
+function updateUserUI() {
+    const guestView = document.getElementById('userGuestView');
+    const loggedView = document.getElementById('userLoggedInView');
+    const navLabel = document.getElementById('navPerfilLabel');
+
+    if (currentUser) {
+        if (guestView) guestView.style.display = 'none';
+        if (loggedView) loggedView.style.display = 'block';
+        if (navLabel) navLabel.textContent = currentUser.nombre.split(' ')[0];
+
+        // Credencial Digital
+        document.getElementById('idNombre').textContent = `${currentUser.nombre} ${currentUser.a_paterno}`;
+        document.getElementById('idMatricula').textContent = currentUser.matricula;
+        document.getElementById('idCorreo').textContent = currentUser.correo;
+
+        // Vista Perfil
+        document.getElementById('profileName').textContent = `${currentUser.nombre} ${currentUser.a_paterno}`;
+        document.getElementById('profileCorreo').textContent = currentUser.correo;
+        document.getElementById('profileMatricula').textContent = `Matrícula: ${currentUser.matricula}`;
+
+        loadUserWishlist();
+    } else {
+        if (guestView) guestView.style.display = 'block';
+        if (loggedView) loggedView.style.display = 'none';
+        if (navLabel) navLabel.textContent = 'Cuenta';
+    }
+}
+
+function handleAuthProtectedAction(callback) {
+    if (!isLoggedIn()) {
+        openAuthRequiredModal();
+    } else {
+        if (callback) callback();
+    }
+}
+
+function openAuthRequiredModal() {
+    document.getElementById('modalAuthRequired').classList.add('active');
+}
+
+function openLoginModalFromAuth() {
+    closeModal('modalAuthRequired');
+    document.getElementById('modalLogin').classList.add('active');
+}
+
+function openRegisterModalFromAuth() {
+    closeModal('modalAuthRequired');
+    openPerfilModal();
+}
+
+// LOGIN SUBMIT
+async function handleLogin(event) {
+    event.preventDefault();
+    const resBox = document.getElementById('loginResultado');
+    const correo = document.getElementById('loginCorreo').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ correo: correo, contrasena: pass })
+        });
+        const data = await res.json();
+
+        resBox.style.display = 'block';
+        if (data.success) {
+            resBox.style.backgroundColor = '#f0fdf4';
+            resBox.style.color = '#166534';
+            resBox.textContent = data.mensaje;
+
+            currentUser = data.usuario;
+            localStorage.setItem('bibliotec_user', JSON.stringify(currentUser));
+            updateUserUI();
+
+            setTimeout(() => {
+                closeModal('modalLogin');
+            }, 800);
+        } else {
+            resBox.style.backgroundColor = '#fef2f2';
+            resBox.style.color = '#991b1b';
+            resBox.textContent = data.mensaje || 'Error al iniciar sesión.';
+        }
+    } catch (err) {
+        resBox.style.display = 'block';
+        resBox.style.backgroundColor = '#fef2f2';
+        resBox.style.color = '#991b1b';
+        resBox.textContent = 'Error de conexión con el servidor.';
+    }
+}
+
+function handleLogout() {
+    currentUser = null;
+    localStorage.removeItem('bibliotec_user');
+    updateUserUI();
+    closeModal('modalPerfil');
+    alert('Has cerrado sesión correctamente.');
+}
+
+// THEME / DARK MODE TOGGLE
+function initTheme() {
+    const savedTheme = localStorage.getItem('bibliotec_theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        updateThemeIcon(true);
+    } else {
+        document.body.classList.remove('dark-mode');
+        updateThemeIcon(false);
+    }
+}
+
+function toggleDarkMode() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('bibliotec_theme', isDark ? 'dark' : 'light');
+    updateThemeIcon(isDark);
+}
+
+function updateThemeIcon(isDark) {
+    const iconEl = document.getElementById('themeIcon');
+    if (!iconEl) return;
+
+    if (isDark) {
+        iconEl.className = 'fa-solid fa-moon icon-mode';
+    } else {
+        iconEl.className = 'fa-solid fa-sun icon-mode';
+    }
+}
+
+// SETUP FILTER PILLS
+function setupPills() {
+    const pills = document.querySelectorAll('.pill-btn');
+    pills.forEach(pill => {
+        pill.addEventListener('click', (e) => {
+            pills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            currentCategory = pill.dataset.category;
+            loadLibros();
+        });
+    });
+}
+
+// SETUP SEARCH INPUT
+function setupSearch() {
+    const searchInput = document.getElementById('searchInput');
+    let debounceTimeout;
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            searchQuery = e.target.value.trim();
+            loadLibros();
+        }, 300);
+    });
+}
+
+// STAR RATING PICKER LOGIC
+function setupStarPicker() {
+    const stars = document.querySelectorAll('#starPicker .star-btn');
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            const val = parseInt(star.dataset.val);
+            selectedRatingValue = val;
+            updateStarPickerVisual(val);
+        });
+    });
+}
+
+function updateStarPickerVisual(val) {
+    const stars = document.querySelectorAll('#starPicker .star-btn');
+    stars.forEach(star => {
+        const starVal = parseInt(star.dataset.val);
+        if (starVal <= val) {
+            star.classList.remove('fa-regular');
+            star.classList.add('fa-solid', 'active');
+        } else {
+            star.classList.remove('fa-solid', 'active');
+            star.classList.add('fa-regular');
+        }
+    });
+}
+
+// FETCH STATS
+async function loadStats() {
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/stats`);
+        const data = await res.json();
+        if (data.success) {
+            const counterEl = document.getElementById('catalogCounter');
+            counterEl.textContent = `${data.total_libros} libros totales en biblioteca`;
+        }
+    } catch (err) {
+        console.error("Error cargando estadísticas:", err);
+    }
+}
+
+// FETCH CAROUSEL EVENTOS (Cambio automático cada 7 segundos)
+async function loadEventos() {
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/eventos`);
+        const data = await res.json();
+        if (data.success && data.eventos.length > 0) {
+            eventosList = data.eventos;
+            renderCarousel();
+            startCarouselTimer();
+        }
+    } catch (err) {
+        console.error("Error cargando eventos:", err);
+    }
+}
+
+function renderCarousel() {
+    const cardEl = document.getElementById('carouselCard');
+    const indicatorsEl = document.getElementById('carouselIndicators');
+    if (!eventosList || eventosList.length === 0) return;
+
+    const ev = eventosList[currentCarouselIndex];
+
+    cardEl.style.opacity = 0;
+    setTimeout(() => {
+        cardEl.innerHTML = `
+            <img src="${ev.imagen_url}" alt="Banner" class="carousel-img" onerror="this.onerror=null; this.src='${FALLBACK_COVER}';">
+            <div class="carousel-text">
+                <span class="carousel-title">${ev.titulo}</span>
+                <span class="carousel-desc">${ev.descripcion}</span>
+            </div>
+        `;
+        cardEl.style.opacity = 1;
+    }, 200);
+
+    indicatorsEl.innerHTML = eventosList.map((_, idx) => 
+        `<div class="dot ${idx === currentCarouselIndex ? 'active' : ''}"></div>`
+    ).join('');
+}
+
+function startCarouselTimer() {
+    if (carouselTimer) clearInterval(carouselTimer);
+    carouselTimer = setInterval(() => {
+        if (eventosList.length > 0) {
+            currentCarouselIndex = (currentCarouselIndex + 1) % eventosList.length;
+            renderCarousel();
+        }
+    }, 7000); // 7 Segundos
+}
+
+// FETCH & RENDER BOOKS CATALOG
+async function loadLibros() {
+    const bookListEl = document.getElementById('bookList');
+    bookListEl.innerHTML = `
+        <div style="text-align: center; padding: 30px; color: #64748b;">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px;"></i>
+            <p style="margin-top: 8px; font-size: 13px;">Cargando catálogo en biblioteca...</p>
+        </div>
+    `;
+
+    try {
+        const url = `${API_BASE_URL}/api/libros?q=${encodeURIComponent(searchQuery)}&categoria=${encodeURIComponent(currentCategory)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.success) {
+            booksMap = {};
+            data.libros.forEach(b => { booksMap[b.id_libro] = b; });
+            renderBooks(data.libros);
+        } else {
+            bookListEl.innerHTML = `<p style="text-align:center; color: #ef4444; padding: 20px;">Error al obtener libros.</p>`;
+        }
+    } catch (err) {
+        console.error("Error cargando libros:", err);
+        bookListEl.innerHTML = `<p style="text-align:center; color: #ef4444; padding: 20px;">Error de conexión con el servidor.</p>`;
+    }
+}
+
+function renderBooks(libros) {
+    const bookListEl = document.getElementById('bookList');
+    if (!libros || libros.length === 0) {
+        bookListEl.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                <i class="fa-solid fa-book-open" style="font-size: 32px; margin-bottom: 8px;"></i>
+                <p style="font-size: 14px; font-weight: 600;">No se encontraron libros para la categoría o búsqueda elegida.</p>
+            </div>
+        `;
+        return;
+    }
+
+    bookListEl.innerHTML = libros.map(l => {
+        const tagUpper = (l.categoria || 'GENERAL').toUpperCase();
+        const calval = parseFloat(l.promedio_calificacion || 0);
+        const calificacion = calval.toFixed(2);
+        const coverImg = l.portada_url || FALLBACK_COVER;
+
+        const ratingBadgeHTML = calval > 0 
+            ? `<span class="badge-tag badge-yellow">⭐ ${calificacion}</span>`
+            : `<span class="badge-tag badge-pink">⭐ Sin opiniones</span>`;
+
+        return `
+            <div class="book-card" onclick="openBookDetailModal(${l.id_libro})">
+                <div class="book-cover-wrapper">
+                    <img src="${coverImg}" alt="${l.titulo}" class="book-cover-img" onerror="this.onerror=null; this.src='${FALLBACK_COVER}';">
+                    <span class="book-tag-overlay">${l.categoria.split(' ')[0]}</span>
+                </div>
+                <div class="book-info">
+                    <div>
+                        <div class="book-meta-top">${tagUpper}</div>
+                        <h3 class="book-title">${l.titulo}</h3>
+                        <div class="book-author">Por ${l.autor || 'Autor Desconocido'}</div>
+                    </div>
+                    <div class="book-badges">
+                        <span class="badge-tag badge-pink">🌸 ${l.categoria.split('-')[0].trim()}</span>
+                        ${ratingBadgeHTML}
+                        <span class="badge-tag badge-green">📖 Disponibles: ${l.stock_disponible}/${l.stock_total}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// OPEN BOOK DETAIL MODAL
+async function openBookDetailModal(id_libro) {
+    const book = booksMap[id_libro];
+    if (!book) return;
+
+    currentSelectedBook = book;
+
+    const backdropEl = document.getElementById('detailCoverBackdrop');
+    const coverImgEl = document.getElementById('detailCoverImg');
+
+    const coverUrl = book.portada_url || FALLBACK_COVER;
+    backdropEl.style.backgroundImage = `url('${coverUrl}')`;
+    coverImgEl.src = coverUrl;
+    coverImgEl.onerror = () => { 
+        coverImgEl.src = FALLBACK_COVER;
+        backdropEl.style.backgroundImage = `url('${FALLBACK_COVER}')`;
+    };
+
+    document.getElementById('detailTitle').textContent = book.titulo;
+    document.getElementById('detailAuthor').textContent = `Por ${book.autor || 'Autor Desconocido'}`;
+
+    const calval = parseFloat(book.promedio_calificacion || 0);
+    const ratingHTML = calval > 0 
+        ? `<span class="badge-tag badge-yellow">⭐ ${calval.toFixed(2)}</span>`
+        : `<span class="badge-tag badge-pink">⭐ Sin opiniones</span>`;
+
+    document.getElementById('detailBadges').innerHTML = `
+        <span class="badge-tag badge-pink">🌸 ${book.categoria.split('-')[0].trim()}</span>
+        ${ratingHTML}
+        <span class="badge-tag badge-green">📖 Stock: ${book.stock_disponible}/${book.stock_total}</span>
+    `;
+
+    document.getElementById('detailCategory').textContent = book.categoria;
+    document.getElementById('detailEditorial').textContent = book.editorial || 'N/A';
+    document.getElementById('detailYear').textContent = book.anio ? `${book.anio} d.C.` : 'N/A';
+    document.getElementById('detailISBN').textContent = book.isbn || 'N/A';
+    document.getElementById('detailStock').textContent = `${book.stock_disponible} de ${book.stock_total}`;
+    document.getElementById('detailPoints').textContent = `+${book.puntos_otorgados || 10} Pts`;
+
+    document.getElementById('detailSynopsis').textContent = book.sinopsis || 'Sin descripción disponible para este título.';
+
+    selectedRatingValue = 5;
+    updateStarPickerVisual(5);
+    document.getElementById('ratingComment').value = '';
+    document.getElementById('ratingResultAlert').style.display = 'none';
+
+    await loadBookComments(id_libro);
+
+    document.getElementById('modalBookDetail').classList.add('active');
+}
+
+// FETCH & RENDER COMMENTS (YOUTUBE MOBILE STYLE)
+async function loadBookComments(id_libro) {
+    const countEl = document.getElementById('ytCommentsCount');
+    const listEl = document.getElementById('ytCommentsList');
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/libros/${id_libro}/resenas`);
+        const data = await res.json();
+
+        if (data.success && data.resenas && data.resenas.length > 0) {
+            countEl.textContent = `Comentarios (${data.count})`;
+            listEl.innerHTML = data.resenas.map(r => {
+                const estrellas = '⭐'.repeat(r.calificacion);
+                const fecha = new Date(r.fecha_resena).toLocaleDateString();
+                const texto = r.comentario ? r.comentario : '<i>(Sin reseña escrita)</i>';
+                return `
+                    <div class="yt-comment-card">
+                        <div class="yt-comment-user">
+                            <span>👤 ${r.usuario_nombre} • ${estrellas}</span>
+                            <small style="opacity:0.7;">${fecha}</small>
+                        </div>
+                        <div class="yt-comment-text">${texto}</div>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            countEl.textContent = `Sin comentarios aún`;
+            listEl.innerHTML = `<p style="font-size:12px; color: #a8849b; text-align:center; padding:10px;">Sin comentarios aún. ¡Sé el primero en calificar este libro!</p>`;
+        }
+    } catch (err) {
+        console.error("Error cargando comentarios:", err);
+        countEl.textContent = `Sin comentarios aún`;
+        listEl.innerHTML = `<p style="font-size:12px; color: #a8849b; text-align:center; padding:10px;">Sin comentarios aún. ¡Sé el primero en calificar este libro!</p>`;
+    }
+}
+
+function toggleCommentsList() {
+    const content = document.getElementById('ytCommentsContent');
+    const chevron = document.getElementById('ytChevronIcon');
+
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        chevron.classList.add('rotated');
+    } else {
+        content.style.display = 'none';
+        chevron.classList.remove('rotated');
+    }
+}
+
+// SUBMIT RATING & COMMENT (VERIFICA AUTENTICACIÓN)
+async function submitRating() {
+    if (!isLoggedIn()) {
+        openAuthRequiredModal();
+        return;
+    }
+
+    if (!currentSelectedBook) return;
+    const resBox = document.getElementById('ratingResultAlert');
+    const comment = document.getElementById('ratingComment').value.trim();
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/libros/${currentSelectedBook.id_libro}/calificar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                calificacion: selectedRatingValue,
+                comentario: comment,
+                id_usuario: currentUser.id_usuario
+            })
+        });
+        const data = await res.json();
+
+        resBox.style.display = 'block';
+        if (data.success) {
+            resBox.style.backgroundColor = '#f0fdf4';
+            resBox.style.color = '#166534';
+            resBox.textContent = data.mensaje;
+
+            currentSelectedBook.promedio_calificacion = data.promedio_calificacion;
+            loadLibros();
+            
+            setTimeout(async () => {
+                await loadBookComments(currentSelectedBook.id_libro);
+                openBookDetailModal(currentSelectedBook.id_libro);
+            }, 500);
+        } else {
+            resBox.style.backgroundColor = '#fef2f2';
+            resBox.style.color = '#991b1b';
+            resBox.textContent = data.mensaje || 'Error al enviar calificación.';
+        }
+    } catch (err) {
+        resBox.style.display = 'block';
+        resBox.style.backgroundColor = '#fef2f2';
+        resBox.style.color = '#991b1b';
+        resBox.textContent = 'Error de conexión con el servidor.';
+    }
+}
+
+// SOLICITAR PRÉSTAMO (VERIFICA AUTENTICACIÓN)
+function requestLoan() {
+    if (!isLoggedIn()) {
+        openAuthRequiredModal();
+        return;
+    }
+
+    alert(`¡Hola ${currentUser.nombre}! Tu solicitud de préstamo para "${currentSelectedBook.titulo}" ha sido enviada al administrador. Tu folio está en estado PENDIENTE.`);
+}
+
+// AGREGAR A LISTA DE DESEOS / QUIERO LEER (VERIFICA AUTENTICACIÓN)
+async function addToWishlist() {
+    if (!isLoggedIn()) {
+        openAuthRequiredModal();
+        return;
+    }
+
+    if (!currentSelectedBook) return;
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/wishlist/agregar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id_usuario: currentUser.id_usuario,
+                id_libro: currentSelectedBook.id_libro
+            })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            alert(`📌 ¡Guardado en tu Lista de Deseos!\n"${currentSelectedBook.titulo}" ya está en tus pendientes de lectura.`);
+            loadUserWishlist();
+        } else {
+            alert(data.mensaje || 'Error al agregar a tu lista de deseos.');
+        }
+    } catch (err) {
+        console.error("Error al agregar a wishlist:", err);
+        alert('Error de conexión con el servidor.');
+    }
+}
+
+// CARGAR LISTA DE DESEOS EN PERFIL
+async function loadUserWishlist() {
+    const container = document.getElementById('wishlistContainer');
+    if (!container || !currentUser) return;
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/wishlist/${currentUser.id_usuario}`);
+        const data = await res.json();
+
+        if (data.success && data.wishlist && data.wishlist.length > 0) {
+            container.innerHTML = data.wishlist.map(item => `
+                <div style="display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid rgba(239, 169, 190, 0.3);">
+                    <img src="${item.portada_url || FALLBACK_COVER}" style="width: 32px; height: 45px; object-fit: cover; border-radius: 6px;" onerror="this.onerror=null; this.src='${FALLBACK_COVER}';">
+                    <div style="flex: 1; overflow: hidden;">
+                        <div style="font-weight: 700; color: #6B4035; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${item.titulo}</div>
+                        <small style="color: #A97862;">${item.categoria}</small>
+                    </div>
+                    <span style="font-size: 10px; color: #D77A9B; background-color: #FFEBF2; padding: 2px 6px; border-radius: 10px; border: 1px solid #EFA9BE;">Quiero leer</span>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = `<p style="color: #a8849b; font-style: italic; font-size: 11px;">Aún no has guardado ningún libro en tu lista "Quiero leer".</p>`;
+        }
+    } catch (err) {
+        console.error("Error cargando wishlist:", err);
+        container.innerHTML = `<p style="color: #ef4444; font-size: 11px;">Error al cargar tus libros pendientes.</p>`;
+    }
+}
+
+// MODALS CONTROL
+function openCredencialModal() {
+    document.getElementById('modalCredencial').classList.add('active');
+}
+
+function openInsigniasModal() {
+    document.getElementById('modalInsignias').classList.add('active');
+}
+
+function openPerfilModal() {
+    if (isLoggedIn()) {
+        loadUserWishlist();
+    }
+    document.getElementById('modalPerfil').classList.add('active');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+// REGISTRO FORM SUBMIT
+async function handleRegistro(event) {
+    event.preventDefault();
+    const resBox = document.getElementById('registroResultado');
+
+    const body = {
+        nombre: document.getElementById('regNombre').value,
+        a_paterno: document.getElementById('regPaterno').value,
+        correo: document.getElementById('regCorreo').value,
+        correo_respaldo: document.getElementById('regRespaldo').value,
+        matricula: document.getElementById('regMatricula').value,
+        telefono: document.getElementById('regTelefono').value,
+        contrasena: document.getElementById('regPass').value
+    };
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/auth/registro`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        const data = await res.json();
+
+        resBox.style.display = 'block';
+        if (data.success) {
+            resBox.style.backgroundColor = '#f0fdf4';
+            resBox.style.color = '#166534';
+            resBox.textContent = data.mensaje;
+
+            currentUser = data.usuario;
+            localStorage.setItem('bibliotec_user', JSON.stringify(currentUser));
+            updateUserUI();
+
+            setTimeout(() => {
+                closeModal('modalPerfil');
+            }, 1000);
+        } else {
+            resBox.style.backgroundColor = '#fef2f2';
+            resBox.style.color = '#991b1b';
+            resBox.textContent = data.mensaje || 'Error en el registro.';
+        }
+    } catch (err) {
+        resBox.style.display = 'block';
+        resBox.style.backgroundColor = '#fef2f2';
+        resBox.style.color = '#991b1b';
+        resBox.textContent = 'Error de conexión con el servidor.';
+    }
+}

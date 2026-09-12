@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Bibliotec</string>
+    <string name="title_activity_main">Bibliotec</string>
+    <string name="package_name">com.teschi.bibliotec</string>
+    <string name="custom_url_scheme">com.teschi.bibliotec</string>
+</resources>

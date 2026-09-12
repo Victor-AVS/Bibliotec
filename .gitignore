@@ -1,0 +1,10 @@
+node_modules/
+__pycache__/
+*.pyc
+.env
+android/.gradle
+android/app/build
+android/build
+android/captures
+android/.idea
+.DS_Store

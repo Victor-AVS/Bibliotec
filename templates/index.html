@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliotec - Biblioteca Institucional</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Main Container styled like mobile viewport frame -->
+    <div class="app-container" id="appContainer">
+
+        <!-- HEADER SECTION -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo-box">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Bibliotec Logo" class="brand-logo-img">
+                </div>
+                <div class="brand-info">
+                    <span class="brand-title">Bibliotec</span>
+                    <span class="brand-subtitle">Biblioteca Institucional</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <span class="pill-badge-program">Por un hábito de lectura más grande</span>
+                <!-- BOTÓN MODO OSCURO (SOL / LUNA CON LIBRITO) -->
+                <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()" title="Cambiar a Modo Oscuro / Claro">
+                    <i class="fa-solid fa-book-open-reader icon-book"></i>
+                    <i class="fa-solid fa-sun icon-mode" id="themeIcon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- SEARCH BAR -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Buscar por título, autor, categoría o ISBN..." autocomplete="off">
+            </div>
+        </div>
+
+        <!-- FILTER PILLS (TODOS, CARRERAS, CATEGORÍAS) -->
+        <div class="filter-pills-scroll">
+            <button class="pill-btn active" data-category="Todos">Todos</button>
+            <button class="pill-btn" data-category="ISC">💻 ISC</button>
+            <button class="pill-btn" data-category="IQ">🧪 IQ</button>
+            <button class="pill-btn" data-category="GASTRO">🍳 GASTRO</button>
+            <button class="pill-btn" data-category="II">⚙️ II</button>
+            <button class="pill-btn" data-category="IAD">🎨 IAD</button>
+            <button class="pill-btn" data-category="Filosofía">📜 Filosofía</button>
+            <button class="pill-btn" data-category="Ciencias">🔬 Ciencias</button>
+        </div>
+
+        <!-- MAIN SCROLLABLE CONTENT -->
+        <main class="main-content">
+
+            <!-- EVENT CAROUSEL -->
+            <div class="carousel-wrapper">
+                <div class="carousel-card" id="carouselCard">
+                    <!-- Dynamic Carousel Content injected by JS -->
+                </div>
+                <div class="carousel-indicators" id="carouselIndicators">
+                    <!-- Dynamic Dots injected by JS -->
+                </div>
+            </div>
+
+            <!-- CATALOG SECTION HEADER -->
+            <div class="section-header">
+                <div class="section-title-box">
+                    <h2 class="section-title">Catálogo de Libros en Biblioteca</h2>
+                </div>
+                <div class="section-counter-box">
+                    <span class="catalog-counter" id="catalogCounter">392 libros totales en biblioteca</span>
+                </div>
+            </div>
+
+            <!-- BOOK LIST ITEMS -->
+            <div class="book-list" id="bookList">
+                <!-- Book Items injected dynamically via JS -->
+            </div>
+
+        </main>
+
+        <!-- BOTTOM TAB BAR NAVIGATION (VISTA USUARIO ALUMNO) -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" id="tabCatalog">
+                <i class="fa-solid fa-book-open nav-icon"></i>
+                <span class="nav-label">Catálogo</span>
+            </button>
+            <button class="nav-item" id="tabCredencial" onclick="handleAuthProtectedAction(openCredencialModal)">
+                <i class="fa-solid fa-id-card nav-icon"></i>
+                <span class="nav-label">Credencial</span>
+            </button>
+            <button class="nav-item" id="tabInsignias" onclick="handleAuthProtectedAction(openInsigniasModal)">
+                <i class="fa-solid fa-award nav-icon"></i>
+                <span class="nav-label">Insignias</span>
+            </button>
+            <button class="nav-item" id="tabPerfil" onclick="openPerfilModal()">
+                <i class="fa-solid fa-user-circle nav-icon"></i>
+                <span class="nav-label" id="navPerfilLabel">Cuenta</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- POP-UP MODAL: REGISTRO / INICIO DE SESIÓN REQUERIDO -->
+    <div class="modal-overlay" id="modalAuthRequired">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('modalAuthRequired')">&times;</button>
+            <div class="modal-header">
+                <i class="fa-solid fa-user-lock modal-icon"></i>
+                <h3>¡Cuenta Requerida!</h3>
+                <p>Para solicitar préstamos de libros, calificar o ver tu credencial digital, necesitas iniciar sesión o registrarte.</p>
+            </div>
+            <div class="modal-body auth-popup-buttons">
+                <button class="btn-primary mb-2" onclick="openLoginModalFromAuth()">
+                    <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
+                </button>
+                <button class="btn-secondary" onclick="openRegisterModalFromAuth()">
+                    <i class="fa-solid fa-user-plus"></i> Registrarse
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL INICIAR SESIÓN -->
+    <div class="modal-overlay" id="modalLogin">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('modalLogin')">&times;</button>
+            <div class="modal-header">
+                <i class="fa-solid fa-right-to-bracket modal-icon"></i>
+                <h3>Iniciar Sesión en Bibliotec</h3>
+                <p>Ingresa con tu correo institucional o tu correo de respaldo</p>
+            </div>
+            <div class="modal-body">
+                <form id="formLogin" onsubmit="handleLogin(event)">
+                    <div class="input-group">
+                        <label>Correo (Institucional o de Respaldo):</label>
+                        <input type="email" id="loginCorreo" required placeholder="2023452074@teschi.edu.mx o personal@gmail.com">
+                    </div>
+                    <div class="input-group">
+                        <label>Contraseña:</label>
+                        <input type="password" id="loginPass" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <i class="fa-solid fa-key"></i> Entrar a mi Cuenta
+                    </button>
+                </form>
+                <div id="loginResultado" class="result-alert" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETALLE DEL LIBRO -->
+    <div class="modal-overlay" id="modalBookDetail">
+        <div class="modal-box modal-box-fullscreen">
+            <button class="modal-close modal-close-top" onclick="closeModal('modalBookDetail')">&times;</button>
+            
+            <div class="detail-header-cover">
+                <div class="detail-cover-backdrop" id="detailCoverBackdrop"></div>
+                <img id="detailCoverImg" src="" alt="Portada del libro" class="detail-cover-portrait">
+            </div>
+
+            <div class="detail-body">
+                <h2 id="detailTitle" class="detail-title">Meditaciones</h2>
+                <p id="detailAuthor" class="detail-author">Por Marco Aurelio</p>
+                
+                <div class="detail-badges" id="detailBadges">
+                    <!-- Badges injected by JS -->
+                </div>
+
+                <!-- 2x3 INFO GRID CARDS -->
+                <div class="info-grid-container">
+                    <div class="info-card">
+                        <span class="info-card-label">CATEGORÍA</span>
+                        <span class="info-card-value" id="detailCategory">Filosofía</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-card-label">EDITORIAL</span>
+                        <span class="info-card-value" id="detailEditorial">Editorial Gredos</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-card-label">AÑO</span>
+                        <span class="info-card-value" id="detailYear">180 d.C.</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-card-label">ISBN</span>
+                        <span class="info-card-value" id="detailISBN">9788424938230</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-card-label">DISPONIBLES</span>
+                        <span class="info-card-value" id="detailStock">4 de 4</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-card-label">PUNTOS LECTURA</span>
+                        <span class="info-card-value" id="detailPoints">+35 Pts</span>
+                    </div>
+                </div>
+
+                <!-- 1. SINOPSIS DEL LIBRO -->
+                <div class="synopsis-box">
+                    <h4 class="synopsis-title"><i class="fa-solid fa-book-open"></i> Sinopsis del Libro</h4>
+                    <p id="detailSynopsis" class="synopsis-text">Reflexiones personales del emperador romano Marco Aurelio sobre la filosofía estoica, la virtud, la resiliencia y la disciplina mental.</p>
+                </div>
+
+                <!-- DIVISOR ELEGANTE -->
+                <div class="section-divider"></div>
+
+                <!-- 2. RECUADRO DE COMENTARIOS ESTILO YOUTUBE MÓVIL -->
+                <div class="youtube-comments-box" onclick="toggleCommentsList()">
+                    <div class="yt-comments-header">
+                        <div class="yt-comments-title">
+                            <i class="fa-solid fa-comments"></i>
+                            <span id="ytCommentsCount">Comentarios (0)</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down yt-chevron" id="ytChevronIcon"></i>
+                    </div>
+                    
+                    <div class="yt-comments-content" id="ytCommentsContent" style="display: none;" onclick="event.stopPropagation()">
+                        <div id="ytCommentsList">
+                            <!-- Injected dynamically by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DIVISOR ELEGANTE -->
+                <div class="section-divider"></div>
+
+                <!-- 3. SECCIÓN DE CALIFICAR Y PUNTUAR LIBRO -->
+                <div class="rating-section-box">
+                    <div class="rating-header">
+                        <i class="fa-solid fa-star rating-icon"></i>
+                        <span>Puntuar Libro y Agregar Opinión</span>
+                    </div>
+                    <div class="star-rating-picker" id="starPicker">
+                        <i class="fa-regular fa-star star-btn" data-val="1"></i>
+                        <i class="fa-regular fa-star star-btn" data-val="2"></i>
+                        <i class="fa-regular fa-star star-btn" data-val="3"></i>
+                        <i class="fa-regular fa-star star-btn" data-val="4"></i>
+                        <i class="fa-regular fa-star star-btn" data-val="5"></i>
+                    </div>
+                    <input type="text" id="ratingComment" placeholder="Escribe un comentario u opinión (opcional)..." class="rating-comment-input">
+                    <button class="btn-primary btn-sm" onclick="submitRating()">
+                        <i class="fa-solid fa-paper-plane"></i> Enviar Puntuación
+                    </button>
+                    <div id="ratingResultAlert" class="result-alert" style="display: none;"></div>
+                </div>
+
+                <!-- 4. BOTONES ACCIÓN: SOLICITAR PRÉSTAMO Y QUIERO LEER -->
+                <div class="action-buttons-group">
+                    <button class="btn-primary" onclick="requestLoan()">
+                        <i class="fa-solid fa-hand-holding-hand"></i> Solicitar Préstamo
+                    </button>
+                    <button class="btn-secondary" onclick="addToWishlist()">
+                        <i class="fa-solid fa-bookmark"></i> Quiero leer
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTRO / CREDENCIAL DIGITAL -->
+    <div class="modal-overlay" id="modalCredencial">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('modalCredencial')">&times;</button>
+            <div class="modal-header">
+                <i class="fa-solid fa-address-card modal-icon"></i>
+                <h3>Credencial Digital TESCHI</h3>
+                <p>Tu expediente digital oficial para préstamos y eventos</p>
+            </div>
+            <div class="modal-body credencial-card-view">
+                <div class="digital-id-card">
+                    <div class="id-header">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>TECNOLÓGICO DE ESTUDIOS SUPERIORES DE CHIMALHUACÁN</span>
+                    </div>
+                    <div class="id-body">
+                        <div class="id-photo">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="id-details">
+                            <h4 id="idNombre">Carlos Maldonado</h4>
+                            <p><strong>Matrícula:</strong> <span id="idMatricula">2023452074</span></p>
+                            <p><strong>Carrera:</strong> <span id="idCarrera">Ing. Sistemas Computacionales</span></p>
+                            <p><strong>Correo Inst.:</strong> <span id="idCorreo">2023452074@teschi.edu.mx</span></p>
+                        </div>
+                    </div>
+                    <div class="id-footer">
+                        <span class="id-barcode">|||||| |||||||| ||||| |||||||</span>
+                        <span class="id-validity">Vigencia: 2026 - 2027</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL INSIGNIAS -->
+    <div class="modal-overlay" id="modalInsignias">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('modalInsignias')">&times;</button>
+            <div class="modal-header">
+                <i class="fa-solid fa-trophy modal-icon"></i>
+                <h3>Gamificación e Insignias</h3>
+                <p>Gana puntos leyendo libros y realizando donaciones</p>
+            </div>
+            <div class="modal-body badges-grid">
+                <div class="badge-item unlocked">
+                    <i class="fa-solid fa-medal bronze"></i>
+                    <h4>Lector Bronce</h4>
+                    <span>100 Puntos</span>
+                </div>
+                <div class="badge-item unlocked">
+                    <i class="fa-solid fa-award gold"></i>
+                    <h4>Lector Oro</h4>
+                    <span>250 Puntos</span>
+                </div>
+                <div class="badge-item locked">
+                    <i class="fa-solid fa-gem emerald"></i>
+                    <h4>Lector Esmeralda</h4>
+                    <span>400 Puntos</span>
+                </div>
+                <div class="badge-item locked">
+                    <i class="fa-solid fa-gem diamond"></i>
+                    <h4>Lector Diamante I</h4>
+                    <span>500 Puntos</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PERFIL / MI CUENTA -->
+    <div class="modal-overlay" id="modalPerfil">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('modalPerfil')">&times;</button>
+            <div class="modal-header">
+                <i class="fa-solid fa-user-gear modal-icon"></i>
+                <h3>Mi Perfil y Registro</h3>
+                <p>Gestiona tu cuenta institucional o regístrate</p>
+            </div>
+            <div class="modal-body">
+                <div id="userLoggedInView" style="display: none; text-align: center;">
+                    <div style="font-size: 48px; color: #D77A9B; margin-bottom: 10px;">
+                        <i class="fa-solid fa-circle-user"></i>
+                    </div>
+                    <h3 id="profileName" style="color: #6B4035; font-size: 20px; font-weight: 800;">-</h3>
+                    <p id="profileCorreo" style="font-size: 13px; color: #A97862; margin-bottom: 4px;">-</p>
+                    <p id="profileMatricula" style="font-size: 12px; color: #3E2723; margin-bottom: 16px;">Matrícula: -</p>
+                    
+                    <!-- SECCIÓN MI LISTA DE DESEOS -->
+                    <div style="text-align: left; margin: 16px 0; background-color: #FCEEF3; padding: 14px; border-radius: 16px; border: 1px solid #EFA9BE;" class="profile-wishlist-box">
+                        <h4 style="font-size: 13px; font-weight: 800; color: #6B4035; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-bookmark" style="color: #D77A9B;"></i> Mi Lista de Deseos (Quiero leer)
+                        </h4>
+                        <div id="wishlistContainer" style="font-size: 12px; color: #3E2723;">
+                            <p style="color: #a8849b; font-style: italic;">Sin libros guardados por el momento.</p>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" onclick="handleLogout()">
+                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+                    </button>
+                </div>
+
+                <div id="userGuestView">
+                    <form id="formRegistro" onsubmit="handleRegistro(event)">
+                        <div class="input-group">
+                            <label>Nombre(s):</label>
+                            <input type="text" id="regNombre" required placeholder="Carlos">
+                        </div>
+                        <div class="input-group">
+                            <label>Apellido Paterno:</label>
+                            <input type="text" id="regPaterno" required placeholder="Maldonado">
+                        </div>
+                        <div class="input-group">
+                            <label>Correo Institucional (@teschi.edu.mx):</label>
+                            <input type="email" id="regCorreo" required placeholder="2023452074@teschi.edu.mx">
+                        </div>
+                        <div class="input-group">
+                            <label>Correo de Respaldo (Gmail/Outlook):</label>
+                            <input type="email" id="regRespaldo" placeholder="carlos.personal@gmail.com">
+                        </div>
+                        <div class="input-group">
+                            <label>Matrícula:</label>
+                            <input type="text" id="regMatricula" required placeholder="2023452074">
+                        </div>
+                        <div class="input-group">
+                            <label>Teléfono:</label>
+                            <input type="tel" id="regTelefono" required placeholder="5512345678">
+                        </div>
+                        <div class="input-group">
+                            <label>Contraseña (mínimo 8 caracteres):</label>
+                            <input type="password" id="regPass" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn-primary mb-2">
+                            <i class="fa-solid fa-user-plus"></i> Registrarme Ahora
+                        </button>
+                        <button type="button" class="btn-secondary" onclick="openLoginModalFromAuth()">
+                            ¿Ya tienes cuenta? Iniciar Sesión
+                        </button>
+                    </form>
+                    <div id="registroResultado" class="result-alert" style="display: none;"></div>
+                </div>
+
+                <!-- CONFIGURACIÓN DE CONEXIÓN AL SERVIDOR (PARA APK MÓVIL) -->
+                <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #EFA9BE; text-align: left;">
+                    <details style="cursor: pointer;">
+                        <summary style="font-size: 11px; font-weight: 700; color: #A97862;">
+                            <i class="fa-solid fa-network-wired"></i> Configuración de Servidor (IP Local)
+                        </summary>
+                        <div style="margin-top: 8px;">
+                            <div class="input-group">
+                                <label style="font-size: 11px;">URL / IP del Servidor Backend:</label>
+                                <input type="text" id="serverIpInput" style="font-size: 12px; padding: 8px;" placeholder="http://192.168.100.134:5000">
+                            </div>
+                            <button type="button" class="btn-secondary btn-sm" onclick="saveServerUrlSetting()" style="font-size: 12px; padding: 6px 12px;">
+                                <i class="fa-solid fa-floppy-disk"></i> Guardar IP Servidor
+                            </button>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS script -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
