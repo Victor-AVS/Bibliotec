@@ -381,6 +381,7 @@ def registro_usuario():
     telefono = data.get('telefono', '').strip()
     contrasena = data.get('contrasena', '').strip()
     matricula = data.get('matricula', '').strip()
+    carrera = data.get('carrera', 'Ing. Sistemas Computacionales').strip()
 
     if not (correo.endswith('@teschi.edu.mx') or correo.endswith('@tesch.edu.mx')):
         return jsonify({"success": False, "mensaje": "El correo principal debe ser institucional (@teschi.edu.mx)."}), 400
@@ -407,6 +408,11 @@ def registro_usuario():
         """, (id_persona, matricula))
         u_data = cursor.fetchone()
 
+        cursor.execute("""
+            INSERT INTO credencial_digital (id_usuario, licenciatura)
+            VALUES (%s, %s);
+        """, (u_data['id_usuario'], carrera))
+
         conn.commit()
 
         user_payload = {
@@ -418,6 +424,7 @@ def registro_usuario():
             "correo": correo,
             "correo_respaldo": correo_respaldo,
             "matricula": matricula,
+            "carrera": carrera,
             "puntos": u_data['puntos']
         }
 
@@ -430,7 +437,7 @@ def registro_usuario():
         if conn: conn.rollback()
         err_msg = str(e)
         if "duplicate" in err_msg.lower() or "unique" in err_msg.lower() or "already exists" in err_msg.lower():
-            return jsonify({"success": False, "mensaje": "El correo o la matrícula ya se encuentran registrados."}), 400
+            return jsonify({"success": False, "mensaje": "La matrícula o correo ya están registrados con anterioridad."}), 400
         return jsonify({"success": False, "error": err_msg}), 500
     finally:
         if cursor:

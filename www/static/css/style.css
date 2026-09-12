@@ -648,11 +648,12 @@ body.dark-mode .modal-box {
     transform: translateY(0);
 }
 
-/* POP-UP CENTRADO EN EL MEDIO DE LA PANTALLA (CUENTA REQUERIDA, LOGIN, REGISTRO Y REGISTRO EXITOSO) */
+/* POP-UP CENTRADO EN EL MEDIO DE LA PANTALLA (CUENTA REQUERIDA, LOGIN, REGISTRO, EXITOSO Y ERROR) */
 #modalAuthRequired,
 #modalLogin,
 #modalRegistro,
-#modalRegistroExito {
+#modalRegistroExito,
+#modalRegistroError {
     z-index: 3100 !important;
     align-items: center !important;
     justify-content: center !important;
@@ -663,7 +664,8 @@ body.dark-mode .modal-box {
 #modalAuthRequired .modal-box,
 #modalLogin .modal-box,
 #modalRegistro .modal-box,
-#modalRegistroExito .modal-box {
+#modalRegistroExito .modal-box,
+#modalRegistroError .modal-box {
     border-radius: 28px !important;
     max-width: 380px !important;
     width: 90% !important;
@@ -679,7 +681,8 @@ body.dark-mode .modal-box {
 body.dark-mode #modalAuthRequired .modal-box,
 body.dark-mode #modalLogin .modal-box,
 body.dark-mode #modalRegistro .modal-box,
-body.dark-mode #modalRegistroExito .modal-box {
+body.dark-mode #modalRegistroExito .modal-box,
+body.dark-mode #modalRegistroError .modal-box {
     border-color: #542b49;
     background-color: #24141f;
 }
@@ -687,7 +690,8 @@ body.dark-mode #modalRegistroExito .modal-box {
 #modalAuthRequired.active .modal-box,
 #modalLogin.active .modal-box,
 #modalRegistro.active .modal-box,
-#modalRegistroExito.active .modal-box {
+#modalRegistroExito.active .modal-box,
+#modalRegistroError.active .modal-box {
     transform: scale(1) !important;
 }
 
@@ -1107,7 +1111,8 @@ body.dark-mode .input-group label {
     color: #FCEEF3;
 }
 
-.input-group input {
+.input-group input,
+.input-group select {
     padding: 10px 14px;
     border-radius: 12px;
     border: 1px solid #EFA9BE;
@@ -1115,9 +1120,11 @@ body.dark-mode .input-group label {
     font-size: 13px;
     background-color: #FFEBF2;
     color: #3E2723;
+    width: 100%;
 }
 
-body.dark-mode .input-group input {
+body.dark-mode .input-group input,
+body.dark-mode .input-group select {
     background-color: #24141f;
     color: #FCEEF3;
     border-color: #542b49;

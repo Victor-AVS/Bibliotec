@@ -104,6 +104,9 @@ function updateUserUI() {
         document.getElementById('idNombre').textContent = fullName;
         document.getElementById('idMatricula').textContent = currentUser.matricula;
         document.getElementById('idCorreo').textContent = currentUser.correo;
+        if (currentUser.carrera && document.getElementById('idCarrera')) {
+            document.getElementById('idCarrera').textContent = currentUser.carrera;
+        }
 
         // Vista Perfil
         document.getElementById('profileName').textContent = fullName;
@@ -741,10 +744,12 @@ async function handleRegistro(event) {
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registrando...';
     }
 
+    const carreraEl = document.getElementById('regCarrera');
     const body = {
         nombre: document.getElementById('regNombre').value.trim(),
         a_paterno: document.getElementById('regPaterno').value.trim(),
         a_materno: document.getElementById('regMaterno') ? document.getElementById('regMaterno').value.trim() : '',
+        carrera: carreraEl ? carreraEl.value : 'Ing. Sistemas Computacionales',
         correo: document.getElementById('regCorreo').value.trim(),
         correo_respaldo: document.getElementById('regRespaldo').value.trim(),
         matricula: document.getElementById('regMatricula').value.trim(),
@@ -773,16 +778,28 @@ async function handleRegistro(event) {
 
             if (form) form.reset();
         } else {
+            const errMsg = data.mensaje || 'La matrícula o correo ya están registrados con anterioridad.';
             resBox.style.display = 'block';
             resBox.style.backgroundColor = '#fef2f2';
             resBox.style.color = '#991b1b';
-            resBox.textContent = data.mensaje || 'El correo o la matrícula ya están registrados.';
+            resBox.textContent = errMsg;
+
+            const errModalMsg = document.getElementById('regErrorMessage');
+            if (errModalMsg) errModalMsg.textContent = errMsg;
+            const errModal = document.getElementById('modalRegistroError');
+            if (errModal) errModal.classList.add('active');
         }
     } catch (err) {
+        const errMsg = 'Error de conexión con el servidor.';
         resBox.style.display = 'block';
         resBox.style.backgroundColor = '#fef2f2';
         resBox.style.color = '#991b1b';
-        resBox.textContent = 'Error de conexión con el servidor.';
+        resBox.textContent = errMsg;
+
+        const errModalMsg = document.getElementById('regErrorMessage');
+        if (errModalMsg) errModalMsg.textContent = errMsg;
+        const errModal = document.getElementById('modalRegistroError');
+        if (errModal) errModal.classList.add('active');
     } finally {
         if (submitBtn) {
             submitBtn.disabled = false;

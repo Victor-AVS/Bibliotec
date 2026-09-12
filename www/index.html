@@ -151,6 +151,11 @@
                     <button type="submit" class="btn-primary mb-2">
                         <i class="fa-solid fa-right-to-bracket"></i> Iniciar sesión
                     </button>
+                    <div style="text-align: center; margin: 8px 0 12px 0;">
+                        <a href="javascript:void(0)" onclick="alert('La opción para restablecer contraseña estará disponible próximamente.')" style="font-size: 11px; font-weight: 700; color: #D77A9B; text-decoration: underline;">
+                            ¿Olvidaste tu contraseña? Restablécela aquí
+                        </a>
+                    </div>
                     <button type="button" class="btn-secondary" onclick="openRegisterModal()">
                         <i class="fa-solid fa-user-plus"></i> ¿No tienes cuenta? Registrarse
                     </button>
@@ -192,6 +197,16 @@
                         <input type="text" id="regMaterno" placeholder="Venegas">
                     </div>
                     <div class="input-group">
+                        <label>Carrera / Licenciatura:</label>
+                        <select id="regCarrera" required>
+                            <option value="Ing. Sistemas Computacionales" selected>Ing. Sistemas Computacionales</option>
+                            <option value="Ing. Química">Ing. Química</option>
+                            <option value="Lic. Gastronomía">Lic. Gastronomía</option>
+                            <option value="Ing. Industrial">Ing. Industrial</option>
+                            <option value="Ing. Animación Digital y Efectos Visuales">Ing. Animación Digital y Efectos Visuales</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
                         <label id="lblMatricula">Matrícula:</label>
                         <input type="text" id="regMatricula" required placeholder="2023452074">
                     </div>
@@ -221,6 +236,8 @@
                 <div id="registroResultado" class="result-alert" style="display: none; margin-top: 10px;"></div>
             </div>
         </div>
+    </div>
+
     <!-- 3.5. POP-UP MODAL: REGISTRO EXITOSO -->
     <div class="modal-overlay" id="modalRegistroExito">
         <div class="modal-box" style="text-align: center;">
@@ -229,12 +246,31 @@
                 <div style="font-size: 58px; color: #22c55e; margin-bottom: 12px; display: flex; justify-content: center; align-items: center;">
                     <i class="fa-solid fa-circle-check"></i>
                 </div>
-                <h3 style="font-size: 20px; font-weight: 800; color: #6B4035;">Registro finalizado correctamente</h3>
-                <p style="font-size: 13px; color: #A97862; margin-top: 6px;">¡Bienvenido a Bibliotec! Tu cuenta ha sido creada exitosamente.</p>
+                <h3 style="font-size: 20px; font-weight: 800; color: #6B4035;">Registro finalizado con éxito</h3>
+                <p style="font-size: 13px; color: #A97862; margin-top: 6px;">¡Bienvenido a Bibliotec! Tu cuenta ha sido creada e iniciaste sesión correctamente.</p>
             </div>
             <div class="modal-body" style="padding-top: 10px;">
                 <button type="button" class="btn-primary" onclick="closeRegisterSuccessModal()">
-                    <i class="fa-solid fa-check"></i> Cerrar
+                    <i class="fa-solid fa-check"></i> Entrar a mi Cuenta
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3.6. POP-UP MODAL: ERROR DE REGISTRO -->
+    <div class="modal-overlay" id="modalRegistroError">
+        <div class="modal-box" style="text-align: center;">
+            <button class="modal-close" onclick="closeModal('modalRegistroError')">&times;</button>
+            <div class="modal-header" style="margin-bottom: 12px;">
+                <div style="font-size: 58px; color: #ef4444; margin-bottom: 12px; display: flex; justify-content: center; align-items: center;">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </div>
+                <h3 style="font-size: 20px; font-weight: 800; color: #6B4035;">No se pudo registrar</h3>
+                <p id="regErrorMessage" style="font-size: 13px; color: #A97862; margin-top: 6px;">La matrícula o correo ya están registrados con anterioridad.</p>
+            </div>
+            <div class="modal-body" style="padding-top: 10px;">
+                <button type="button" class="btn-primary" onclick="closeModal('modalRegistroError')">
+                    <i class="fa-solid fa-arrow-left"></i> Entendido, corregir datos
                 </button>
             </div>
         </div>
