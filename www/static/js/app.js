@@ -1190,3 +1190,95 @@ function updateReadingGoalsUI() {
     const metricPace = document.getElementById('metricGoalPace');
     if (metricPace) metricPace.textContent = `${percent}%`;
 }
+
+// 9. Pop-up Modal "Registrar Libro Leído" con Verificación en BD (+35 Pts o Puntos Reales)
+let currentMatchedBook = null;
+
+function openRegisterBookModal() {
+    const inputTitle = document.getElementById('inputReadBookTitle');
+    if (inputTitle) inputTitle.value = '';
+    currentMatchedBook = null;
+    previewReadBookSearch();
+    openModal('modalRegistrarLibroLeido');
+}
+
+function previewReadBookSearch() {
+    const inputTitle = document.getElementById('inputReadBookTitle');
+    const query = inputTitle ? inputTitle.value.trim().toLowerCase() : '';
+    const titleEl = document.getElementById('previewBookTitle');
+    const pointsEl = document.getElementById('previewBookPoints');
+    const statusEl = document.getElementById('previewBookStatus');
+    const coverBox = document.getElementById('previewCoverBox');
+
+    currentMatchedBook = null;
+
+    if (!query) {
+        if (titleEl) titleEl.textContent = 'Libro no especificado';
+        if (pointsEl) { pointsEl.textContent = '+35 Pts'; pointsEl.style.background = '#e0e7ff'; pointsEl.style.color = '#3730a3'; }
+        if (statusEl) statusEl.textContent = 'Si el libro no existe en la biblioteca, obtienes +35 Pts estándar.';
+        if (coverBox) coverBox.innerHTML = '<i class="fa-solid fa-book fallback-grey-book"></i>';
+        return;
+    }
+
+    // Check in booksMap
+    let matched = null;
+    if (typeof booksMap !== 'undefined' && booksMap) {
+        const keys = Object.keys(booksMap);
+        for (let k of keys) {
+            const b = booksMap[k];
+            if (b && b.titulo && b.titulo.toLowerCase().includes(query)) {
+                matched = b;
+                break;
+            }
+        }
+    }
+
+    if (matched) {
+        currentMatchedBook = matched;
+        const pts = matched.puntos || 40;
+        const cover = matched.portada_url || (typeof FALLBACK_COVER !== 'undefined' ? FALLBACK_COVER : '');
+
+        if (titleEl) titleEl.textContent = matched.titulo;
+        if (pointsEl) { pointsEl.textContent = `+${pts} Pts`; pointsEl.style.background = '#dcfce7'; pointsEl.style.color = '#15803d'; }
+        if (statusEl) statusEl.textContent = `¡Encontrado en biblioteca! Otorga +${pts} Pts reales.`;
+        if (coverBox) {
+            coverBox.innerHTML = `<img src="${cover}" alt="${matched.titulo}">`;
+        }
+    } else {
+        if (titleEl) titleEl.textContent = inputTitle.value.trim();
+        if (pointsEl) { pointsEl.textContent = '+35 Pts'; pointsEl.style.background = '#fef3c7'; pointsEl.style.color = '#b45309'; }
+        if (statusEl) statusEl.textContent = 'Libro no registrado en BD (Otorga +35 Pts promedio y foto en gris).';
+        if (coverBox) coverBox.innerHTML = '<i class="fa-solid fa-book fallback-grey-book"></i>';
+    }
+}
+
+function confirmRegisterReadBook() {
+    const inputTitle = document.getElementById('inputReadBookTitle');
+    const bookTitle = inputTitle ? inputTitle.value.trim() : '';
+    
+    let ptsEarned = 35;
+    let titleStr = bookTitle || 'Libro registrado';
+
+    if (currentMatchedBook) {
+        ptsEarned = currentMatchedBook.puntos || 40;
+        titleStr = currentMatchedBook.titulo;
+    }
+
+    // 1. Increment read books count
+    readingGoalData.read = (parseInt(readingGoalData.read) || 0) + 1;
+    saveReadingGoalData();
+
+    // 2. Add points to current user
+    if (!currentUser) currentUser = { puntos: 0 };
+    currentUser.puntos = (parseInt(currentUser.puntos) || 0) + ptsEarned;
+    localStorage.setItem('bibliotec_user', JSON.stringify(currentUser));
+
+    // 3. Update UI
+    updateReadingGoalsUI();
+    updateInsigniasProgressUI();
+
+    closeModal('modalRegistrarLibroLeido');
+
+    // 4. Alert notification
+    alert(`¡Felicidades! Registraste "${titleStr}" exitosamente.\nGanaste +${ptsEarned} Pts para tu nivel e insignias.`);
+}

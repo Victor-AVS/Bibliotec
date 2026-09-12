@@ -486,18 +486,102 @@
                     <hr class="banner-divider">
                 </div>
 
-                <!-- PESTAÑAS PRINCIPALES: INSIGNIAS Y METAS DE LECTURA -->
+                <!-- PESTAÑAS PRINCIPALES: METAS DE LECTURA (1.º) E INSIGNIAS (2.º) -->
                 <div class="gamification-main-tabs">
-                    <button class="gamification-tab-btn active" id="tabBtnInsignias" onclick="switchGamificationTab('insignias')">
-                        <i class="fa-solid fa-award"></i> Insignias
-                    </button>
-                    <button class="gamification-tab-btn" id="tabBtnMetas" onclick="switchGamificationTab('metas')">
+                    <button class="gamification-tab-btn active" id="tabBtnMetas" onclick="switchGamificationTab('metas')">
                         <i class="fa-solid fa-bullseye"></i> Metas de Lectura
+                    </button>
+                    <button class="gamification-tab-btn" id="tabBtnInsignias" onclick="switchGamificationTab('insignias')">
+                        <i class="fa-solid fa-award"></i> Insignias
                     </button>
                 </div>
 
-                <!-- PESTAÑA 1: CATÁLOGO DE INSIGNIAS Y FILTROS -->
-                <div id="tabContentInsignias">
+                <!-- PESTAÑA 1: METAS DE LECTURA (MEDIALUNA SVG + MÉTRICAS) (VISIBLE POR DEFECTO) -->
+                <div id="tabContentMetas" style="display: block;">
+                    
+                    <!-- MEDIDOR MEDIALUNA SVG -->
+                    <div class="goals-gauge-card">
+                        <h4 class="goals-gauge-title"><i class="fa-solid fa-chart-pie"></i> Progreso de Meta</h4>
+                        <div class="half-circle-gauge-container">
+                            <svg class="gauge-svg" viewBox="0 0 200 110">
+                                <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" />
+                                <path class="gauge-fill" id="readingGoalGaugeFill" d="M 20 100 A 80 80 0 0 1 180 100" />
+                            </svg>
+                            <div class="gauge-center-info">
+                                <span class="gauge-percent" id="readingGoalPercentText">0%</span>
+                                <span class="gauge-subtext" id="readingGoalStatusText">0 de 30 libros leídos</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PANEL DE CONTROLES DE LA META -->
+                    <div class="goals-controls-card">
+                        <div class="control-group">
+                            <label class="control-label"><i class="fa-solid fa-calendar-days"></i> Período:</label>
+                            <div class="period-toggle-buttons">
+                                <button class="period-btn active" id="btnPeriodMensual" onclick="setGoalPeriod('mensual')">Mensual</button>
+                                <button class="period-btn" id="btnPeriodAnual" onclick="setGoalPeriod('anual')">Anual</button>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label"><i class="fa-solid fa-flag-checkered"></i> Meta de Libros:</label>
+                            <div class="goal-input-stepper">
+                                <button class="stepper-btn" onclick="adjustGoalTarget(-1)"><i class="fa-solid fa-minus"></i></button>
+                                <input type="number" id="inputGoalTarget" value="30" min="1" max="500" onchange="onGoalTargetInputChange()">
+                                <button class="stepper-btn" onclick="adjustGoalTarget(1)"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label"><i class="fa-solid fa-book-bookmark"></i> Libros Leídos:</label>
+                            <div class="goal-input-stepper">
+                                <button class="stepper-btn" onclick="adjustGoalRead(-1)"><i class="fa-solid fa-minus"></i></button>
+                                <span class="read-count-display" id="displayGoalRead">0</span>
+                                <button class="stepper-btn add-read" onclick="openRegisterBookModal()"><i class="fa-solid fa-plus"></i> +1 Leer</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TARJETAS DE MÉTRICAS -->
+                    <div class="goals-metrics-grid">
+                        <div class="metric-card">
+                            <i class="fa-solid fa-bullseye metric-icon font-gold"></i>
+                            <div class="metric-info">
+                                <span class="metric-value" id="metricGoalTarget">30</span>
+                                <span class="metric-label">Meta Objetivo</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <i class="fa-solid fa-book-open metric-icon font-emerald"></i>
+                            <div class="metric-info">
+                                <span class="metric-value" id="metricGoalRead">0</span>
+                                <span class="metric-label">Completados</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <i class="fa-solid fa-clock-rotate-left metric-icon font-purple"></i>
+                            <div class="metric-info">
+                                <span class="metric-value" id="metricGoalRemaining">30</span>
+                                <span class="metric-label">Libros Faltantes</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <i class="fa-solid fa-chart-line metric-icon font-blue"></i>
+                            <div class="metric-info">
+                                <span class="metric-value" id="metricGoalPace">0%</span>
+                                <span class="metric-label">Avance Total</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- PESTAÑA 2: CATÁLOGO DE INSIGNIAS Y FILTROS -->
+                <div id="tabContentInsignias" style="display: none;">
                     <!-- BARRA DE FILTRADO ("Filtrar por") -->
                     <div class="insignia-filter-bar">
                         <span class="filter-title"><i class="fa-solid fa-filter"></i> Filtrar por:</span>
@@ -779,6 +863,41 @@
                             </button>
                         </div>
                     </details>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. POP-UP MODAL: REGISTRAR LIBRO LEÍDO -->
+    <div class="modal-overlay" id="modalRegistrarLibroLeido">
+        <div class="modal-box" style="max-width: 420px; text-align: center;">
+            <button class="modal-close" onclick="closeModal('modalRegistrarLibroLeido')">&times;</button>
+            <div class="modal-header">
+                <i class="fa-solid fa-book-bookmark modal-icon" style="color: #D77A9B;"></i>
+                <h3>Registrar Libro Leído</h3>
+                <p>Ingresa el título del libro para validar su puntaje</p>
+            </div>
+            <div class="modal-body" style="text-align: left;">
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label style="font-weight: 700; font-size: 13px;"><i class="fa-solid fa-book"></i> Título del libro:</label>
+                    <input type="text" id="inputReadBookTitle" class="form-input" placeholder="Ej. Cien años de soledad" oninput="previewReadBookSearch()" style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid #EFA9BE; font-size: 13px;">
+                </div>
+                
+                <!-- VISTA PREVIA DEL LIBRO ENCONTRADO O NO ENCONTRADO -->
+                <div class="read-book-preview-card" id="readBookPreviewCard">
+                    <div class="preview-cover-box" id="previewCoverBox">
+                        <i class="fa-solid fa-book fallback-grey-book"></i>
+                    </div>
+                    <div class="preview-info">
+                        <h5 id="previewBookTitle" style="font-size: 14px; font-weight: 800; margin-bottom: 4px;">Libro no especificado</h5>
+                        <span class="preview-points-badge" id="previewBookPoints" style="display: inline-block; padding: 2px 8px; background: #e0e7ff; color: #3730a3; border-radius: 10px; font-size: 11px; font-weight: 800;">+35 Pts</span>
+                        <p id="previewBookStatus" style="font-size: 11px; color: #64748b; margin-top: 4px; margin-bottom: 0;">Si el libro no existe en la biblioteca, obtienes +35 Pts promedio.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 18px;">
+                    <button type="button" class="btn-secondary" onclick="closeModal('modalRegistrarLibroLeido')" style="flex: 1; padding: 10px; border-radius: 12px;">Cancelar</button>
+                    <button type="button" class="btn-primary" onclick="confirmRegisterReadBook()" style="flex: 1; padding: 10px; border-radius: 12px;"><i class="fa-solid fa-check"></i> Registrar</button>
                 </div>
             </div>
         </div>
