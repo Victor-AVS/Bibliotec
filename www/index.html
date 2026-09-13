@@ -411,8 +411,21 @@
             <div class="fullscreen-page-body">
                 <div class="credencial-modal-content">
 
+                    <!-- BOTONES SELECTORES DE DISEÑO DE CREDENCIAL -->
+                    <div class="credencial-theme-selector">
+                        <button class="theme-select-btn active" id="btnThemePredeterminado" onclick="setCredencialTheme('predeterminado')">
+                            <i class="fa-solid fa-square-check"></i> Diseño Predeterminado
+                        </button>
+                        <button class="theme-select-btn" id="btnThemeRosa" onclick="setCredencialTheme('rosa')">
+                            <i class="fa-solid fa-heart"></i> Diseño Rosa
+                        </button>
+                        <button class="theme-select-btn" id="btnThemeCafe" onclick="setCredencialTheme('cafe')">
+                            <i class="fa-solid fa-mug-hot"></i> Diseño Café
+                        </button>
+                    </div>
+
                     <!-- TARJETA CREDENCIAL FLIP 3D (TOCA O DA CLIC PARA GIRAR) -->
-                    <div class="credencial-flip-container" id="credencialFlipContainer" onclick="toggleCredencialFlip()" title="Haz clic para girar la credencial">
+                    <div class="credencial-flip-container theme-predeterminado" id="credencialFlipContainer" onclick="toggleCredencialFlip()" title="Haz clic para girar la credencial">
                         <div class="credencial-flip-card">
                             
                             <!-- ANVERSO (FRENTE) -->

@@ -1223,9 +1223,60 @@ body.dark-mode .floating-print-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     padding: 10px 0;
     width: 100%;
+}
+
+/* BOTONES SELECTORES DE DISEÑO DE CREDENCIAL */
+.credencial-theme-selector {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 360px;
+    margin-bottom: 2px;
+    flex-wrap: wrap;
+}
+
+.theme-select-btn {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1.5px solid #d4a373;
+    background: #ffffff;
+    color: #6b4035;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+    transition: all 0.2s ease;
+}
+
+.theme-select-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+}
+
+.theme-select-btn.active {
+    background: linear-gradient(135deg, #6b4035 0%, #a97862 100%);
+    color: #ffffff;
+    border-color: #6b4035;
+    box-shadow: 0 4px 10px rgba(107, 64, 53, 0.3);
+}
+
+body.dark-mode .theme-select-btn {
+    background: #2b1825;
+    color: #fceef3;
+    border-color: #a97862;
+}
+
+body.dark-mode .theme-select-btn.active {
+    background: linear-gradient(135deg, #a97862 0%, #d77a9b 100%);
+    color: #ffffff;
+    border-color: #d77a9b;
 }
 
 /* CONTENEDOR GIRATORIO 3D (FLIP CARD ESTILO BANCO) */
@@ -1292,7 +1343,7 @@ body.dark-mode .floating-print-btn {
     z-index: 1;
 }
 
-/* Ondas gráficas verdes (Diseño Original TESCHI intacto) */
+/* Ondas gráficas verdes (Diseño Base) */
 .credencial-card .onda-superior-fondo {
     position: absolute;
     top: 0;
@@ -1597,6 +1648,242 @@ body.dark-mode .floating-print-btn {
     color: #4b5563;
     font-weight: 600;
     line-height: 1.1;
+}
+
+/* ================= OVERRIDES DINÁMICOS DE TEMAS DE CREDENCIAL ================= */
+
+/* --- TEMA 1: PREDETERMINADO (VERDE ORIGINAL) --- */
+.credencial-flip-container.theme-predeterminado .credencial-card {
+    background-color: #dcedc8 !important;
+    border: 1px solid #c5e1a5;
+    color: #1f2937;
+}
+
+.credencial-flip-container.theme-predeterminado .dots-pattern {
+    background-image: radial-gradient(#ffffff 1.2px, transparent 1.2px);
+    opacity: 0.45;
+}
+
+.credencial-flip-container.theme-predeterminado .onda-superior-fondo {
+    background: #aed581 !important;
+}
+
+.credencial-flip-container.theme-predeterminado .onda-superior-principal {
+    background: #689f38 !important;
+}
+
+.credencial-flip-container.theme-predeterminado .onda-inferior {
+    background: #7cb342 !important;
+}
+
+.credencial-flip-container.theme-predeterminado .school-title-center h1 {
+    color: #558b2f !important;
+}
+
+.credencial-flip-container.theme-predeterminado .school-title-center h2 {
+    color: #33691e !important;
+}
+
+.credencial-flip-container.theme-predeterminado .foto-container {
+    border: 2.5px solid #689f38;
+}
+
+.credencial-flip-container.theme-predeterminado .foto-default-icon {
+    color: #689f38;
+}
+
+.credencial-flip-container.theme-predeterminado .campo-blanco .label {
+    color: #558b2f;
+}
+
+.credencial-flip-container.theme-predeterminado .campo-blanco .valor {
+    color: #1f2937;
+}
+
+.credencial-flip-container.theme-predeterminado .footer-biblio-box p {
+    color: #33691e;
+}
+
+.credencial-flip-container.theme-predeterminado .reverso-aprobacion {
+    color: #33691e;
+}
+
+.credencial-flip-container.theme-predeterminado .anio-pill {
+    background: #558b2f !important;
+    color: #ffffff !important;
+}
+
+.credencial-flip-container.theme-predeterminado .barcode-text {
+    color: #4b5563;
+}
+
+.credencial-flip-container.theme-predeterminado .info-institucional-reverso .biblio-title {
+    color: #558b2f;
+}
+
+.credencial-flip-container.theme-predeterminado .info-institucional-reverso .teschi-name {
+    color: #33691e;
+}
+
+.credencial-flip-container.theme-predeterminado .info-institucional-reverso .address-text {
+    color: #4b5563;
+}
+
+/* --- TEMA 2: DISEÑO ROSA (CORAL / ROSADO) --- */
+.credencial-flip-container.theme-rosa .credencial-card {
+    background-color: #fcc2c7 !important;
+    border: 1px solid #ff8a80;
+    color: #e52b2b;
+}
+
+.credencial-flip-container.theme-rosa .dots-pattern {
+    background-image: radial-gradient(#ffffff 1.2px, transparent 1.2px);
+    opacity: 0.5;
+}
+
+.credencial-flip-container.theme-rosa .onda-superior-fondo {
+    background: #9e8e89 !important;
+}
+
+.credencial-flip-container.theme-rosa .onda-superior-principal {
+    background: #ff4d4d !important;
+}
+
+.credencial-flip-container.theme-rosa .onda-inferior {
+    background: #ff4d4d !important;
+}
+
+.credencial-flip-container.theme-rosa .school-title-center h1 {
+    color: #ff3b3b !important;
+}
+
+.credencial-flip-container.theme-rosa .school-title-center h2 {
+    color: #e52b2b !important;
+}
+
+.credencial-flip-container.theme-rosa .foto-container {
+    border: 2.5px solid #ff4d4d;
+}
+
+.credencial-flip-container.theme-rosa .foto-default-icon {
+    color: #ff4d4d;
+}
+
+.credencial-flip-container.theme-rosa .campo-blanco .label {
+    color: #e52b2b;
+}
+
+.credencial-flip-container.theme-rosa .campo-blanco .valor {
+    color: #ff3b3b;
+}
+
+.credencial-flip-container.theme-rosa .footer-biblio-box p {
+    color: #e52b2b;
+}
+
+.credencial-flip-container.theme-rosa .reverso-aprobacion {
+    color: #e52b2b;
+}
+
+.credencial-flip-container.theme-rosa .anio-pill {
+    background: #ff4d4d !important;
+    color: #ffffff !important;
+}
+
+.credencial-flip-container.theme-rosa .barcode-text {
+    color: #e52b2b;
+}
+
+.credencial-flip-container.theme-rosa .info-institucional-reverso .biblio-title {
+    color: #ff3b3b;
+}
+
+.credencial-flip-container.theme-rosa .info-institucional-reverso .teschi-name {
+    color: #e52b2b;
+}
+
+.credencial-flip-container.theme-rosa .info-institucional-reverso .address-text {
+    color: #e52b2b;
+}
+
+/* --- TEMA 3: DISEÑO CAFÉ (CHOCOLATE / CANELA) --- */
+.credencial-flip-container.theme-cafe .credencial-card {
+    background-color: #fdf8f5 !important;
+    border: 1px solid #c8a892;
+    color: #54332b;
+}
+
+.credencial-flip-container.theme-cafe .dots-pattern {
+    background-image: radial-gradient(#54332b 1px, transparent 1px);
+    opacity: 0.15;
+}
+
+.credencial-flip-container.theme-cafe .onda-superior-fondo {
+    background: #a48474 !important;
+}
+
+.credencial-flip-container.theme-cafe .onda-superior-principal {
+    background: #54332b !important;
+}
+
+.credencial-flip-container.theme-cafe .onda-inferior {
+    background: #54332b !important;
+}
+
+.credencial-flip-container.theme-cafe .school-title-center h1 {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.credencial-flip-container.theme-cafe .school-title-center h2 {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.credencial-flip-container.theme-cafe .foto-container {
+    border: 2.5px solid #54332b;
+}
+
+.credencial-flip-container.theme-cafe .foto-default-icon {
+    color: #54332b;
+}
+
+.credencial-flip-container.theme-cafe .campo-blanco .label {
+    color: #a48474;
+}
+
+.credencial-flip-container.theme-cafe .campo-blanco .valor {
+    color: #231714;
+}
+
+.credencial-flip-container.theme-cafe .footer-biblio-box p {
+    color: #54332b;
+}
+
+.credencial-flip-container.theme-cafe .reverso-aprobacion {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.credencial-flip-container.theme-cafe .anio-pill {
+    background: #54332b !important;
+    color: #ffffff !important;
+}
+
+.credencial-flip-container.theme-cafe .barcode-text {
+    color: #54332b;
+}
+
+.credencial-flip-container.theme-cafe .info-institucional-reverso .biblio-title {
+    color: #a48474;
+}
+
+.credencial-flip-container.theme-cafe .info-institucional-reverso .teschi-name {
+    color: #54332b;
+}
+
+.credencial-flip-container.theme-cafe .info-institucional-reverso .address-text {
+    color: #54332b;
 }
 
 /* BOTÓN FLOTANTE IMPRIMIR EN LA ESQUINA INFERIOR DERECHA */

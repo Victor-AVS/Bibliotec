@@ -830,10 +830,39 @@ function openCredencialModal() {
         idAniosPills.innerHTML = pillsHtml;
     }
 
+    const savedTheme = localStorage.getItem('bibliotec_credencial_theme') || 'predeterminado';
+    setCredencialTheme(savedTheme);
+
     const flipContainer = document.getElementById('credencialFlipContainer');
     if (flipContainer) flipContainer.classList.remove('flipped');
 
     modal.classList.add('active');
+}
+
+let currentCredencialTheme = 'predeterminado';
+
+function setCredencialTheme(themeName) {
+    currentCredencialTheme = themeName || 'predeterminado';
+    const flipContainer = document.getElementById('credencialFlipContainer');
+    if (flipContainer) {
+        flipContainer.classList.remove('theme-predeterminado', 'theme-rosa', 'theme-cafe');
+        flipContainer.classList.add(`theme-${currentCredencialTheme}`);
+    }
+
+    const btnPred = document.getElementById('btnThemePredeterminado');
+    const btnRosa = document.getElementById('btnThemeRosa');
+    const btnCafe = document.getElementById('btnThemeCafe');
+
+    if (btnPred) btnPred.classList.toggle('active', currentCredencialTheme === 'predeterminado');
+    if (btnRosa) btnRosa.classList.toggle('active', currentCredencialTheme === 'rosa');
+    if (btnCafe) btnCafe.classList.toggle('active', currentCredencialTheme === 'cafe');
+
+    const mat = (currentUser && currentUser.matricula) ? currentUser.matricula : '2026123456';
+    generateMatriculaBarcode(mat);
+
+    try {
+        localStorage.setItem('bibliotec_credencial_theme', currentCredencialTheme);
+    } catch(e) {}
 }
 
 function toggleCredencialFlip() {
@@ -851,9 +880,13 @@ function generateMatriculaBarcode(matricula) {
     if (textEl) textEl.textContent = matricula;
     if (!svg) return;
 
+    let fillHex = '#1f2937';
+    if (currentCredencialTheme === 'rosa') fillHex = '#ff4d4d';
+    else if (currentCredencialTheme === 'cafe') fillHex = '#231714';
+
     const digits = String(matricula).replace(/\D/g, '');
     let barsHtml = `<rect x="0" y="0" width="200" height="60" fill="#ffffff"/>`;
-    barsHtml += `<g fill="#1f2937">`;
+    barsHtml += `<g fill="${fillHex}">`;
 
     let currentX = 10;
     barsHtml += `<rect x="${currentX}" y="4" width="3" height="46"/>`; currentX += 5;
