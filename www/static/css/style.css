@@ -1186,6 +1186,39 @@ body.dark-mode .input-group select {
 }
 
 /* CREDENCIAL DIGITAL CARD (ESTÁNDAR CR80 OFICIAL TESCHI) */
+/* BOTÓN FLOTANTE IMPRIMIR (ESQUINA INFERIOR DERECHA) */
+.floating-print-btn {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    background: linear-gradient(135deg, #6B4035 0%, #A97862 100%);
+    color: #ffffff;
+    border: 1px solid #EFA9BE;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(107, 64, 53, 0.35);
+    z-index: 10600;
+    transition: all 0.25s ease;
+}
+
+.floating-print-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(107, 64, 53, 0.45);
+    background: linear-gradient(135deg, #A97862 0%, #6B4035 100%);
+}
+
+body.dark-mode .floating-print-btn {
+    background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
+    border-color: #c084fc;
+    box-shadow: 0 6px 20px rgba(147, 51, 234, 0.4);
+}
+
 .credencial-modal-content {
     display: flex;
     flex-direction: column;

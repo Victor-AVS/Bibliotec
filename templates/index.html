@@ -395,14 +395,15 @@
 
     <!-- MODAL REGISTRO / CREDENCIAL DIGITAL (FULLSCREEN OVERLAY) -->
     <div class="modal-overlay modal-overlay-fullscreen" id="modalCredencial" style="z-index: 10500;">
-        <div class="fullscreen-page-container">
+        <div class="fullscreen-page-container" style="position: relative;">
             <!-- HEADER DE PANTALLA COMPLETA ESTÁNDAR CON BOTÓN DE REGRESO -->
             <div class="fullscreen-page-header">
                 <button class="header-back-btn" onclick="closeModal('modalCredencial')">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
                 <div class="header-page-title" style="flex: 1;">
-                    <h3>Credencial Oficial Bibliotec.</h3>
+                    <h3>Credencial Digital TESCHI</h3>
+                    <span>Identificación Institucional Oficial CR80</span>
                 </div>
             </div>
 
@@ -541,15 +542,14 @@
                         </button>
                     </div>
 
-                    <!-- BOTÓN IMPRIMIR EN LA ESQUINA INFERIOR DERECHA -->
-                    <div style="width: 100%; max-width: 380px; display: flex; justify-content: flex-end; margin-top: 20px;">
-                        <button class="btn-primary btn-sm" onclick="window.print()" style="font-size: 11px; padding: 8px 16px; border-radius: 20px; background: linear-gradient(135deg, #6B4035 0%, #A97862 100%); border: none; box-shadow: 0 4px 12px rgba(107, 64, 53, 0.25); display: inline-flex; align-items: center; gap: 6px;">
-                            <i class="fa-solid fa-print"></i> Imprimir
-                        </button>
-                    </div>
-
                 </div>
             </div>
+
+            <!-- BOTÓN FLOTANTE IMPRIMIR EN LA ESQUINA INFERIOR DERECHA -->
+            <button class="floating-print-btn" onclick="window.print()" title="Imprimir Credencial">
+                <i class="fa-solid fa-print"></i>
+                <span>Imprimir</span>
+            </button>
         </div>
     </div>
 
