@@ -411,131 +411,131 @@
             <div class="fullscreen-page-body">
                 <div class="credencial-modal-content">
 
-                    <!-- BARRA DE ACCIONES CON PÍLDORAS ESTÁNDAR DEL SISTEMA -->
-                    <div class="insignia-filter-bar" style="justify-content: center; width: 100%; max-width: 380px; margin-bottom: 16px;">
-                        <div class="filter-pills">
-                            <button class="filter-pill active" id="btnSideAnverso" onclick="switchCredencialSide('anverso')">
-                                <i class="fa-solid fa-address-card"></i> Anverso (Frente)
-                            </button>
-                            <button class="filter-pill" id="btnSideReverso" onclick="switchCredencialSide('reverso')">
-                                <i class="fa-solid fa-qrcode"></i> Reverso (Atrás)
-                            </button>
+                    <!-- TARJETA CREDENCIAL FLIP 3D (TOCA O DA CLIC PARA GIRAR) -->
+                    <div class="credencial-flip-container" id="credencialFlipContainer" onclick="toggleCredencialFlip()" title="Haz clic para girar la credencial">
+                        <div class="credencial-flip-card">
+                            
+                            <!-- ANVERSO (FRENTE) -->
+                            <div class="credencial-card-face face-front">
+                                <div class="dots-pattern"></div>
+                                <div class="onda-superior-fondo"></div>
+                                <div class="onda-superior-principal"></div>
+                                <div class="onda-inferior"></div>
+
+                                <div class="card-content">
+                                    <div class="header-top">
+                                        <div class="logo-teschi">
+                                            <span class="tes-text">TES<span style="color:#7cb342;">C</span>HI</span>
+                                            <span class="teschi-sub">Tecnológico de Estudios Superiores Chimalhuacán</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="school-title-center">
+                                        <h1>Tecnológico de Estudios Superiores</h1>
+                                        <h2>Chimalhuacán</h2>
+                                    </div>
+
+                                    <div class="anverso-body">
+                                        <div class="foto-container" id="idPhotoContainer">
+                                            <img id="idPhotoImg" src="" alt="Foto" class="foto-estudiante" style="display: none;">
+                                            <i id="idPhotoDefaultIcon" class="fa-solid fa-user foto-default-icon"></i>
+                                        </div>
+
+                                        <div class="datos-column">
+                                            <div class="campo-blanco">
+                                                <span class="valor" id="idNombre">Cargando Nombre...</span>
+                                                <span class="label">Nombre del estudiante</span>
+                                            </div>
+
+                                            <div class="fila-doble">
+                                                <div class="campo-blanco">
+                                                    <span class="valor" id="idMatricula">2026000000</span>
+                                                    <span class="label">Matrícula</span>
+                                                </div>
+                                                <div class="campo-blanco">
+                                                    <span class="valor" id="idCarrera">Sistemas</span>
+                                                    <span class="label">Programa</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="fila-doble">
+                                                <div class="campo-blanco">
+                                                    <span class="valor" id="idTurno">Matutino</span>
+                                                    <span class="label">Turno</span>
+                                                </div>
+                                                <div class="campo-blanco">
+                                                    <span class="valor" id="idVigencia">2026-2029</span>
+                                                    <span class="label">Vigencia</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="footer-biblio-box">
+                                        <p>Lee, aprende y descubre nuevas historias. ¡Tu credencial te abre las puertas de la Biblioteca TESCHI!</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- REVERSO (ATRÁS) -->
+                            <div class="credencial-card-face face-back">
+                                <div class="dots-pattern"></div>
+                                <div class="onda-superior-fondo"></div>
+                                <div class="onda-superior-principal"></div>
+                                <div class="onda-inferior"></div>
+
+                                <div class="card-content">
+                                    <div class="header-top">
+                                        <div class="logo-teschi">
+                                            <span class="tes-text">TES<span style="color:#7cb342;">C</span>HI</span>
+                                            <span class="teschi-sub">Tecnológico de Estudios Superiores Chimalhuacán</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="reverso-body">
+                                        <div class="reverso-aprobacion">Aprobación</div>
+
+                                        <div class="layout-reverso-grid">
+                                            <div class="anios-container" id="idAniosPills">
+                                                <div class="anio-pill">2026</div>
+                                                <div class="anio-pill">2027</div>
+                                                <div class="anio-pill">2028</div>
+                                                <div class="anio-pill">2029</div>
+                                            </div>
+
+                                            <div class="barcode-section">
+                                                <svg class="barcode-svg" id="svgBarcode" viewBox="0 0 200 60" preserveAspectRatio="none">
+                                                    <!-- Generado dinámicamente -->
+                                                </svg>
+                                                <div class="barcode-text" id="idBarcodeText">2026000000</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="info-institucional-reverso">
+                                            <div class="biblio-title">Biblioteca Institucional</div>
+                                            <div class="teschi-name">TESCHI</div>
+                                            <div class="address-text">
+                                                Tecnológico de Estudios Superiores de Chimalhuacán<br>
+                                                Primavera s/n Col. Sta María Nativitas, Chimalhuacán Edo. Méx.<br>
+                                                55-58-53-72-93 | direccion@teschi.edu.mx
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="height: 1px;"></div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
-                    <!-- TARJETA CREDENCIAL CR80 (ANVERSO) -->
-                    <div class="credencial-card" id="cardAnverso">
-                        <div class="dots-pattern"></div>
-                        <div class="onda-superior-fondo"></div>
-                        <div class="onda-superior-principal"></div>
-                        <div class="onda-inferior"></div>
-
-                        <div class="card-content">
-                            <div class="header-top">
-                                <div class="logo-teschi">
-                                    <span class="tes-text">TES<span style="color:#7cb342;">C</span>HI</span>
-                                    <span class="teschi-sub">Tecnológico de Estudios Superiores Chimalhuacán</span>
-                                </div>
-                            </div>
-
-                            <div class="school-title-center">
-                                <h1>Tecnológico de Estudios Superiores</h1>
-                                <h2>Chimalhuacán</h2>
-                            </div>
-
-                            <div class="anverso-body">
-                                <div class="foto-container" id="idPhotoContainer">
-                                    <img id="idPhotoImg" src="" alt="Foto" class="foto-estudiante" style="display: none;">
-                                    <i id="idPhotoDefaultIcon" class="fa-solid fa-user foto-default-icon"></i>
-                                </div>
-
-                                <div class="datos-column">
-                                    <div class="campo-blanco">
-                                        <span class="valor" id="idNombre">Cargando Nombre...</span>
-                                        <span class="label">Nombre del estudiante</span>
-                                    </div>
-
-                                    <div class="fila-doble">
-                                        <div class="campo-blanco">
-                                            <span class="valor" id="idMatricula">2026000000</span>
-                                            <span class="label">Matrícula</span>
-                                        </div>
-                                        <div class="campo-blanco">
-                                            <span class="valor" id="idCarrera">Sistemas</span>
-                                            <span class="label">Programa</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="fila-doble">
-                                        <div class="campo-blanco">
-                                            <span class="valor" id="idTurno">Matutino</span>
-                                            <span class="label">Turno</span>
-                                        </div>
-                                        <div class="campo-blanco">
-                                            <span class="valor" id="idVigencia">2026-2029</span>
-                                            <span class="label">Vigencia</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="footer-biblio-box">
-                                <p>Lee, aprende y descubre nuevas historias. ¡Tu credencial te abre las puertas de la Biblioteca TESCHI!</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- TARJETA CREDENCIAL CR80 (REVERSO) -->
-                    <div class="credencial-card" id="cardReverso" style="display: none;">
-                        <div class="dots-pattern"></div>
-                        <div class="onda-superior-fondo"></div>
-                        <div class="onda-superior-principal"></div>
-                        <div class="onda-inferior"></div>
-
-                        <div class="card-content">
-                            <div class="header-top">
-                                <div class="logo-teschi">
-                                    <span class="tes-text">TES<span style="color:#7cb342;">C</span>HI</span>
-                                    <span class="teschi-sub">Tecnológico de Estudios Superiores Chimalhuacán</span>
-                                </div>
-                            </div>
-
-                            <div class="reverso-body">
-                                <div class="reverso-aprobacion">Aprobación</div>
-
-                                <div class="layout-reverso-grid">
-                                    <div class="anios-container" id="idAniosPills">
-                                        <div class="anio-pill">2026</div>
-                                        <div class="anio-pill">2027</div>
-                                        <div class="anio-pill">2028</div>
-                                        <div class="anio-pill">2029</div>
-                                    </div>
-
-                                    <div class="barcode-section">
-                                        <svg class="barcode-svg" id="svgBarcode" viewBox="0 0 200 60" preserveAspectRatio="none">
-                                            <!-- Generado dinámicamente -->
-                                        </svg>
-                                        <div class="barcode-text" id="idBarcodeText">2026000000</div>
-                                    </div>
-                                </div>
-
-                                <div class="info-institucional-reverso">
-                                    <div class="biblio-title">Biblioteca Institucional</div>
-                                    <div class="teschi-name">TESCHI</div>
-                                    <div class="address-text">
-                                        Tecnológico de Estudios Superiores de Chimalhuacán<br>
-                                        Primavera s/n Col. Sta María Nativitas, Chimalhuacán Edo. Méx.<br>
-                                        55-58-53-72-93 | direccion@teschi.edu.mx
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style="height: 1px;"></div>
-                        </div>
+                    <!-- INDICATIVO DE INTERACCIÓN FLIP -->
+                    <div style="text-align: center; font-size: 11px; color: #a97862; font-weight: 700; margin-top: 2px;">
+                        <i class="fa-solid fa-rotate"></i> Toca la credencial para ver el reverso
                     </div>
 
                     <!-- OPCIÓN SUBIR / CAMBIAR FOTO -->
-                    <div style="width: 100%; max-width: 340px; text-align: center; margin-top: 16px;">
+                    <div style="width: 100%; max-width: 340px; text-align: center; margin-top: 14px;">
                         <input type="file" id="inputFotoCredencial" accept="image/*" style="display: none;" onchange="handleFotoCredencialUpload(event)">
                         <button class="btn-primary btn-sm" onclick="document.getElementById('inputFotoCredencial').click()" style="font-size: 12px; width: 100%; padding: 10px 16px; border-radius: 12px; background: linear-gradient(135deg, #6B4035 0%, #A97862 100%); border: none;">
                             <i class="fa-solid fa-camera"></i> Subir / Actualizar Fotografía

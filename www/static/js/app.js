@@ -830,29 +830,19 @@ function openCredencialModal() {
         idAniosPills.innerHTML = pillsHtml;
     }
 
-    switchCredencialSide('anverso');
+    const flipContainer = document.getElementById('credencialFlipContainer');
+    if (flipContainer) flipContainer.classList.remove('flipped');
 
     modal.classList.add('active');
 }
 
-function switchCredencialSide(side) {
-    const cardAnverso = document.getElementById('cardAnverso');
-    const cardReverso = document.getElementById('cardReverso');
-    const btnAnverso = document.getElementById('btnSideAnverso');
-    const btnReverso = document.getElementById('btnSideReverso');
-
-    if (side === 'anverso') {
-        if (cardAnverso) cardAnverso.style.display = 'flex';
-        if (cardReverso) cardReverso.style.display = 'none';
-        if (btnAnverso) btnAnverso.classList.add('active');
-        if (btnReverso) btnReverso.classList.remove('active');
-    } else {
-        if (cardAnverso) cardAnverso.style.display = 'none';
-        if (cardReverso) cardReverso.style.display = 'flex';
-        if (btnAnverso) btnAnverso.classList.remove('active');
-        if (btnReverso) btnReverso.classList.add('active');
+function toggleCredencialFlip() {
+    const flipContainer = document.getElementById('credencialFlipContainer');
+    if (flipContainer) {
+        flipContainer.classList.toggle('flipped');
     }
 }
+
 
 function generateMatriculaBarcode(matricula) {
     const svg = document.getElementById('svgBarcode');

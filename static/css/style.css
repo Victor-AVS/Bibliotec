@@ -1227,6 +1227,57 @@ body.dark-mode .floating-print-btn {
     padding: 10px 0;
 }
 
+/* CONTENEDOR GIRATORIO 3D (FLIP CARD ESTILO BANCO) */
+.credencial-flip-container {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 340px;
+    height: 215px;
+    cursor: pointer;
+    margin: 4px auto 10px auto;
+}
+
+.credencial-flip-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.credencial-flip-container.flipped .credencial-flip-card {
+    transform: rotateY(180deg);
+}
+
+.credencial-card-face {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border: 1px solid #c5e1a5;
+    background-color: #dcedc8 !important;
+    display: flex;
+    flex-direction: column;
+    color: #1f2937;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    user-select: none;
+    transition: box-shadow 0.2s ease;
+}
+
+.credencial-flip-container:hover .credencial-card-face {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.credencial-card-face.face-back {
+    transform: rotateY(180deg);
+}
+
 .credencial-actions-bar {
     display: flex;
     gap: 10px;
