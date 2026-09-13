@@ -760,6 +760,11 @@ function openPerfilModal() {
     document.getElementById('modalPerfil').classList.add('active');
 }
 
+function openModal(modalId) {
+    const el = document.getElementById(modalId);
+    if (el) el.classList.add('active');
+}
+
 function closeModal(modalId) {
     const el = document.getElementById(modalId);
     if (el) el.classList.remove('active');
@@ -1602,149 +1607,20 @@ function renderMisLibrosLeidos() {
 }
 
 // 4. GESTIÓN DE LIBROS EN PROCESO
-let editingProcesoIndex = -1;
-let currentProcesoMatchedBook = null;
-
-function openModalAgregarLibroProceso(index = -1) {
-    editingProcesoIndex = index;
-    currentProcesoMatchedBook = null;
-
-    const modalTitle = document.getElementById('modalProcesoTitle');
-    const inputTitle = document.getElementById('inputProcesoBookTitle');
-    const inputPercent = document.getElementById('inputProcesoPorcentaje');
-    const labelPercent = document.getElementById('labelProcentajeValue');
-
-    if (index >= 0 && myBooksData.en_proceso[index]) {
-        const b = myBooksData.en_proceso[index];
-        if (modalTitle) modalTitle.textContent = 'Actualizar Avance';
-        if (inputTitle) inputTitle.value = b.titulo;
-        if (inputPercent) inputPercent.value = b.porcentaje || 50;
-        if (labelPercent) labelPercent.textContent = (b.porcentaje || 50) + '%';
-    } else {
-        if (modalTitle) modalTitle.textContent = 'Agregar a En Proceso';
-        if (inputTitle) inputTitle.value = '';
-        if (inputPercent) inputPercent.value = 50;
-        if (labelPercent) labelPercent.textContent = '50%';
-    }
-
-    previewProcesoBookSearch();
-    openModal('modalAgregarLibroProceso');
-}
-
-function previewProcesoBookSearch() {
-    const inputTitle = document.getElementById('inputProcesoBookTitle');
-    if (!inputTitle) return;
-
-    const titleEl = document.getElementById('procesoPreviewBookTitle');
-    const authorEl = document.getElementById('procesoPreviewBookStatus');
-    const coverBox = document.getElementById('procesoPreviewCoverBox');
-
-    const query = inputTitle.value.trim().toLowerCase();
-
-    if (!query) {
-        if (titleEl) titleEl.textContent = 'Libro no especificado';
-        if (authorEl) authorEl.textContent = 'Ingresa el nombre para buscarlo en la biblioteca.';
-        if (coverBox) coverBox.innerHTML = '<i class="fa-solid fa-book fallback-grey-book"></i>';
-        currentProcesoMatchedBook = null;
-        return;
-    }
-
-    let matched = null;
-    if (typeof booksMap !== 'undefined' && booksMap) {
-        const keys = Object.keys(booksMap);
-        for (let k of keys) {
-            const b = booksMap[k];
-            if (b && b.titulo && b.titulo.toLowerCase().includes(query)) {
-                matched = b;
-                break;
-            }
+function openModalActualizarAvance(index) {
+    if (index < 0 || !myBooksData.en_proceso[index]) return;
+    const b = myBooksData.en_proceso[index];
+    const newPercentStr = prompt(`Actualizar porcentaje de lectura para "${b.titulo}" (0 - 100%):`, b.porcentaje || 50);
+    if (newPercentStr !== null) {
+        const p = Math.min(100, Math.max(0, parseInt(newPercentStr) || 0));
+        b.porcentaje = p;
+        if (p >= 100) {
+            marcarLibroProcesoLeido(index);
+        } else {
+            saveMyBooksData();
+            renderMisLibrosEnProceso();
         }
     }
-
-    if (matched) {
-        currentProcesoMatchedBook = matched;
-        const cover = matched.portada_url || (typeof FALLBACK_COVER !== 'undefined' ? FALLBACK_COVER : '');
-        if (titleEl) titleEl.textContent = matched.titulo;
-        if (authorEl) authorEl.textContent = `Encontrado: ${matched.autor || 'Biblioteca'}`;
-        if (coverBox) coverBox.innerHTML = `<img src="${cover}" alt="${matched.titulo}">`;
-    } else {
-        currentProcesoMatchedBook = null;
-        if (titleEl) titleEl.textContent = inputTitle.value.trim();
-        if (authorEl) authorEl.textContent = 'Libro personalizado (No registrado en catálogo)';
-        if (coverBox) coverBox.innerHTML = '<i class="fa-solid fa-book fallback-grey-book"></i>';
-    }
-}
-
-function confirmSaveLibroEnProceso() {
-    const inputTitle = document.getElementById('inputProcesoBookTitle');
-    const inputPercent = document.getElementById('inputProcesoPorcentaje');
-
-    const title = inputTitle ? inputTitle.value.trim() : '';
-    const percentage = inputPercent ? parseInt(inputPercent.value) || 0 : 0;
-
-    if (!title) {
-        alert('Por favor escribe el título del libro.');
-        return;
-    }
-
-    let cover = '';
-    let author = 'Autor no especificado';
-
-    if (currentProcesoMatchedBook) {
-        cover = currentProcesoMatchedBook.portada_url || '';
-        author = currentProcesoMatchedBook.autor || 'Biblioteca';
-    }
-
-    if (percentage >= 100) {
-        if (editingProcesoIndex >= 0) {
-            myBooksData.en_proceso.splice(editingProcesoIndex, 1);
-        }
-        
-        myBooksData.leidos.unshift({
-            id: Date.now().toString(),
-            titulo: currentProcesoMatchedBook ? currentProcesoMatchedBook.titulo : title,
-            autor: author,
-            portada: cover,
-            puntos: currentProcesoMatchedBook ? (currentProcesoMatchedBook.puntos || 40) : 35,
-            fecha: new Date().toLocaleDateString('es-MX')
-        });
-        saveMyBooksData();
-
-        const pts = currentProcesoMatchedBook ? (currentProcesoMatchedBook.puntos || 40) : 35;
-        readingGoalData.read = (parseInt(readingGoalData.read) || 0) + 1;
-        saveReadingGoalData();
-
-        if (!currentUser) currentUser = { puntos: 0 };
-        currentUser.puntos = (parseInt(currentUser.puntos) || 0) + pts;
-        localStorage.setItem('bibliotec_user', JSON.stringify(currentUser));
-
-        updateReadingGoalsUI();
-        updateInsigniasProgressUI();
-        closeModal('modalAgregarLibroProceso');
-
-        switchMisLibrosTab('leidos');
-        alert(`¡Felicidades! Completaste al 100% "${title}".\nSe ha movido a Libros ya Leídos y ganaste +${pts} Pts.`);
-        return;
-    }
-
-    const itemData = {
-        id: Date.now().toString(),
-        titulo: currentProcesoMatchedBook ? currentProcesoMatchedBook.titulo : title,
-        autor: author,
-        portada: cover,
-        porcentaje: percentage,
-        fecha_inicio: new Date().toLocaleDateString('es-MX')
-    };
-
-    if (editingProcesoIndex >= 0) {
-        myBooksData.en_proceso[editingProcesoIndex] = itemData;
-    } else {
-        myBooksData.en_proceso.unshift(itemData);
-    }
-
-    saveMyBooksData();
-    closeModal('modalAgregarLibroProceso');
-    renderMisLibrosEnProceso();
 }
 
 function marcarLibroProcesoLeido(index) {
