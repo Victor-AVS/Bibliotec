@@ -555,6 +555,40 @@
                         </button>
                     </div>
 
+                    <!-- SECCIÓN: ESTADO DEL ESTUDIANTE EN LA BIBLIOTECA (PENDIENTES E HISTORIAL) -->
+                    <div class="student-status-section no-print">
+                        <!-- ENCABEZADO DE ESTATUS GENERAL (AL CORRIENTE / DEUDOR) -->
+                        <div class="status-header-card" id="credencialStatusHeader">
+                            <div class="status-badge-icon" id="statusBadgeIcon">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="status-header-info">
+                                <h4 id="statusTitle">Estatus: Estudiante Al Corriente</h4>
+                                <p id="statusSubtitle">Cargando información de biblioteca...</p>
+                            </div>
+                        </div>
+
+                        <!-- BOTONES DE NAVEGACIÓN: PENDIENTES / HISTORIAL -->
+                        <div class="status-tabs-container">
+                            <button class="status-tab-btn active" id="btnTabPendientes" onclick="switchCredencialTab('pendientes')">
+                                <i class="fa-solid fa-clock"></i> Pendientes
+                            </button>
+                            <button class="status-tab-btn" id="btnTabHistorial" onclick="switchCredencialTab('historial')">
+                                <i class="fa-solid fa-clock-rotate-left"></i> Historial
+                            </button>
+                        </div>
+
+                        <!-- CONTENIDO PENDIENTES -->
+                        <div class="status-tab-content active" id="tabContentPendientes">
+                            <!-- Renderizado dinámico JS -->
+                        </div>
+
+                        <!-- CONTENIDO HISTORIAL -->
+                        <div class="status-tab-content" id="tabContentHistorial" style="display: none;">
+                            <!-- Renderizado dinámico JS -->
+                        </div>
+                    </div>
+
                 </div>
             </div>
 

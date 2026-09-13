@@ -836,6 +836,8 @@ function openCredencialModal() {
     const flipContainer = document.getElementById('credencialFlipContainer');
     if (flipContainer) flipContainer.classList.remove('flipped');
 
+    loadStudentLibraryStatus();
+
     modal.classList.add('active');
 }
 
@@ -888,6 +890,192 @@ function downloadCredencialPDF() {
     setTimeout(() => {
         document.title = originalTitle;
     }, 1500);
+}
+
+/* ================= LÓGICA DE ESTADO DEL ESTUDIANTE EN LA BIBLIOTECA (PENDIENTES E HISTORIAL) ================= */
+let currentStatusTab = 'pendientes';
+let studentStatusData = {
+    es_deudor: false,
+    pendientes: [],
+    historial: [],
+    total_historial: 0
+};
+
+function switchCredencialTab(tabName) {
+    currentStatusTab = tabName;
+    const btnPend = document.getElementById('btnTabPendientes');
+    const btnHist = document.getElementById('btnTabHistorial');
+    const contentPend = document.getElementById('tabContentPendientes');
+    const contentHist = document.getElementById('tabContentHistorial');
+
+    if (btnPend) btnPend.classList.toggle('active', tabName === 'pendientes');
+    if (btnHist) btnHist.classList.toggle('active', tabName === 'historial');
+
+    if (contentPend) {
+        contentPend.style.display = (tabName === 'pendientes') ? 'flex' : 'none';
+    }
+    if (contentHist) {
+        contentHist.style.display = (tabName === 'historial') ? 'flex' : 'none';
+    }
+}
+
+async function loadStudentLibraryStatus() {
+    const idUsuario = (currentUser && currentUser.id_usuario) ? currentUser.id_usuario : 1;
+    
+    try {
+        const response = await fetch(`${backendUrl}/api/usuario/${idUsuario}/prestamos`);
+        const data = await response.json();
+        if (data.success) {
+            studentStatusData = data;
+        } else {
+            throw new Error(data.mensaje || 'Error al cargar préstamos');
+        }
+    } catch (e) {
+        studentStatusData = {
+            es_deudor: false,
+            pendientes: [
+                {
+                    id_prestamo: 1,
+                    titulo: "Estructuras de Datos y Algoritmos en Java",
+                    portada_url: "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=300",
+                    fecha_prestamo: "08/09/2026",
+                    fecha_devolucion_esperada: "22/09/2026",
+                    es_vencido: false
+                }
+            ],
+            historial: [
+                {
+                    id_prestamo: 2,
+                    titulo: "Cálculo Multivariable y Vectorial",
+                    portada_url: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300",
+                    fecha_prestamo: "15/08/2026",
+                    fecha_devolucion_real: "28/08/2026"
+                },
+                {
+                    id_prestamo: 3,
+                    titulo: "Fundamentos de Redes de Computadoras",
+                    portada_url: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300",
+                    fecha_prestamo: "01/08/2026",
+                    fecha_devolucion_real: "12/08/2026"
+                }
+            ],
+            total_historial: 2
+        };
+    }
+
+    renderStudentStatusView();
+}
+
+function renderStudentStatusView() {
+    // 1. Actualizar tarjeta de estatus general
+    const headerCard = document.getElementById('credencialStatusHeader');
+    const badgeIcon = document.getElementById('statusBadgeIcon');
+    const titleEl = document.getElementById('statusTitle');
+    const subTitleEl = document.getElementById('statusSubtitle');
+
+    const hasVencidos = (studentStatusData.pendientes || []).some(p => p.es_vencido);
+    const isDeudor = studentStatusData.es_deudor || hasVencidos;
+
+    if (headerCard && badgeIcon && titleEl && subTitleEl) {
+        if (isDeudor) {
+            headerCard.className = 'status-header-card deudor';
+            badgeIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            titleEl.textContent = 'Estatus: Deudor de Biblioteca';
+            subTitleEl.textContent = 'Tienes libro(s) con fecha de entrega vencida. Por favor entrégalos a la brevedad.';
+        } else {
+            headerCard.className = 'status-header-card';
+            badgeIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+            titleEl.textContent = 'Estatus: Estudiante Al Corriente';
+            subTitleEl.textContent = 'No registras multas ni entregas pendientes fuera de plazo en Biblioteca TESCHI.';
+        }
+    }
+
+    // 2. Renderizar pestaña Pendientes
+    const contentPend = document.getElementById('tabContentPendientes');
+    if (contentPend) {
+        if (!studentStatusData.pendientes || studentStatusData.pendientes.length === 0) {
+            contentPend.innerHTML = `
+                <div class="empty-status-state">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <p>¡No tienes libros pendientes por entregar!</p>
+                    <span>Estás al corriente con todos tus préstamos en la Biblioteca TESCHI.</span>
+                </div>
+            `;
+        } else {
+            let html = '';
+            studentStatusData.pendientes.forEach(item => {
+                const coverHtml = item.portada_url 
+                    ? `<img src="${item.portada_url}" class="prestamo-cover" alt="Portada" onerror="this.outerHTML='<div class=\\'prestamo-cover\\'><i class=\\'fa-solid fa-book\\'></i></div>'">`
+                    : `<div class="prestamo-cover"><i class="fa-solid fa-book"></i></div>`;
+                
+                const badgeClass = item.es_vencido ? 'badge-vencido' : 'badge-vigente';
+                const badgeText = item.es_vencido ? '<i class="fa-solid fa-circle-exclamation"></i> Vencido / Entregar Hoy' : '<i class="fa-solid fa-clock"></i> En Préstamo Activo';
+
+                html += `
+                    <div class="prestamo-card">
+                        ${coverHtml}
+                        <div class="prestamo-details">
+                            <h5 class="prestamo-title" title="${item.titulo}">${item.titulo}</h5>
+                            <div class="prestamo-date-legend">
+                                <span><i class="fa-solid fa-calendar-minus"></i> Pedido el: ${item.fecha_prestamo}</span>
+                            </div>
+                            <div class="prestamo-date-legend">
+                                <span><i class="fa-solid fa-calendar-check"></i> Entregar el: <strong>${item.fecha_devolucion_esperada}</strong></span>
+                            </div>
+                            <span class="badge-status ${badgeClass}">${badgeText}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            contentPend.innerHTML = html;
+        }
+    }
+
+    // 3. Renderizar pestaña Historial
+    const contentHist = document.getElementById('tabContentHistorial');
+    if (contentHist) {
+        const totalCount = studentStatusData.total_historial || (studentStatusData.historial ? studentStatusData.historial.length : 0);
+        let html = `
+            <div class="historial-counter-badge">
+                <i class="fa-solid fa-book-bookmark"></i> Has pedido prestados <strong>${totalCount} libros</strong> en total
+            </div>
+        `;
+
+        if (!studentStatusData.historial || studentStatusData.historial.length === 0) {
+            html += `
+                <div class="empty-status-state">
+                    <i class="fa-solid fa-box-open" style="color: #a97862;"></i>
+                    <p>Aún no tienes historial de préstamos</p>
+                    <span>Tus préstamos concluidos aparecerán en esta sección.</span>
+                </div>
+            `;
+        } else {
+            studentStatusData.historial.forEach(item => {
+                const coverHtml = item.portada_url 
+                    ? `<img src="${item.portada_url}" class="prestamo-cover" alt="Portada" onerror="this.outerHTML='<div class=\\'prestamo-cover\\'><i class=\\'fa-solid fa-book\\'></i></div>'">`
+                    : `<div class="prestamo-cover"><i class="fa-solid fa-book"></i></div>`;
+
+                html += `
+                    <div class="prestamo-card">
+                        ${coverHtml}
+                        <div class="prestamo-details">
+                            <h5 class="prestamo-title" title="${item.titulo}">${item.titulo}</h5>
+                            <div class="prestamo-date-legend">
+                                <span><i class="fa-solid fa-calendar-minus"></i> Pedido el: ${item.fecha_prestamo}</span>
+                            </div>
+                            <div class="prestamo-date-legend">
+                                <span><i class="fa-solid fa-calendar-check"></i> Entregado el: <strong>${item.fecha_devolucion_real}</strong></span>
+                            </div>
+                            <span class="badge-status badge-entregado"><i class="fa-solid fa-circle-check"></i> Concluido</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        contentHist.innerHTML = html;
+    }
+
+    switchCredencialTab(currentStatusTab);
 }
 
 

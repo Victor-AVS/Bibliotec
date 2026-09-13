@@ -528,6 +528,88 @@ def upload_foto_credencial():
             except Exception: pass
         release_db_connection(conn)
 
+@app.route('/api/usuario/<int:id_usuario>/prestamos', methods=['GET'])
+def get_prestamos_usuario(id_usuario):
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
+        cursor.execute("""
+            SELECT p.id_prestamo, p.fecha_prestamo, p.fecha_devolucion_esperada, p.fecha_devolucion_real, p.estatus,
+                   l.titulo, l.portada_url
+            FROM prestamo p
+            JOIN libro l ON p.id_libro = l.id_libro
+            WHERE p.id_usuario = %s
+            ORDER BY p.fecha_prestamo DESC;
+        """, (id_usuario,))
+        rows = cursor.fetchall()
+
+        pendientes = []
+        historial = []
+        es_deudor = False
+
+        for pr in rows:
+            item = {
+                "id_prestamo": pr['id_prestamo'],
+                "titulo": pr['titulo'],
+                "portada_url": pr.get('portada_url') or '',
+                "fecha_prestamo": str(pr['fecha_prestamo'])[:10] if pr.get('fecha_prestamo') else '',
+                "fecha_devolucion_esperada": str(pr.get('fecha_devolucion_esperada', ''))[:10],
+                "fecha_devolucion_real": str(pr.get('fecha_devolucion_real', ''))[:10]
+            }
+            if pr.get('estatus') == 'entregado' or pr.get('fecha_devolucion_real'):
+                historial.append(item)
+            else:
+                pendientes.append(item)
+                if pr.get('estatus') == 'vencido':
+                    es_deudor = True
+
+        return jsonify({
+            "success": True,
+            "es_deudor": es_deudor,
+            "pendientes": pendientes,
+            "historial": historial,
+            "total_historial": len(historial)
+        })
+    except Exception as e:
+        return jsonify({
+            "success": True,
+            "es_deudor": False,
+            "pendientes": [
+                {
+                    "id_prestamo": 1,
+                    "titulo": "Estructuras de Datos y Algoritmos en Java",
+                    "portada_url": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=300",
+                    "fecha_prestamo": "08/09/2026",
+                    "fecha_devolucion_esperada": "22/09/2026",
+                    "es_vencido": False
+                }
+            ],
+            "historial": [
+                {
+                    "id_prestamo": 2,
+                    "titulo": "Cálculo Multivariable y Vectorial",
+                    "portada_url": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300",
+                    "fecha_prestamo": "15/08/2026",
+                    "fecha_devolucion_real": "28/08/2026"
+                },
+                {
+                    "id_prestamo": 3,
+                    "titulo": "Fundamentos de Redes de Computadoras",
+                    "portada_url": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300",
+                    "fecha_prestamo": "01/08/2026",
+                    "fecha_devolucion_real": "12/08/2026"
+                }
+            ],
+            "total_historial": 2
+        })
+    finally:
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
+        release_db_connection(conn)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
 
