@@ -1223,18 +1223,19 @@ body.dark-mode .floating-print-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
     padding: 10px 0;
+    width: 100%;
 }
 
 /* CONTENEDOR GIRATORIO 3D (FLIP CARD ESTILO BANCO) */
 .credencial-flip-container {
     perspective: 1000px;
-    width: 100%;
-    max-width: 340px;
+    width: 340px;
+    max-width: 95vw;
     height: 215px;
     cursor: pointer;
-    margin: 4px auto 10px auto;
+    margin: 4px auto 6px auto;
 }
 
 .credencial-flip-card {
@@ -1249,73 +1250,33 @@ body.dark-mode .floating-print-btn {
     transform: rotateY(180deg);
 }
 
-.credencial-card-face {
+.credencial-card {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #FDF8F5 0%, #F5EAE1 100%) !important;
+    border-radius: 16px;
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    border: 1px solid #c5e1a5;
-    background-color: #dcedc8 !important;
+    box-shadow: 0 10px 25px rgba(62, 39, 35, 0.18);
+    border: 1.5px solid #D4A373;
     display: flex;
     flex-direction: column;
-    color: #1f2937;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #3E2723;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     user-select: none;
-    transition: box-shadow 0.2s ease;
-}
-
-.credencial-flip-container:hover .credencial-card-face {
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    box-sizing: border-box;
 }
 
 .credencial-card-face.face-back {
     transform: rotateY(180deg);
 }
 
-.credencial-actions-bar {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 8px;
-}
-
-.credencial-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-    width: 100%;
-    max-width: 380px;
-}
-
-.credencial-card {
-    width: 100%;
-    max-width: 340px;
-    height: 215px;
-    background-color: #dcedc8 !important;
-    border-radius: 14px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    border: 1px solid #c5e1a5;
-    display: flex;
-    flex-direction: column;
-    color: #1f2937;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    user-select: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.credencial-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+.credencial-flip-container:hover .credencial-card {
+    box-shadow: 0 12px 30px rgba(62, 39, 35, 0.28);
 }
 
 /* Patrón de puntos decorativos */
@@ -1323,25 +1284,26 @@ body.dark-mode .floating-print-btn {
     position: absolute;
     top: 0;
     right: 0;
-    width: 180px;
-    height: 120px;
-    background-image: radial-gradient(#ffffff 1.2px, transparent 1.2px);
+    width: 160px;
+    height: 100px;
+    background-image: radial-gradient(#6B4035 1px, transparent 1px);
     background-size: 6px 6px;
-    opacity: 0.45;
+    opacity: 0.12;
     z-index: 1;
 }
 
-/* Ondas gráficas verdes */
+/* Ondas gráficas cálidas (Paleta Café y Canela Bibliotec) */
 .credencial-card .onda-superior-fondo {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 85px;
-    background: #aed581 !important;
+    height: 75px;
+    background: #A97862 !important;
     border-bottom-left-radius: 50% 40%;
     border-bottom-right-radius: 50% 30%;
     z-index: 1;
+    opacity: 0.85;
 }
 
 .credencial-card .onda-superior-principal {
@@ -1349,8 +1311,8 @@ body.dark-mode .floating-print-btn {
     top: 0;
     left: 0;
     width: 100%;
-    height: 60px;
-    background: #689f38 !important;
+    height: 52px;
+    background: linear-gradient(135deg, #5C3327 0%, #6B4035 100%) !important;
     border-bottom-left-radius: 60% 50%;
     border-bottom-right-radius: 40% 30%;
     z-index: 2;
@@ -1361,8 +1323,8 @@ body.dark-mode .floating-print-btn {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 48px;
-    background: #7cb342 !important;
+    height: 42px;
+    background: linear-gradient(135deg, #6B4035 0%, #8C533E 100%) !important;
     border-top-left-radius: 60% 50%;
     border-top-right-radius: 50% 40%;
     z-index: 1;
@@ -1374,8 +1336,9 @@ body.dark-mode .floating-print-btn {
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 6px 10px;
+    padding: 8px 12px;
     justify-content: space-between;
+    box-sizing: border-box;
 }
 
 /* Encabezado Logo TESCHI */
@@ -1386,25 +1349,26 @@ body.dark-mode .floating-print-btn {
 }
 
 .credencial-card .logo-teschi {
-    background: #ffffff !important;
-    padding: 2px 6px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: #FFFFFF !important;
+    padding: 2px 8px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
     text-align: right;
     line-height: 1;
+    border: 1px solid #EAD8CC;
 }
 
 .credencial-card .logo-teschi .tes-text {
     font-size: 11px;
     font-weight: 900;
-    color: #558b2f;
+    color: #5C3327;
     letter-spacing: 0.5px;
 }
 
 .credencial-card .logo-teschi .teschi-sub {
     font-size: 5px;
     font-weight: 700;
-    color: #333;
+    color: #8C533E;
     text-transform: uppercase;
     display: block;
 }
@@ -1412,43 +1376,47 @@ body.dark-mode .floating-print-btn {
 /* Título central superior */
 .credencial-card .school-title-center {
     text-align: center;
-    margin-top: -3px;
+    margin-top: -4px;
     margin-bottom: 2px;
 }
 
 .credencial-card .school-title-center h1 {
-    font-size: 8px;
-    color: #558b2f;
-    font-weight: 600;
-    line-height: 1;
-    margin: 0;
+    font-size: 8px !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
 .credencial-card .school-title-center h2 {
-    font-size: 10.5px;
-    color: #33691e;
-    font-weight: 800;
-    line-height: 1.1;
-    margin: 0;
+    font-size: 10px !important;
+    color: #FFFDF8 !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+    margin: 0 !important;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
 /* ANVERSO */
 .credencial-card .anverso-body {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
-    margin-top: 1px;
+    margin-top: 2px;
 }
 
 .credencial-card .foto-container {
-    width: 78px;
-    height: 88px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
     overflow: hidden;
-    border: 2.5px solid #689f38;
+    border: 2.5px solid #8C533E;
     flex-shrink: 0;
-    background: #ffffff;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    background: #FFFFFF;
+    box-shadow: 0 4px 8px rgba(92, 51, 39, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1461,8 +1429,8 @@ body.dark-mode .floating-print-btn {
 }
 
 .credencial-card .foto-default-icon {
-    font-size: 36px;
-    color: #689f38;
+    font-size: 34px;
+    color: #8C533E;
 }
 
 .credencial-card .datos-column {
@@ -1474,22 +1442,24 @@ body.dark-mode .floating-print-btn {
 }
 
 .credencial-card .campo-blanco {
-    background: #ffffff !important;
-    border-radius: 20px;
+    background: #FFFFFF !important;
+    border-radius: 12px;
     padding: 2px 8px;
     text-align: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 3px rgba(92, 51, 39, 0.08);
+    border: 1px solid #EAD8CC;
     display: flex;
     flex-direction: column;
     justify-content: center;
     width: 100%;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 .credencial-card .campo-blanco .valor {
     font-size: 9px;
     font-weight: 800;
-    color: #1f2937;
+    color: #2C1810;
     line-height: 1.1;
     white-space: nowrap;
     overflow: hidden;
@@ -1497,9 +1467,9 @@ body.dark-mode .floating-print-btn {
 }
 
 .credencial-card .campo-blanco .label {
-    font-size: 6px;
+    font-size: 5.5px;
     font-weight: 700;
-    color: #558b2f;
+    color: #8C533E;
     text-transform: uppercase;
     line-height: 1;
     margin-top: 1px;
@@ -1516,19 +1486,20 @@ body.dark-mode .floating-print-btn {
 }
 
 .credencial-card .footer-biblio-box {
-    background: rgba(255, 255, 255, 0.92) !important;
-    border-radius: 10px;
-    padding: 3px 6px;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 8px;
+    padding: 3px 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    margin-top: 1px;
+    box-shadow: 0 1px 4px rgba(92, 51, 39, 0.1);
+    border: 1px solid #EAD8CC;
+    margin-top: 2px;
 }
 
 .credencial-card .footer-biblio-box p {
     font-size: 6px;
-    color: #33691e;
+    color: #5C3327;
     font-weight: 700;
     line-height: 1.1;
     text-align: center;
@@ -1540,17 +1511,19 @@ body.dark-mode .floating-print-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
-    margin-top: -2px;
+    justify-content: space-between;
+    height: 100%;
+    padding-top: 2px;
 }
 
 .credencial-card .reverso-aprobacion {
-    font-size: 9px;
+    font-size: 9.5px;
     font-weight: 800;
-    color: #33691e;
+    color: #FFFFFF;
     text-transform: uppercase;
-    margin-bottom: 1px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    margin-top: -2px;
 }
 
 .credencial-card .layout-reverso-grid {
@@ -1558,43 +1531,47 @@ body.dark-mode .floating-print-btn {
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    padding: 0 2px;
+    gap: 10px;
+    margin: 4px 0;
 }
 
 .credencial-card .anios-container {
     display: flex;
     flex-direction: column;
     gap: 3px;
-    width: 70px;
+    width: 65px;
 }
 
 .credencial-card .anio-pill {
-    background: #558b2f !important;
-    color: #ffffff !important;
+    background: linear-gradient(135deg, #6B4035 0%, #8C533E 100%) !important;
+    color: #FFFFFF !important;
     text-align: center;
     padding: 2px 0;
-    border-radius: 15px;
-    font-size: 9px;
+    border-radius: 12px;
+    font-size: 8.5px;
     font-weight: 800;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 4px rgba(92, 51, 39, 0.15);
     letter-spacing: 0.5px;
 }
 
 .credencial-card .barcode-section {
-    background: #ffffff !important;
-    padding: 4px 6px;
-    border-radius: 8px;
+    background: #FFFFFF !important;
+    padding: 4px 8px;
+    border-radius: 10px;
     text-align: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    width: 210px;
+    box-shadow: 0 2px 6px rgba(92, 51, 39, 0.1);
+    border: 1px solid #EAD8CC;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 .credencial-card .barcode-svg {
-    width: 190px;
-    height: 52px;
+    width: 100%;
+    max-width: 180px;
+    height: 44px;
     display: block;
 }
 
@@ -1602,33 +1579,75 @@ body.dark-mode .floating-print-btn {
     font-size: 8px;
     font-weight: 800;
     letter-spacing: 1.5px;
-    color: #4b5563;
+    color: #3E2723;
     margin-top: 2px;
 }
 
 .credencial-card .info-institucional-reverso {
     text-align: center;
-    margin-top: 2px;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 8px;
+    padding: 4px 8px;
+    width: 100%;
+    border: 1px solid #EAD8CC;
+    box-sizing: border-box;
 }
 
 .credencial-card .info-institucional-reverso .biblio-title {
-    font-size: 7px;
+    font-size: 7.5px;
     font-weight: 800;
-    color: #558b2f;
+    color: #5C3327;
     text-transform: uppercase;
 }
 
 .credencial-card .info-institucional-reverso .teschi-name {
-    font-size: 7.5px;
-    font-weight: 900;
-    color: #33691e;
+    font-size: 7px;
+    font-weight: 700;
+    color: #8C533E;
 }
 
 .credencial-card .info-institucional-reverso .address-text {
     font-size: 5px;
-    color: #4b5563;
+    color: #5C3327;
     font-weight: 600;
     line-height: 1.1;
+}
+
+/* BOTÓN FLOTANTE IMPRIMIR EN LA ESQUINA INFERIOR DERECHA */
+.floating-print-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    z-index: 10600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #6B4035 0%, #A97862 100%);
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 13px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(107, 64, 53, 0.4);
+    transition: all 0.25s ease;
+}
+
+.floating-print-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(107, 64, 53, 0.5);
+    background: linear-gradient(135deg, #5C3327 0%, #8C533E 100%);
+}
+
+.floating-print-btn:active {
+    transform: translateY(0);
+}
+
+body.dark-mode .floating-print-btn {
+    background: linear-gradient(135deg, #A97862 0%, #D77A9B 100%);
+    color: #FFFFFF;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
 /* BADGES GRID */
