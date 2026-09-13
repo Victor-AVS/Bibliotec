@@ -1729,161 +1729,214 @@ body.dark-mode .theme-select-btn.active {
     color: #4b5563;
 }
 
-/* --- TEMA 2: DISEÑO ROSA (CORAL / ROSADO) --- */
+/* --- TEMA 2: DISEÑO ROSA (PLANTILLA OFICIAL CORAL / ROSADO) --- */
 .credencial-flip-container.theme-rosa .credencial-card {
-    background-color: #fcc2c7 !important;
-    border: 1px solid #ff8a80;
-    color: #e52b2b;
+    background-color: #FCDADF !important;
+    border: 1px solid #FF8A80;
+    color: #FF3333;
 }
 
 .credencial-flip-container.theme-rosa .dots-pattern {
-    background-image: radial-gradient(#ffffff 1.2px, transparent 1.2px);
-    opacity: 0.5;
+    background-image: radial-gradient(#FF4D4D 1.2px, transparent 1.2px);
+    opacity: 0.25;
 }
 
 .credencial-flip-container.theme-rosa .onda-superior-fondo {
-    background: #9e8e89 !important;
+    background: #A1938E !important;
 }
 
 .credencial-flip-container.theme-rosa .onda-superior-principal {
-    background: #ff4d4d !important;
+    background: #FF4D4D !important;
 }
 
 .credencial-flip-container.theme-rosa .onda-inferior {
-    background: #ff4d4d !important;
+    background: #FF4D4D !important;
 }
 
 .credencial-flip-container.theme-rosa .school-title-center h1 {
-    color: #ff3b3b !important;
+    color: #FF4D4D !important;
+    font-weight: 500 !important;
 }
 
 .credencial-flip-container.theme-rosa .school-title-center h2 {
-    color: #e52b2b !important;
+    color: #FF3333 !important;
+    font-weight: 800 !important;
 }
 
 .credencial-flip-container.theme-rosa .foto-container {
-    border: 2.5px solid #ff4d4d;
+    border: 2.5px solid #FF4D4D;
 }
 
 .credencial-flip-container.theme-rosa .foto-default-icon {
-    color: #ff4d4d;
+    color: #FF4D4D;
+}
+
+.credencial-flip-container.theme-rosa .campo-blanco {
+    background: #FFFFFF !important;
+    border: 1px solid #FFCDD2;
+    box-shadow: 0 2px 5px rgba(255, 77, 77, 0.12);
 }
 
 .credencial-flip-container.theme-rosa .campo-blanco .label {
-    color: #e52b2b;
+    color: #FF3333;
+    font-weight: 800;
 }
 
 .credencial-flip-container.theme-rosa .campo-blanco .valor {
-    color: #ff3b3b;
+    color: #FF3333;
+    font-weight: 600;
+}
+
+.credencial-flip-container.theme-rosa .footer-biblio-box {
+    background: #FFFFFF !important;
+    border: 1.5px solid #80DEEA !important;
 }
 
 .credencial-flip-container.theme-rosa .footer-biblio-box p {
-    color: #e52b2b;
+    color: #FF3333;
+    font-weight: 600;
 }
 
 .credencial-flip-container.theme-rosa .reverso-aprobacion {
-    color: #e52b2b;
+    color: #FF3333;
+    font-weight: 800;
 }
 
 .credencial-flip-container.theme-rosa .anio-pill {
-    background: #ff4d4d !important;
+    background: #FF4D4D !important;
     color: #ffffff !important;
+    box-shadow: 0 2px 4px rgba(255, 77, 77, 0.25);
+}
+
+.credencial-flip-container.theme-rosa .barcode-section {
+    border: 1.5px solid #80DEEA !important;
 }
 
 .credencial-flip-container.theme-rosa .barcode-text {
-    color: #e52b2b;
+    color: #FF3333;
+    font-weight: 800;
 }
 
 .credencial-flip-container.theme-rosa .info-institucional-reverso .biblio-title {
-    color: #ff3b3b;
+    color: #FF3333;
+    font-weight: 500;
 }
 
 .credencial-flip-container.theme-rosa .info-institucional-reverso .teschi-name {
-    color: #e52b2b;
+    color: #FF0000;
+    font-weight: 900;
 }
 
 .credencial-flip-container.theme-rosa .info-institucional-reverso .address-text {
-    color: #e52b2b;
+    color: #FF3333;
+    font-weight: 600;
 }
 
-/* --- TEMA 3: DISEÑO CAFÉ (CHOCOLATE / CANELA) --- */
+/* --- TEMA 3: DISEÑO CAFÉ (CHOCOLATE / CANELA HIGH CONTRAST) --- */
 .credencial-flip-container.theme-cafe .credencial-card {
-    background-color: #fdf8f5 !important;
-    border: 1px solid #c8a892;
-    color: #54332b;
+    background-color: #FDF8F5 !important;
+    border: 1px solid #C8A892;
+    color: #54332B;
 }
 
 .credencial-flip-container.theme-cafe .dots-pattern {
-    background-image: radial-gradient(#54332b 1px, transparent 1px);
+    background-image: radial-gradient(#54332B 1px, transparent 1px);
     opacity: 0.15;
 }
 
 .credencial-flip-container.theme-cafe .onda-superior-fondo {
-    background: #a48474 !important;
+    background: #A48474 !important;
 }
 
 .credencial-flip-container.theme-cafe .onda-superior-principal {
-    background: #54332b !important;
+    background: #54332B !important;
 }
 
 .credencial-flip-container.theme-cafe .onda-inferior {
-    background: #54332b !important;
+    background: #54332B !important;
 }
 
 .credencial-flip-container.theme-cafe .school-title-center h1 {
-    color: #ffffff !important;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    color: #FFFFFF !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
 }
 
 .credencial-flip-container.theme-cafe .school-title-center h2 {
-    color: #ffffff !important;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    color: #FFFFFF !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
 }
 
 .credencial-flip-container.theme-cafe .foto-container {
-    border: 2.5px solid #54332b;
+    border: 2.5px solid #54332B;
 }
 
 .credencial-flip-container.theme-cafe .foto-default-icon {
-    color: #54332b;
+    color: #54332B;
 }
 
 .credencial-flip-container.theme-cafe .campo-blanco .label {
-    color: #a48474;
+    color: #A48474;
+    font-weight: 800;
 }
 
 .credencial-flip-container.theme-cafe .campo-blanco .valor {
     color: #231714;
+    font-weight: 800;
+}
+
+.credencial-flip-container.theme-cafe .footer-biblio-box {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #C8A892;
 }
 
 .credencial-flip-container.theme-cafe .footer-biblio-box p {
-    color: #54332b;
+    color: #54332B;
+    font-weight: 700;
 }
 
 .credencial-flip-container.theme-cafe .reverso-aprobacion {
-    color: #ffffff;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    color: #FFFFFF !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    font-weight: 800;
 }
 
 .credencial-flip-container.theme-cafe .anio-pill {
-    background: #54332b !important;
-    color: #ffffff !important;
+    background: #54332B !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 4px rgba(84, 51, 43, 0.3);
+}
+
+.credencial-flip-container.theme-cafe .barcode-section {
+    border: 1px solid #C8A892;
 }
 
 .credencial-flip-container.theme-cafe .barcode-text {
-    color: #54332b;
+    color: #54332B;
+    font-weight: 800;
+}
+
+.credencial-flip-container.theme-cafe .info-institucional-reverso {
+    background: rgba(255, 255, 255, 0.95) !important;
+    padding: 3px 6px;
+    border-radius: 8px;
+    border: 1px solid #C8A892;
+    box-shadow: 0 2px 5px rgba(84, 51, 43, 0.1);
+    margin-top: 1px;
 }
 
 .credencial-flip-container.theme-cafe .info-institucional-reverso .biblio-title {
-    color: #a48474;
+    color: #A48474 !important;
+    font-weight: 800;
 }
 
 .credencial-flip-container.theme-cafe .info-institucional-reverso .teschi-name {
-    color: #54332b;
+    color: #54332B !important;
+    font-weight: 900;
 }
 
 .credencial-flip-container.theme-cafe .info-institucional-reverso .address-text {
-    color: #54332b;
+    color: #54332B !important;
+    font-weight: 600;
 }
 
 /* BOTÓN FLOTANTE IMPRIMIR EN LA ESQUINA INFERIOR DERECHA */
