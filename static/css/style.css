@@ -2397,6 +2397,90 @@ body.dark-mode .lock-badge-status {
     .gauge-subtext {
         font-size: 10px;
     }
+
+    /* MIS LIBROS MOBILE OPTIMIZATIONS */
+    .mis-libros-tabs {
+        gap: 4px !important;
+        margin-bottom: 14px !important;
+        padding-bottom: 2px !important;
+        overflow-x: hidden !important;
+    }
+
+    .mis-libros-tab-btn {
+        min-width: 0 !important;
+        flex: 1 !important;
+        padding: 8px 3px !important;
+        font-size: 10.5px !important;
+        border-radius: 12px !important;
+        gap: 3px !important;
+    }
+
+    .mis-libros-tab-btn i {
+        font-size: 11px !important;
+    }
+
+    .mis-libros-section-header {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+
+    .mis-libros-section-header h4 {
+        font-size: 13.5px !important;
+    }
+
+    .mis-libros-section-header .btn-sm {
+        font-size: 11px !important;
+        padding: 5px 10px !important;
+    }
+
+    .my-book-card {
+        padding: 10px !important;
+        gap: 10px !important;
+        border-radius: 14px !important;
+    }
+
+    .my-book-cover {
+        width: 52px !important;
+        height: 74px !important;
+    }
+
+    .my-book-title {
+        font-size: 13px !important;
+    }
+
+    .my-book-author {
+        font-size: 11px !important;
+        margin-bottom: 4px !important;
+    }
+
+    .my-book-actions {
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+    }
+
+    .my-book-actions .btn-sm {
+        flex: 1 !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 5px 8px !important;
+    }
+
+    .bottom-nav {
+        height: 64px !important;
+        padding: 0 4px !important;
+    }
+
+    .nav-item {
+        font-size: 9px !important;
+    }
+
+    .nav-label {
+        font-size: 9.5px !important;
+    }
+
+    .nav-icon {
+        font-size: 16px !important;
+    }
 }
 
 /* ==========================================================================
