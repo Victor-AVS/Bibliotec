@@ -1653,81 +1653,81 @@ body.dark-mode .theme-select-btn.active {
 /* ================= OVERRIDES DINÁMICOS DE TEMAS DE CREDENCIAL ================= */
 
 /* --- TEMA 1: PREDETERMINADO (VERDE ORIGINAL) --- */
-.credencial-flip-container.theme-predeterminado .credencial-card {
+.theme-predeterminado .credencial-card {
     background-color: #dcedc8 !important;
     border: 1px solid #c5e1a5;
     color: #1f2937;
 }
 
-.credencial-flip-container.theme-predeterminado .dots-pattern {
+.theme-predeterminado .dots-pattern {
     background-image: radial-gradient(#ffffff 1.2px, transparent 1.2px);
     opacity: 0.45;
 }
 
-.credencial-flip-container.theme-predeterminado .onda-superior-fondo {
+.theme-predeterminado .onda-superior-fondo {
     background: #aed581 !important;
 }
 
-.credencial-flip-container.theme-predeterminado .onda-superior-principal {
+.theme-predeterminado .onda-superior-principal {
     background: #689f38 !important;
 }
 
-.credencial-flip-container.theme-predeterminado .onda-inferior {
+.theme-predeterminado .onda-inferior {
     background: #7cb342 !important;
 }
 
-.credencial-flip-container.theme-predeterminado .school-title-center h1 {
+.theme-predeterminado .school-title-center h1 {
     color: #FFFFFF !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     font-weight: 600 !important;
 }
 
-.credencial-flip-container.theme-predeterminado .school-title-center h2 {
+.theme-predeterminado .school-title-center h2 {
     color: #FFFFFF !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     font-weight: 800 !important;
 }
 
-.credencial-flip-container.theme-predeterminado .foto-container {
+.theme-predeterminado .foto-container {
     border: 2.5px solid #689f38;
 }
 
-.credencial-flip-container.theme-predeterminado .foto-default-icon {
+.theme-predeterminado .foto-default-icon {
     color: #689f38;
 }
 
-.credencial-flip-container.theme-predeterminado .campo-blanco .label {
+.theme-predeterminado .campo-blanco .label {
     color: #558b2f;
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-predeterminado .campo-blanco .valor {
+.theme-predeterminado .campo-blanco .valor {
     color: #1f2937;
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-predeterminado .footer-biblio-box p {
+.theme-predeterminado .footer-biblio-box p {
     color: #33691e;
     font-weight: 700;
 }
 
-.credencial-flip-container.theme-predeterminado .reverso-aprobacion {
+.theme-predeterminado .reverso-aprobacion {
     color: #FFFFFF !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-predeterminado .anio-pill {
+.theme-predeterminado .anio-pill {
     background: #558b2f !important;
     color: #ffffff !important;
 }
 
-.credencial-flip-container.theme-predeterminado .barcode-text {
+.theme-predeterminado .barcode-text {
     color: #4b5563;
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-predeterminado .info-institucional-reverso {
+.theme-predeterminado .info-institucional-reverso {
     background: rgba(255, 255, 255, 0.95) !important;
     border: 1px solid #c5e1a5;
     border-radius: 8px;
@@ -1736,113 +1736,113 @@ body.dark-mode .theme-select-btn.active {
     margin-top: 1px;
 }
 
-.credencial-flip-container.theme-predeterminado .info-institucional-reverso .biblio-title {
+.theme-predeterminado .info-institucional-reverso .biblio-title {
     color: #558b2f !important;
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-predeterminado .info-institucional-reverso .teschi-name {
+.theme-predeterminado .info-institucional-reverso .teschi-name {
     color: #33691e !important;
     font-weight: 900;
 }
 
-.credencial-flip-container.theme-predeterminado .info-institucional-reverso .address-text {
+.theme-predeterminado .info-institucional-reverso .address-text {
     color: #1f2937 !important;
     font-weight: 600;
 }
 
 /* --- TEMA 2: DISEÑO ROSA (PLANTILLA OFICIAL CORAL / ROSADO CON ALTO CONTRASTE) --- */
-.credencial-flip-container.theme-rosa .credencial-card {
+.theme-rosa .credencial-card {
     background-color: #FCDADF !important;
     border: 1px solid #FF8A80;
     color: #FF3333;
 }
 
-.credencial-flip-container.theme-rosa .dots-pattern {
+.theme-rosa .dots-pattern {
     background-image: radial-gradient(#FF4D4D 1.2px, transparent 1.2px);
     opacity: 0.25;
 }
 
-.credencial-flip-container.theme-rosa .onda-superior-fondo {
+.theme-rosa .onda-superior-fondo {
     background: #A1938E !important;
 }
 
-.credencial-flip-container.theme-rosa .onda-superior-principal {
+.theme-rosa .onda-superior-principal {
     background: #FF4D4D !important;
 }
 
-.credencial-flip-container.theme-rosa .onda-inferior {
+.theme-rosa .onda-inferior {
     background: #FF4D4D !important;
 }
 
-.credencial-flip-container.theme-rosa .school-title-center h1 {
+.theme-rosa .school-title-center h1 {
     color: #FFFFFF !important;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     font-weight: 600 !important;
 }
 
-.credencial-flip-container.theme-rosa .school-title-center h2 {
+.theme-rosa .school-title-center h2 {
     color: #FFFFFF !important;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     font-weight: 800 !important;
 }
 
-.credencial-flip-container.theme-rosa .foto-container {
+.theme-rosa .foto-container {
     border: 2.5px solid #FF4D4D;
 }
 
-.credencial-flip-container.theme-rosa .foto-default-icon {
+.theme-rosa .foto-default-icon {
     color: #FF4D4D;
 }
 
-.credencial-flip-container.theme-rosa .campo-blanco {
+.theme-rosa .campo-blanco {
     background: #FFFFFF !important;
     border: 1px solid #FFCDD2;
     box-shadow: 0 2px 5px rgba(255, 77, 77, 0.12);
 }
 
-.credencial-flip-container.theme-rosa .campo-blanco .label {
+.theme-rosa .campo-blanco .label {
     color: #C62828 !important;
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-rosa .campo-blanco .valor {
+.theme-rosa .campo-blanco .valor {
     color: #D50000 !important;
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-rosa .footer-biblio-box {
+.theme-rosa .footer-biblio-box {
     background: #FFFFFF !important;
     border: 1.5px solid #80DEEA !important;
 }
 
-.credencial-flip-container.theme-rosa .footer-biblio-box p {
+.theme-rosa .footer-biblio-box p {
     color: #D50000 !important;
     font-weight: 700;
 }
 
-.credencial-flip-container.theme-rosa .reverso-aprobacion {
+.theme-rosa .reverso-aprobacion {
     color: #FFFFFF !important;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-rosa .anio-pill {
+.theme-rosa .anio-pill {
     background: #FF4D4D !important;
     color: #ffffff !important;
     box-shadow: 0 2px 4px rgba(255, 77, 77, 0.25);
 }
 
-.credencial-flip-container.theme-rosa .barcode-section {
+.theme-rosa .barcode-section {
     border: 1.5px solid #80DEEA !important;
 }
 
-.credencial-flip-container.theme-rosa .barcode-text {
+.theme-rosa .barcode-text {
     color: #D50000 !important;
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-rosa .info-institucional-reverso {
+.theme-rosa .info-institucional-reverso {
     background: rgba(255, 255, 255, 0.96) !important;
     border: 1.5px solid #80DEEA !important;
     border-radius: 8px;
@@ -1851,107 +1851,107 @@ body.dark-mode .theme-select-btn.active {
     margin-top: 1px;
 }
 
-.credencial-flip-container.theme-rosa .info-institucional-reverso .biblio-title {
+.theme-rosa .info-institucional-reverso .biblio-title {
     color: #D50000 !important;
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-rosa .info-institucional-reverso .teschi-name {
+.theme-rosa .info-institucional-reverso .teschi-name {
     color: #B71C1C !important;
     font-weight: 900;
 }
 
-.credencial-flip-container.theme-rosa .info-institucional-reverso .address-text {
+.theme-rosa .info-institucional-reverso .address-text {
     color: #C62828 !important;
     font-weight: 600;
 }
 
 /* --- TEMA 3: DISEÑO CAFÉ (CHOCOLATE / CANELA HIGH CONTRAST) --- */
-.credencial-flip-container.theme-cafe .credencial-card {
+.theme-cafe .credencial-card {
     background-color: #FDF8F5 !important;
     border: 1px solid #C8A892;
     color: #54332B;
 }
 
-.credencial-flip-container.theme-cafe .dots-pattern {
+.theme-cafe .dots-pattern {
     background-image: radial-gradient(#54332B 1px, transparent 1px);
     opacity: 0.15;
 }
 
-.credencial-flip-container.theme-cafe .onda-superior-fondo {
+.theme-cafe .onda-superior-fondo {
     background: #A48474 !important;
 }
 
-.credencial-flip-container.theme-cafe .onda-superior-principal {
+.theme-cafe .onda-superior-principal {
     background: #54332B !important;
 }
 
-.credencial-flip-container.theme-cafe .onda-inferior {
+.theme-cafe .onda-inferior {
     background: #54332B !important;
 }
 
-.credencial-flip-container.theme-cafe .school-title-center h1 {
+.theme-cafe .school-title-center h1 {
     color: #FFFFFF !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     font-weight: 600 !important;
 }
 
-.credencial-flip-container.theme-cafe .school-title-center h2 {
+.theme-cafe .school-title-center h2 {
     color: #FFFFFF !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     font-weight: 800 !important;
 }
 
-.credencial-flip-container.theme-cafe .foto-container {
+.theme-cafe .foto-container {
     border: 2.5px solid #54332B;
 }
 
-.credencial-flip-container.theme-cafe .foto-default-icon {
+.theme-cafe .foto-default-icon {
     color: #54332B;
 }
 
-.credencial-flip-container.theme-cafe .campo-blanco .label {
+.theme-cafe .campo-blanco .label {
     color: #A48474;
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-cafe .campo-blanco .valor {
+.theme-cafe .campo-blanco .valor {
     color: #231714;
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-cafe .footer-biblio-box {
+.theme-cafe .footer-biblio-box {
     background: rgba(255, 255, 255, 0.95) !important;
     border: 1px solid #C8A892;
 }
 
-.credencial-flip-container.theme-cafe .footer-biblio-box p {
+.theme-cafe .footer-biblio-box p {
     color: #54332B;
     font-weight: 700;
 }
 
-.credencial-flip-container.theme-cafe .reverso-aprobacion {
+.theme-cafe .reverso-aprobacion {
     color: #FFFFFF !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.5);
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-cafe .anio-pill {
+.theme-cafe .anio-pill {
     background: #54332B !important;
     color: #FFFFFF !important;
     box-shadow: 0 2px 4px rgba(84, 51, 43, 0.3);
 }
 
-.credencial-flip-container.theme-cafe .barcode-section {
+.theme-cafe .barcode-section {
     border: 1px solid #C8A892;
 }
 
-.credencial-flip-container.theme-cafe .barcode-text {
+.theme-cafe .barcode-text {
     color: #54332B;
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-cafe .info-institucional-reverso {
+.theme-cafe .info-institucional-reverso {
     background: rgba(255, 255, 255, 0.95) !important;
     padding: 3px 6px;
     border-radius: 8px;
@@ -1960,19 +1960,64 @@ body.dark-mode .theme-select-btn.active {
     margin-top: 1px;
 }
 
-.credencial-flip-container.theme-cafe .info-institucional-reverso .biblio-title {
+.theme-cafe .info-institucional-reverso .biblio-title {
     color: #A48474 !important;
     font-weight: 800;
 }
 
-.credencial-flip-container.theme-cafe .info-institucional-reverso .teschi-name {
+.theme-cafe .info-institucional-reverso .teschi-name {
     color: #54332B !important;
     font-weight: 900;
 }
 
-.credencial-flip-container.theme-cafe .info-institucional-reverso .address-text {
+.theme-cafe .info-institucional-reverso .address-text {
     color: #231714 !important;
     font-weight: 600;
+}
+
+/* ESTILOS PARA LA EXPORTACIÓN EN PDF DE CREDENCIAL (9 CM CENTRADO A4) */
+.pdf-export-wrapper {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 210mm;
+    min-height: 297mm;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 25mm 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', 'Inter', system-ui, sans-serif;
+}
+
+.pdf-cards-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12mm;
+    width: 100%;
+}
+
+.pdf-export-wrapper .credencial-card-face {
+    position: relative !important;
+    transform: none !important;
+    top: auto !important;
+    left: auto !important;
+    backface-visibility: visible !important;
+    -webkit-backface-visibility: visible !important;
+    width: 90mm !important;
+    height: 56.7mm !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+.pdf-export-wrapper .credencial-card-face.face-back {
+    transform: none !important;
 }
 
 /* BOTÓN FLOTANTE IMPRIMIR EN LA ESQUINA INFERIOR DERECHA */
@@ -3733,8 +3778,8 @@ body.dark-mode #modalRegistrarLibroLeido .modal-box {
         transform: none !important;
         backface-visibility: visible !important;
         -webkit-backface-visibility: visible !important;
-        width: 85.6mm !important;
-        height: 54mm !important;
+        width: 90mm !important;
+        height: 56.7mm !important;
         box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
         border-radius: 12px !important;
         page-break-inside: avoid !important;

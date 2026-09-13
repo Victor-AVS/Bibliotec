@@ -559,7 +559,7 @@
             </div>
 
             <!-- BOTÓN FLOTANTE IMPRIMIR EN LA ESQUINA INFERIOR DERECHA -->
-            <button class="floating-print-btn" onclick="window.print()" title="Imprimir Credencial">
+            <button class="floating-print-btn" onclick="downloadCredencialPDF()" title="Imprimir / Descargar Credencial en PDF">
                 <i class="fa-solid fa-print"></i>
                 <span>Imprimir</span>
             </button>
@@ -1245,6 +1245,7 @@
     </div>
 
     <!-- JS script -->
+    <script src="static/js/html2pdf.bundle.min.js"></script>
     <script src="static/js/app.js"></script>
 </body>
 </html>

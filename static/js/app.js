@@ -872,6 +872,86 @@ function toggleCredencialFlip() {
     }
 }
 
+/**
+ * Genera y descarga un PDF de la credencial digital (9 cm x 5.67 cm, anverso y reverso centrados en A4)
+ * sin abrir el diálogo de impresión nativo del navegador/sistema.
+ */
+async function downloadCredencialPDF() {
+    const printBtn = document.querySelector('.floating-print-btn');
+    const originalBtnContent = printBtn ? printBtn.innerHTML : '';
+    
+    if (printBtn) {
+        printBtn.disabled = true;
+        printBtn.style.opacity = '0.85';
+        printBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Generando PDF...</span>';
+    }
+
+    try {
+        const nombre = document.getElementById('idNombre')?.innerText || 'Estudiante';
+        const matricula = document.getElementById('idMatricula')?.innerText || 'TESCHI';
+        const cleanMatricula = matricula.replace(/[^a-zA-Z0-9]/g, '');
+
+        const frontFace = document.querySelector('.credencial-card-face.face-front')?.cloneNode(true);
+        const backFace = document.querySelector('.credencial-card-face.face-back')?.cloneNode(true);
+
+        if (!frontFace || !backFace) {
+            alert('No se pudo encontrar la credencial para exportar.');
+            return;
+        }
+
+        const pdfWrapper = document.createElement('div');
+        pdfWrapper.className = `pdf-export-wrapper theme-${currentCredencialTheme}`;
+
+        const pdfCardsContainer = document.createElement('div');
+        pdfCardsContainer.className = 'pdf-cards-container';
+
+        pdfCardsContainer.appendChild(frontFace);
+        pdfCardsContainer.appendChild(backFace);
+        pdfWrapper.appendChild(pdfCardsContainer);
+
+        document.body.appendChild(pdfWrapper);
+
+        // Breve espera para asegurar el renderizado de estilos, tipografía y SVG
+        await new Promise(resolve => setTimeout(resolve, 350));
+
+        const themeLabel = currentCredencialTheme.charAt(0).toUpperCase() + currentCredencialTheme.slice(1);
+        const filename = `Credencial_TESCHI_${cleanMatricula || 'Estudiante'}_${themeLabel}.pdf`;
+
+        const opt = {
+            margin:       0,
+            filename:     filename,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { 
+                scale: 3, 
+                useCORS: true, 
+                logging: false,
+                backgroundColor: '#ffffff'
+            },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        if (typeof html2pdf !== 'undefined') {
+            await html2pdf().set(opt).from(pdfWrapper).save();
+        } else {
+            console.warn('html2pdf no está cargado. Usando modo impresión fallback.');
+            window.print();
+        }
+
+        if (document.body.contains(pdfWrapper)) {
+            document.body.removeChild(pdfWrapper);
+        }
+    } catch (err) {
+        console.error("Error al generar el PDF de la credencial:", err);
+        alert("Ocurrió un error al generar el PDF de la credencial. Por favor, intenta nuevamente.");
+    } finally {
+        if (printBtn) {
+            printBtn.disabled = false;
+            printBtn.style.opacity = '1';
+            printBtn.innerHTML = originalBtnContent;
+        }
+    }
+}
+
 
 function generateMatriculaBarcode(matricula) {
     const svg = document.getElementById('svgBarcode');
