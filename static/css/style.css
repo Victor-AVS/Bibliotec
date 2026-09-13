@@ -2398,3 +2398,243 @@ body.dark-mode .lock-badge-status {
         font-size: 10px;
     }
 }
+
+/* ==========================================================================
+   SECCIÓN MIS LIBROS (PESTAÑAS, TARJETAS DE LIBROS Y BARRAS DE PROGRESO)
+   ========================================================================== */
+.mis-libros-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.mis-libros-tab-btn {
+    flex: 1;
+    min-width: 110px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid #EFA9BE;
+    color: #6B4035;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(107, 64, 53, 0.06);
+    transition: all 0.25s ease;
+}
+
+body.dark-mode .mis-libros-tab-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+    box-shadow: none;
+}
+
+.mis-libros-tab-btn:hover {
+    background: #FCEEF3;
+    color: #6B4035;
+}
+
+body.dark-mode .mis-libros-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
+.mis-libros-tab-btn.active {
+    background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
+    border-color: #c084fc;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(147, 51, 234, 0.35);
+}
+
+.mis-libros-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.header-text-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-text-group h4 {
+    font-size: 15px;
+    font-weight: 800;
+    color: #6B4035;
+    margin: 0;
+}
+
+body.dark-mode .header-text-group h4 {
+    color: #FCEEF3;
+}
+
+.font-pink { color: #ec4899; }
+
+/* GRID DE TARJETAS DE LIBROS EN MIS LIBROS */
+.my-books-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.my-book-card {
+    background: #ffffff;
+    border: 1px solid #EFA9BE;
+    border-radius: 18px;
+    padding: 14px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(107, 64, 53, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.dark-mode .my-book-card {
+    background: #331b2c;
+    border-color: #542b49;
+    box-shadow: none;
+}
+
+.my-book-cover {
+    width: 64px;
+    height: 90px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.my-book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.my-book-cover .fallback-icon {
+    font-size: 32px;
+    color: #64748b;
+}
+
+.my-book-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+.my-book-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #6B4035;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body.dark-mode .my-book-title {
+    color: #FCEEF3;
+}
+
+.my-book-author {
+    font-size: 12px;
+    color: #A97862;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body.dark-mode .my-book-author {
+    color: #EFA9BE;
+}
+
+/* BARRA DE PROGRESO EN TARJETA DE LIBRO */
+.my-book-progress-box {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.my-book-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: #6B4035;
+}
+
+body.dark-mode .my-book-progress-header {
+    color: #FCEEF3;
+}
+
+.progress-bar-sm {
+    width: 100%;
+    height: 8px;
+    background: #FCEEF3;
+    border: 1px solid #EFA9BE;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+body.dark-mode .progress-bar-sm {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.progress-fill-sm {
+    height: 100%;
+    background: linear-gradient(90deg, #a855f7 0%, #7e22ce 100%);
+    border-radius: 10px;
+    transition: width 0.4s ease;
+}
+
+.my-book-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.empty-state-box {
+    text-align: center;
+    padding: 30px 16px;
+    background: #ffffff;
+    border: 1px dashed #EFA9BE;
+    border-radius: 18px;
+    color: #A97862;
+}
+
+body.dark-mode .empty-state-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.empty-state-box i {
+    font-size: 38px;
+    color: #D77A9B;
+    margin-bottom: 8px;
+}
+
+body.dark-mode .empty-state-box i {
+    color: rgba(255, 255, 255, 0.4);
+}
+

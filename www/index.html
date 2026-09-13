@@ -93,6 +93,10 @@
                 <i class="fa-solid fa-book-open nav-icon"></i>
                 <span class="nav-label">Catálogo</span>
             </button>
+            <button class="nav-item" id="tabMisLibros" onclick="handleAuthProtectedAction(openMisLibrosModal)">
+                <i class="fa-solid fa-book-bookmark nav-icon"></i>
+                <span class="nav-label">Mis Libros</span>
+            </button>
             <button class="nav-item" id="tabCredencial" onclick="handleAuthProtectedAction(openCredencialModal)">
                 <i class="fa-solid fa-id-card nav-icon"></i>
                 <span class="nav-label">Credencial</span>
@@ -826,6 +830,136 @@
 
                 </div>
 
+            </div>
+        </div>
+    </div>
+
+    <!-- 4.1 PANTALLA COMPLETA: MIS LIBROS (FULLSCREEN OVERLAY) -->
+    <div class="modal-overlay modal-overlay-fullscreen" id="modalMisLibros">
+        <div class="fullscreen-page-container">
+            <!-- HEADER DE PANTALLA COMPLETA -->
+            <div class="fullscreen-page-header">
+                <button class="header-back-btn" onclick="closeModal('modalMisLibros')">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="header-page-title">
+                    <h3>Mis Libros</h3>
+                    <span>Tu biblioteca personal y estado de lecturas</span>
+                </div>
+            </div>
+
+            <!-- CONTENIDO SCROLLABLE DE PANTALLA COMPLETA -->
+            <div class="fullscreen-page-body">
+
+                <!-- PESTAÑAS PRINCIPALES DE MIS LIBROS -->
+                <div class="mis-libros-tabs">
+                    <button class="mis-libros-tab-btn active" id="btnTabEnProceso" onclick="switchMisLibrosTab('en_proceso')">
+                        <i class="fa-solid fa-spinner"></i> En proceso
+                    </button>
+                    <button class="mis-libros-tab-btn" id="btnTabDeseos" onclick="switchMisLibrosTab('deseos')">
+                        <i class="fa-solid fa-heart"></i> Libros que quiero leer
+                    </button>
+                    <button class="mis-libros-tab-btn" id="btnTabLeidos" onclick="switchMisLibrosTab('leidos')">
+                        <i class="fa-solid fa-circle-check"></i> Libros ya leídos
+                    </button>
+                </div>
+
+                <!-- PESTAÑA 1: EN PROCESO DE LECTURA -->
+                <div id="tabContentMisLibrosEnProceso" class="mis-libros-tab-content" style="display: block;">
+                    <div class="mis-libros-section-header">
+                        <div class="header-text-group">
+                            <i class="fa-solid fa-book-open-reader font-purple"></i>
+                            <h4>En proceso de lectura</h4>
+                        </div>
+                        <button class="btn-primary btn-sm" onclick="openModalAgregarLibroProceso()" style="padding: 6px 14px; font-size: 12px;">
+                            <i class="fa-solid fa-plus"></i> Agregar Libro
+                        </button>
+                    </div>
+                    <div class="banner-divider-container" style="margin: 8px 0 16px 0;">
+                        <hr class="banner-divider">
+                    </div>
+                    <div id="containerLibrosEnProceso" class="my-books-grid">
+                        <!-- Renderizado dinámico vía JS -->
+                    </div>
+                </div>
+
+                <!-- PESTAÑA 2: LIBROS QUE QUIERO LEER (WISHLIST) -->
+                <div id="tabContentMisLibrosDeseos" class="mis-libros-tab-content" style="display: none;">
+                    <div class="mis-libros-section-header">
+                        <div class="header-text-group">
+                            <i class="fa-solid fa-heart font-pink"></i>
+                            <h4>Libros que quiero leer (Lista de Deseos)</h4>
+                        </div>
+                    </div>
+                    <div class="banner-divider-container" style="margin: 8px 0 16px 0;">
+                        <hr class="banner-divider">
+                    </div>
+                    <div id="containerLibrosDeseos" class="my-books-grid">
+                        <!-- Renderizado dinámico vía JS -->
+                    </div>
+                </div>
+
+                <!-- PESTAÑA 3: LIBROS YA LEÍDOS -->
+                <div id="tabContentMisLibrosLeidos" class="mis-libros-tab-content" style="display: none;">
+                    <div class="mis-libros-section-header">
+                        <div class="header-text-group">
+                            <i class="fa-solid fa-circle-check font-emerald"></i>
+                            <h4>Libros ya leídos</h4>
+                        </div>
+                        <button class="btn-secondary btn-sm" onclick="openModal('modalRegistrarLibroLeido')" style="padding: 6px 14px; font-size: 12px;">
+                            <i class="fa-solid fa-plus"></i> Registrar Libro
+                        </button>
+                    </div>
+                    <div class="banner-divider-container" style="margin: 8px 0 16px 0;">
+                        <hr class="banner-divider">
+                    </div>
+                    <div id="containerLibrosLeidos" class="my-books-grid">
+                        <!-- Renderizado dinámico vía JS -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POP-UP: AGREGAR / ACTUALIZAR LIBRO EN PROCESO -->
+    <div class="modal-overlay" id="modalAgregarLibroProceso">
+        <div class="modal-box" style="max-width: 420px; text-align: center;">
+            <button class="modal-close" onclick="closeModal('modalAgregarLibroProceso')">&times;</button>
+            <div class="modal-header">
+                <i class="fa-solid fa-book-open-reader modal-icon" style="color: #9333ea;"></i>
+                <h3 id="modalProcesoTitle">Agregar a En Proceso</h3>
+                <p>Ingresa el título del libro y tu avance de lectura</p>
+            </div>
+            <div class="modal-body" style="text-align: left;">
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label style="font-weight: 700; font-size: 13px;"><i class="fa-solid fa-book"></i> Título del Libro:</label>
+                    <input type="text" id="inputProcesoBookTitle" class="form-input" placeholder="Ej. Cien años de soledad" oninput="previewProcesoBookSearch()" style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid #EFA9BE; font-size: 13px;">
+                </div>
+
+                <!-- VISTA PREVIA DEL LIBRO -->
+                <div class="read-book-preview-card" id="procesoBookPreviewCard" style="margin-bottom: 14px;">
+                    <div class="preview-cover-box" id="procesoPreviewCoverBox">
+                        <i class="fa-solid fa-book fallback-grey-book"></i>
+                    </div>
+                    <div class="preview-info">
+                        <h5 id="procesoPreviewBookTitle" style="font-size: 14px; font-weight: 800; margin-bottom: 4px;">Libro no especificado</h5>
+                        <p id="procesoPreviewBookStatus" style="font-size: 11px; color: #64748b; margin-top: 4px; margin-bottom: 0;">Ingresa el nombre para buscarlo en la biblioteca.</p>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label style="font-weight: 700; font-size: 13px;"><i class="fa-solid fa-percent"></i> Porcentaje de Avance:</label>
+                        <span id="labelProcentajeValue" style="font-weight: 800; color: #9333ea; font-size: 14px;">50%</span>
+                    </div>
+                    <input type="range" id="inputProcesoPorcentaje" min="0" max="100" value="50" oninput="document.getElementById('labelProcentajeValue').textContent = this.value + '%'" style="width: 100%; accent-color: #9333ea; cursor: pointer;">
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 18px;">
+                    <button type="button" class="btn-secondary" onclick="closeModal('modalAgregarLibroProceso')" style="flex: 1; padding: 10px; border-radius: 12px;">Cancelar</button>
+                    <button type="button" class="btn-primary" onclick="confirmSaveLibroEnProceso()" style="flex: 1; padding: 10px; border-radius: 12px;"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+                </div>
             </div>
         </div>
     </div>

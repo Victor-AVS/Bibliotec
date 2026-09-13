@@ -1354,6 +1354,19 @@ function confirmRegisterReadBook() {
     currentUser.puntos = (parseInt(currentUser.puntos) || 0) + ptsEarned;
     localStorage.setItem('bibliotec_user', JSON.stringify(currentUser));
 
+    // 2.5 Add to myBooksData.leidos
+    if (typeof myBooksData !== 'undefined') {
+        myBooksData.leidos.unshift({
+            id: Date.now().toString(),
+            titulo: titleStr,
+            autor: currentMatchedBook ? (currentMatchedBook.autor || 'Biblioteca') : 'Autor no especificado',
+            portada: currentMatchedBook ? (currentMatchedBook.portada_url || '') : '',
+            puntos: ptsEarned,
+            fecha: new Date().toLocaleDateString('es-MX')
+        });
+        saveMyBooksData();
+    }
+
     // 3. Update UI
     updateReadingGoalsUI();
     updateInsigniasProgressUI();
@@ -1363,3 +1376,428 @@ function confirmRegisterReadBook() {
     // 4. Alert notification
     alert(`¡Felicidades! Registraste "${titleStr}" exitosamente.\nGanaste +${ptsEarned} Pts para tu nivel e insignias.`);
 }
+
+// ==========================================================================
+// MÓDULO MIS LIBROS (EN PROCESO, WISHLIST, LEÍDOS)
+// ==========================================================================
+
+let myBooksData = JSON.parse(localStorage.getItem('bibliotec_my_books')) || {
+    en_proceso: [],
+    leidos: []
+};
+
+function saveMyBooksData() {
+    localStorage.setItem('bibliotec_my_books', JSON.stringify(myBooksData));
+}
+
+function openMisLibrosModal() {
+    if (!isLoggedIn()) {
+        openAuthRequiredModal();
+        return;
+    }
+    const modal = document.getElementById('modalMisLibros');
+    if (modal) modal.classList.add('active');
+    
+    switchMisLibrosTab('en_proceso');
+}
+
+function switchMisLibrosTab(tabName) {
+    const btnEnProceso = document.getElementById('btnTabEnProceso');
+    const btnDeseos = document.getElementById('btnTabDeseos');
+    const btnLeidos = document.getElementById('btnTabLeidos');
+
+    const contentEnProceso = document.getElementById('tabContentMisLibrosEnProceso');
+    const contentDeseos = document.getElementById('tabContentMisLibrosDeseos');
+    const contentLeidos = document.getElementById('tabContentMisLibrosLeidos');
+
+    if (btnEnProceso) btnEnProceso.classList.remove('active');
+    if (btnDeseos) btnDeseos.classList.remove('active');
+    if (btnLeidos) btnLeidos.classList.remove('active');
+
+    if (contentEnProceso) contentEnProceso.style.display = 'none';
+    if (contentDeseos) contentDeseos.style.display = 'none';
+    if (contentLeidos) contentLeidos.style.display = 'none';
+
+    if (tabName === 'en_proceso') {
+        if (btnEnProceso) btnEnProceso.classList.add('active');
+        if (contentEnProceso) contentEnProceso.style.display = 'block';
+        renderMisLibrosEnProceso();
+    } else if (tabName === 'deseos') {
+        if (btnDeseos) btnDeseos.classList.add('active');
+        if (contentDeseos) contentDeseos.style.display = 'block';
+        renderMisLibrosDeseos();
+    } else if (tabName === 'leidos') {
+        if (btnLeidos) btnLeidos.classList.add('active');
+        if (contentLeidos) contentLeidos.style.display = 'block';
+        renderMisLibrosLeidos();
+    }
+}
+
+// 1. RENDERIZAR LIBROS EN PROCESO
+function renderMisLibrosEnProceso() {
+    const container = document.getElementById('containerLibrosEnProceso');
+    if (!container) return;
+
+    if (!myBooksData.en_proceso || myBooksData.en_proceso.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state-box">
+                <i class="fa-solid fa-book-open-reader"></i>
+                <h5 style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">No estás leyendo ningún libro por ahora</h5>
+                <p style="font-size: 12px; margin-bottom: 12px;">Haz clic en el botón de arriba para registrar tu lectura actual.</p>
+                <button class="btn-primary btn-sm" onclick="openModalAgregarLibroProceso()"><i class="fa-solid fa-plus"></i> Agregar primer libro</button>
+            </div>
+        `;
+        return;
+    }
+
+    let html = '';
+    myBooksData.en_proceso.forEach((book, index) => {
+        const coverHtml = book.portada ? `<img src="${book.portada}" alt="${book.titulo}">` : `<i class="fa-solid fa-book fallback-icon"></i>`;
+        const percent = Math.min(100, Math.max(0, parseInt(book.porcentaje) || 0));
+
+        html += `
+            <div class="my-book-card">
+                <div class="my-book-cover">
+                    ${coverHtml}
+                </div>
+                <div class="my-book-info">
+                    <h5 class="my-book-title">${book.titulo}</h5>
+                    <p class="my-book-author"><i class="fa-solid fa-feather"></i> ${book.autor || 'Autor no especificado'}</p>
+
+                    <div class="my-book-progress-box">
+                        <div class="my-book-progress-header">
+                            <span>Avance de lectura:</span>
+                            <span style="color: #9333ea; font-size: 12px;">${percent}%</span>
+                        </div>
+                        <div class="progress-bar-sm">
+                            <div class="progress-fill-sm" style="width: ${percent}%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="my-book-actions">
+                        <button class="btn-secondary btn-sm" onclick="openModalAgregarLibroProceso(${index})" style="font-size: 11px; padding: 4px 10px;">
+                            <i class="fa-solid fa-pen"></i> Actualizar Avance
+                        </button>
+                        <button class="btn-primary btn-sm" onclick="marcarLibroProcesoLeido(${index})" style="font-size: 11px; padding: 4px 10px; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            <i class="fa-solid fa-check"></i> Marcar como Leído
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+// 2. RENDERIZAR LIBROS QUE QUIERO LEER (WISHLIST)
+async function renderMisLibrosDeseos() {
+    const container = document.getElementById('containerLibrosDeseos');
+    if (!container) return;
+
+    container.innerHTML = `<p style="color: #A97862; font-size: 12px; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando lista de deseos...</p>`;
+
+    if (!currentUser || !currentUser.id_usuario) {
+        container.innerHTML = `
+            <div class="empty-state-box">
+                <i class="fa-solid fa-heart"></i>
+                <h5 style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">Inicia sesión para guardar tu Wishlist</h5>
+            </div>
+        `;
+        return;
+    }
+
+    try {
+        const backendUrl = getBackendUrl();
+        const res = await fetch(`${backendUrl}/api/wishlist/${currentUser.id_usuario}`);
+        const data = await res.json();
+
+        if (data.success && data.wishlist && data.wishlist.length > 0) {
+            let html = '';
+            data.wishlist.forEach(item => {
+                const coverHtml = item.portada_url ? `<img src="${item.portada_url}" alt="${item.titulo}">` : `<i class="fa-solid fa-book fallback-icon"></i>`;
+                const fecha = item.fecha_agregado ? item.fecha_agregado.split('T')[0] : '';
+                const safeTitle = (item.titulo || '').replace(/'/g, "\\'");
+                const safePortada = (item.portada_url || '').replace(/'/g, "\\'");
+
+                html += `
+                    <div class="my-book-card">
+                        <div class="my-book-cover">
+                            ${coverHtml}
+                        </div>
+                        <div class="my-book-info">
+                            <h5 class="my-book-title">${item.titulo}</h5>
+                            <p class="my-book-author"><i class="fa-solid fa-layer-group"></i> ${item.categoria || 'Biblioteca'}</p>
+                            <span style="font-size: 11px; color: #ec4899; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                                <i class="fa-solid fa-bookmark"></i> En Lista de Deseos (${fecha})
+                            </span>
+                            <div class="my-book-actions" style="margin-top: 6px;">
+                                <button class="btn-primary btn-sm" onclick="empezarLecturaDesdeWishlist('${safeTitle}', '${safePortada}')" style="font-size: 11px; padding: 4px 10px; background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);">
+                                    <i class="fa-solid fa-play"></i> Empezar a Leer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = `
+                <div class="empty-state-box">
+                    <i class="fa-solid fa-heart"></i>
+                    <h5 style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">Tu Lista de Deseos está vacía</h5>
+                    <p style="font-size: 12px;">Guarda libros desde el catálogo principal presionando "Agregar a Lista de Deseos".</p>
+                </div>
+            `;
+        }
+    } catch (err) {
+        console.error("Error al obtener wishlist para Mis Libros:", err);
+        container.innerHTML = `<p style="color: #ef4444; font-size: 12px; text-align: center; padding: 20px;">No se pudo conectar con el servidor para cargar la lista de deseos.</p>`;
+    }
+}
+
+// 3. RENDERIZAR LIBROS YA LEÍDOS
+function renderMisLibrosLeidos() {
+    const container = document.getElementById('containerLibrosLeidos');
+    if (!container) return;
+
+    if (!myBooksData.leidos || myBooksData.leidos.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state-box">
+                <i class="fa-solid fa-circle-check"></i>
+                <h5 style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">Aún no has registrado libros completados</h5>
+                <p style="font-size: 12px; margin-bottom: 12px;">Registra tus lecturas finalizadas para ganar puntos e insignias.</p>
+                <button class="btn-primary btn-sm" onclick="openModal('modalRegistrarLibroLeido')"><i class="fa-solid fa-plus"></i> Registrar libro leído</button>
+            </div>
+        `;
+        return;
+    }
+
+    let html = '';
+    myBooksData.leidos.forEach(book => {
+        const coverHtml = book.portada ? `<img src="${book.portada}" alt="${book.titulo}">` : `<i class="fa-solid fa-book fallback-icon"></i>`;
+        const pts = book.puntos || 35;
+        const fecha = book.fecha || new Date().toLocaleDateString('es-MX');
+
+        html += `
+            <div class="my-book-card">
+                <div class="my-book-cover">
+                    ${coverHtml}
+                </div>
+                <div class="my-book-info">
+                    <h5 class="my-book-title">${book.titulo}</h5>
+                    <p class="my-book-author"><i class="fa-solid fa-feather"></i> ${book.autor || 'Autor no especificado'}</p>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                        <span style="display: inline-block; padding: 2px 8px; background: #dcfce7; color: #15803d; border-radius: 10px; font-size: 11px; font-weight: 800;">
+                            <i class="fa-solid fa-circle-check"></i> Completado (+${pts} Pts)
+                        </span>
+                        <span style="font-size: 11px; color: #64748b;">${fecha}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+// 4. GESTIÓN DE LIBROS EN PROCESO
+let editingProcesoIndex = -1;
+let currentProcesoMatchedBook = null;
+
+function openModalAgregarLibroProceso(index = -1) {
+    editingProcesoIndex = index;
+    currentProcesoMatchedBook = null;
+
+    const modalTitle = document.getElementById('modalProcesoTitle');
+    const inputTitle = document.getElementById('inputProcesoBookTitle');
+    const inputPercent = document.getElementById('inputProcesoPorcentaje');
+    const labelPercent = document.getElementById('labelProcentajeValue');
+
+    if (index >= 0 && myBooksData.en_proceso[index]) {
+        const b = myBooksData.en_proceso[index];
+        if (modalTitle) modalTitle.textContent = 'Actualizar Avance';
+        if (inputTitle) inputTitle.value = b.titulo;
+        if (inputPercent) inputPercent.value = b.porcentaje || 50;
+        if (labelPercent) labelPercent.textContent = (b.porcentaje || 50) + '%';
+    } else {
+        if (modalTitle) modalTitle.textContent = 'Agregar a En Proceso';
+        if (inputTitle) inputTitle.value = '';
+        if (inputPercent) inputPercent.value = 50;
+        if (labelPercent) labelPercent.textContent = '50%';
+    }
+
+    previewProcesoBookSearch();
+    openModal('modalAgregarLibroProceso');
+}
+
+function previewProcesoBookSearch() {
+    const inputTitle = document.getElementById('inputProcesoBookTitle');
+    if (!inputTitle) return;
+
+    const titleEl = document.getElementById('procesoPreviewBookTitle');
+    const authorEl = document.getElementById('procesoPreviewBookStatus');
+    const coverBox = document.getElementById('procesoPreviewCoverBox');
+
+    const query = inputTitle.value.trim().toLowerCase();
+
+    if (!query) {
+        if (titleEl) titleEl.textContent = 'Libro no especificado';
+        if (authorEl) authorEl.textContent = 'Ingresa el nombre para buscarlo en la biblioteca.';
+        if (coverBox) coverBox.innerHTML = '<i class="fa-solid fa-book fallback-grey-book"></i>';
+        currentProcesoMatchedBook = null;
+        return;
+    }
+
+    let matched = null;
+    if (typeof booksMap !== 'undefined' && booksMap) {
+        const keys = Object.keys(booksMap);
+        for (let k of keys) {
+            const b = booksMap[k];
+            if (b && b.titulo && b.titulo.toLowerCase().includes(query)) {
+                matched = b;
+                break;
+            }
+        }
+    }
+
+    if (matched) {
+        currentProcesoMatchedBook = matched;
+        const cover = matched.portada_url || (typeof FALLBACK_COVER !== 'undefined' ? FALLBACK_COVER : '');
+        if (titleEl) titleEl.textContent = matched.titulo;
+        if (authorEl) authorEl.textContent = `Encontrado: ${matched.autor || 'Biblioteca'}`;
+        if (coverBox) coverBox.innerHTML = `<img src="${cover}" alt="${matched.titulo}">`;
+    } else {
+        currentProcesoMatchedBook = null;
+        if (titleEl) titleEl.textContent = inputTitle.value.trim();
+        if (authorEl) authorEl.textContent = 'Libro personalizado (No registrado en catálogo)';
+        if (coverBox) coverBox.innerHTML = '<i class="fa-solid fa-book fallback-grey-book"></i>';
+    }
+}
+
+function confirmSaveLibroEnProceso() {
+    const inputTitle = document.getElementById('inputProcesoBookTitle');
+    const inputPercent = document.getElementById('inputProcesoPorcentaje');
+
+    const title = inputTitle ? inputTitle.value.trim() : '';
+    const percentage = inputPercent ? parseInt(inputPercent.value) || 0 : 0;
+
+    if (!title) {
+        alert('Por favor escribe el título del libro.');
+        return;
+    }
+
+    let cover = '';
+    let author = 'Autor no especificado';
+
+    if (currentProcesoMatchedBook) {
+        cover = currentProcesoMatchedBook.portada_url || '';
+        author = currentProcesoMatchedBook.autor || 'Biblioteca';
+    }
+
+    if (percentage >= 100) {
+        if (editingProcesoIndex >= 0) {
+            myBooksData.en_proceso.splice(editingProcesoIndex, 1);
+        }
+        
+        myBooksData.leidos.unshift({
+            id: Date.now().toString(),
+            titulo: currentProcesoMatchedBook ? currentProcesoMatchedBook.titulo : title,
+            autor: author,
+            portada: cover,
+            puntos: currentProcesoMatchedBook ? (currentProcesoMatchedBook.puntos || 40) : 35,
+            fecha: new Date().toLocaleDateString('es-MX')
+        });
+        saveMyBooksData();
+
+        const pts = currentProcesoMatchedBook ? (currentProcesoMatchedBook.puntos || 40) : 35;
+        readingGoalData.read = (parseInt(readingGoalData.read) || 0) + 1;
+        saveReadingGoalData();
+
+        if (!currentUser) currentUser = { puntos: 0 };
+        currentUser.puntos = (parseInt(currentUser.puntos) || 0) + pts;
+        localStorage.setItem('bibliotec_user', JSON.stringify(currentUser));
+
+        updateReadingGoalsUI();
+        updateInsigniasProgressUI();
+        closeModal('modalAgregarLibroProceso');
+
+        switchMisLibrosTab('leidos');
+        alert(`¡Felicidades! Completaste al 100% "${title}".\nSe ha movido a Libros ya Leídos y ganaste +${pts} Pts.`);
+        return;
+    }
+
+    const itemData = {
+        id: Date.now().toString(),
+        titulo: currentProcesoMatchedBook ? currentProcesoMatchedBook.titulo : title,
+        autor: author,
+        portada: cover,
+        porcentaje: percentage,
+        fecha_inicio: new Date().toLocaleDateString('es-MX')
+    };
+
+    if (editingProcesoIndex >= 0) {
+        myBooksData.en_proceso[editingProcesoIndex] = itemData;
+    } else {
+        myBooksData.en_proceso.unshift(itemData);
+    }
+
+    saveMyBooksData();
+    closeModal('modalAgregarLibroProceso');
+    renderMisLibrosEnProceso();
+}
+
+function marcarLibroProcesoLeido(index) {
+    if (index < 0 || !myBooksData.en_proceso[index]) return;
+    const book = myBooksData.en_proceso[index];
+
+    if (!confirm(`¿Deseas marcar "${book.titulo}" como leído al 100%?`)) return;
+
+    myBooksData.en_proceso.splice(index, 1);
+    const pts = 40;
+
+    myBooksData.leidos.unshift({
+        id: Date.now().toString(),
+        titulo: book.titulo,
+        autor: book.autor,
+        portada: book.portada,
+        puntos: pts,
+        fecha: new Date().toLocaleDateString('es-MX')
+    });
+    saveMyBooksData();
+
+    readingGoalData.read = (parseInt(readingGoalData.read) || 0) + 1;
+    saveReadingGoalData();
+
+    if (!currentUser) currentUser = { puntos: 0 };
+    currentUser.puntos = (parseInt(currentUser.puntos) || 0) + pts;
+    localStorage.setItem('bibliotec_user', JSON.stringify(currentUser));
+
+    updateReadingGoalsUI();
+    updateInsigniasProgressUI();
+
+    renderMisLibrosEnProceso();
+    alert(`¡Felicidades! Registraste "${book.titulo}" como leído.\nGanaste +${pts} Pts.`);
+}
+
+function empezarLecturaDesdeWishlist(titulo, portada) {
+    const exists = myBooksData.en_proceso.find(b => b.titulo.toLowerCase() === titulo.toLowerCase());
+    if (exists) {
+        switchMisLibrosTab('en_proceso');
+        alert(`"${titulo}" ya está en tu lista de En proceso.`);
+        return;
+    }
+
+    myBooksData.en_proceso.unshift({
+        id: Date.now().toString(),
+        titulo: titulo,
+        autor: 'Biblioteca',
+        portada: portada || '',
+        porcentaje: 10,
+        fecha_inicio: new Date().toLocaleDateString('es-MX')
+    });
+    saveMyBooksData();
+    switchMisLibrosTab('en_proceso');
+    alert(`¡"${titulo}" fue agregado a tus lecturas en proceso al 10%!`);
+}
+
