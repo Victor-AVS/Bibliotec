@@ -396,32 +396,34 @@
     <!-- MODAL REGISTRO / CREDENCIAL DIGITAL (FULLSCREEN OVERLAY) -->
     <div class="modal-overlay modal-overlay-fullscreen" id="modalCredencial" style="z-index: 10500;">
         <div class="fullscreen-page-container">
-            <!-- HEADER FIJO REGRESO -->
-            <div class="fullscreen-header">
-                <button class="btn-back-circle" onclick="closeModal('modalCredencial')">
+            <!-- HEADER DE PANTALLA COMPLETA ESTÁNDAR CON BOTÓN DE REGRESO -->
+            <div class="fullscreen-page-header">
+                <button class="header-back-btn" onclick="closeModal('modalCredencial')">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <div class="fullscreen-title-box">
-                    <h4>Credencial Digital TESCHI</h4>
-                    <span class="fullscreen-subtitle">Identificación Institucional Oficial CR80</span>
+                <div class="header-page-title" style="flex: 1;">
+                    <h3>Credencial Digital TESCHI</h3>
+                    <span>Identificación Institucional Oficial CR80</span>
                 </div>
-                <button class="btn-primary btn-sm" onclick="window.print()" style="background: #2e7d32; padding: 6px 12px; font-size: 12px; border-radius: 8px;">
+                <button class="btn-primary btn-sm" onclick="window.print()" style="font-size: 12px; padding: 6px 14px; border-radius: 10px; background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); border: none;">
                     <i class="fa-solid fa-print"></i> Imprimir
                 </button>
             </div>
 
-            <!-- CONTENIDO PRINCIPAL CREDENCIAL -->
-            <div class="fullscreen-body" style="background: #f0f4f1; padding: 20px 15px;">
+            <!-- CONTENIDO SCROLLABLE DE PANTALLA COMPLETA -->
+            <div class="fullscreen-page-body">
                 <div class="credencial-modal-content">
 
-                    <!-- PÍLDORAS INTERACTIVAS DE VISTA -->
-                    <div class="credencial-actions-bar">
-                        <button class="filter-pill active" id="btnSideAnverso" onclick="switchCredencialSide('anverso')">
-                            <i class="fa-solid fa-address-card"></i> Anverso (Frente)
-                        </button>
-                        <button class="filter-pill" id="btnSideReverso" onclick="switchCredencialSide('reverso')">
-                            <i class="fa-solid fa-qrcode"></i> Reverso (Atrás)
-                        </button>
+                    <!-- BARRA DE ACCIONES CON PÍLDORAS ESTÁNDAR DEL SISTEMA -->
+                    <div class="insignia-filter-bar" style="justify-content: center; width: 100%; max-width: 380px; margin-bottom: 16px;">
+                        <div class="filter-pills">
+                            <button class="filter-pill active" id="btnSideAnverso" onclick="switchCredencialSide('anverso')">
+                                <i class="fa-solid fa-address-card"></i> Anverso (Frente)
+                            </button>
+                            <button class="filter-pill" id="btnSideReverso" onclick="switchCredencialSide('reverso')">
+                                <i class="fa-solid fa-qrcode"></i> Reverso (Atrás)
+                            </button>
+                        </div>
                     </div>
 
                     <!-- TARJETA CREDENCIAL CR80 (ANVERSO) -->
@@ -535,14 +537,11 @@
                         </div>
                     </div>
 
-                    <!-- OPCIÓN SUBIR / CAMBIAR FOTO -->
-                    <div class="card-box-subtle" style="width: 100%; max-width: 340px; text-align: center; margin-top: 10px;">
-                        <span style="font-size: 11px; color: #64748b; font-weight: 600; display: block; margin-bottom: 6px;">
-                            <i class="fa-solid fa-camera"></i> Fotografía del Estudiante
-                        </span>
+                    <!-- OPCIÓN SUBIR / CAMBIAR FOTO CON BOTÓN CONCORDANTE -->
+                    <div style="width: 100%; max-width: 340px; text-align: center; margin-top: 16px;">
                         <input type="file" id="inputFotoCredencial" accept="image/*" style="display: none;" onchange="handleFotoCredencialUpload(event)">
-                        <button class="btn-secondary btn-sm" onclick="document.getElementById('inputFotoCredencial').click()" style="font-size: 11px; width: 100%;">
-                            <i class="fa-solid fa-upload"></i> Subir / Actualizar Fotografía
+                        <button class="btn-primary btn-sm" onclick="document.getElementById('inputFotoCredencial').click()" style="font-size: 12px; width: 100%; padding: 10px 16px; border-radius: 12px; background: linear-gradient(135deg, #6B4035 0%, #A97862 100%); border: none;">
+                            <i class="fa-solid fa-camera"></i> Subir / Actualizar Fotografía
                         </button>
                     </div>
 
