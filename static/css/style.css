@@ -2819,4 +2819,59 @@ body.dark-mode #modalDetailSynopsisText {
     color: #FCEEF3 !important;
 }
 
+/* POP-UP MODALS OVERLAYING FULLSCREEN PAGES (MIS LIBROS, INSIGNIAS) */
+#modalAgregarLibroProceso,
+#modalRegistrarLibroLeido {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 5000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: rgba(15, 8, 12, 0.75) !important;
+    backdrop-filter: blur(10px) !important;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+#modalAgregarLibroProceso.active,
+#modalRegistrarLibroLeido.active {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+#modalAgregarLibroProceso .modal-box,
+#modalRegistrarLibroLeido .modal-box {
+    border-radius: 28px !important;
+    max-width: 440px !important;
+    width: 90% !important;
+    margin: auto !important;
+    padding: 20px !important;
+    transform: scale(0.9) !important;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
+    border: 2px solid #EFA9BE !important;
+    max-height: 85vh !important;
+    background-color: #FFEBF2 !important;
+    overflow-y: auto !important;
+}
+
+body.dark-mode #modalAgregarLibroProceso .modal-box,
+body.dark-mode #modalRegistrarLibroLeido .modal-box {
+    background-color: #24141f !important;
+    border-color: #542b49 !important;
+}
+
+#modalAgregarLibroProceso.active .modal-box,
+#modalRegistrarLibroLeido.active .modal-box {
+    transform: scale(1) !important;
+}
+
+
 
