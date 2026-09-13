@@ -87,6 +87,14 @@ function isLoggedIn() {
     return currentUser !== null;
 }
 
+function handleAuthProtectedAction(callback) {
+    if (isLoggedIn()) {
+        if (typeof callback === 'function') callback();
+    } else {
+        openAuthRequiredModal();
+    }
+}
+
 function updateUserUI() {
     const guestView = document.getElementById('userGuestView');
     const loggedView = document.getElementById('userLoggedInView');
@@ -95,26 +103,25 @@ function updateUserUI() {
     if (currentUser) {
         if (guestView) guestView.style.display = 'none';
         if (loggedView) loggedView.style.display = 'block';
-        if (navLabel) navLabel.textContent = currentUser.nombre.split(' ')[0];
+        if (navLabel) navLabel.textContent = currentUser.nombre ? currentUser.nombre.split(' ')[0] : 'Usuario';
 
         const aMaterno = currentUser.a_materno ? ` ${currentUser.a_materno}` : '';
-        const fullName = `${currentUser.nombre} ${currentUser.a_paterno}${aMaterno}`;
+        const fullName = `${currentUser.nombre || ''} ${currentUser.a_paterno || ''}${aMaterno}`.trim();
 
-        // Credencial Digital
-        document.getElementById('idNombre').textContent = fullName;
-        document.getElementById('idMatricula').textContent = currentUser.matricula;
-        document.getElementById('idCorreo').textContent = currentUser.correo;
-        if (currentUser.carrera && document.getElementById('idCarrera')) {
-            document.getElementById('idCarrera').textContent = currentUser.carrera;
-        }
-        if (currentUser.nss && document.getElementById('idNss')) {
-            document.getElementById('idNss').textContent = currentUser.nss;
-        }
-        if (currentUser.vigencia && document.getElementById('idVigencia')) {
-            document.getElementById('idVigencia').textContent = `Vigencia: ${currentUser.vigencia}`;
-        }
+        const idNombre = document.getElementById('idNombre');
+        const idMatricula = document.getElementById('idMatricula');
+        const idCorreo = document.getElementById('idCorreo');
+        const idCarrera = document.getElementById('idCarrera');
+        const idNss = document.getElementById('idNss');
+        const idVigencia = document.getElementById('idVigencia');
 
-        // Renderizar Foto de Perfil si existe
+        if (idNombre) idNombre.textContent = fullName;
+        if (idMatricula) idMatricula.textContent = currentUser.matricula || '';
+        if (idCorreo) idCorreo.textContent = currentUser.correo || '';
+        if (idCarrera && currentUser.carrera) idCarrera.textContent = currentUser.carrera;
+        if (idNss && currentUser.nss) idNss.textContent = currentUser.nss;
+        if (idVigencia && currentUser.vigencia) idVigencia.textContent = `Vigencia: ${currentUser.vigencia}`;
+
         const profileImg = document.getElementById('profileAvatarImg');
         const profileDefIcon = document.getElementById('profileDefaultIcon');
         const credImg = document.getElementById('idPhotoImg');
@@ -132,10 +139,13 @@ function updateUserUI() {
             if (credDefIcon) credDefIcon.style.display = 'block';
         }
 
-        // Vista Perfil
-        document.getElementById('profileName').textContent = fullName;
-        document.getElementById('profileCorreo').textContent = currentUser.correo;
-        document.getElementById('profileMatricula').textContent = `Matrícula: ${currentUser.matricula}`;
+        const profileName = document.getElementById('profileName');
+        const profileCorreo = document.getElementById('profileCorreo');
+        const profileMatricula = document.getElementById('profileMatricula');
+
+        if (profileName) profileName.textContent = fullName;
+        if (profileCorreo) profileCorreo.textContent = currentUser.correo || '';
+        if (profileMatricula) profileMatricula.textContent = `Matrícula: ${currentUser.matricula || ''}`;
 
         loadUserWishlist();
     } else {
