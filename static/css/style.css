@@ -3640,7 +3640,28 @@ body.dark-mode #modalRegistrarLibroLeido .modal-box {
         print-color-adjust: exact !important;
     }
 
-    /* Ocultar elementos de la interfaz de la app */
+    /* Desactivar estilos de marco mobile para la app principal durante impresion */
+    .app-container {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Ocultar ABSOLUTAMENTE TODOS los elementos del contenedor principal excepto el modal de credencial */
+    .app-container > *:not(#modalCredencial) {
+        display: none !important;
+    }
+
+    /* Ocultar elementos de la interfaz de navegación, encabezados y botones */
     .app-header,
     .search-container,
     .filter-pills-scroll,
@@ -3651,7 +3672,10 @@ body.dark-mode #modalRegistrarLibroLeido .modal-box {
     .floating-print-btn,
     .no-print,
     button,
-    input {
+    input,
+    .banner-carousel,
+    .catalogo-section,
+    .modal-overlay:not(#modalCredencial) {
         display: none !important;
     }
 
@@ -3667,6 +3691,7 @@ body.dark-mode #modalRegistrarLibroLeido .modal-box {
         padding: 0 !important;
         margin: 0 !important;
         box-shadow: none !important;
+        border: none !important;
     }
 
     .fullscreen-page-container,
@@ -3680,7 +3705,7 @@ body.dark-mode #modalRegistrarLibroLeido .modal-box {
         width: 100% !important;
     }
 
-    /* Desactivar giro 3D y apilar frontal y trasera verticalmente */
+    /* Desactivar giro 3D y apilar frontal y trasera verticalmente al centro */
     .credencial-flip-container {
         perspective: none !important;
         width: 100% !important;
@@ -3694,10 +3719,11 @@ body.dark-mode #modalRegistrarLibroLeido .modal-box {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
+        justify-content: center !important;
         gap: 15mm !important;
         width: 100% !important;
         height: auto !important;
-        padding-top: 5mm !important;
+        padding-top: 10mm !important;
     }
 
     .credencial-card-face {
@@ -3709,7 +3735,7 @@ body.dark-mode #modalRegistrarLibroLeido .modal-box {
         -webkit-backface-visibility: visible !important;
         width: 85.6mm !important;
         height: 54mm !important;
-        box-shadow: none !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
         border-radius: 12px !important;
         page-break-inside: avoid !important;
         -webkit-print-color-adjust: exact !important;
