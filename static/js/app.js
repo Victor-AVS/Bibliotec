@@ -819,7 +819,8 @@ function openCredencialModal() {
         if (idPhotoDefaultIcon) idPhotoDefaultIcon.style.display = 'block';
     }
 
-    generateMatriculaBarcode(matricula);
+    const nssVal = (currentUser && currentUser.nss) ? currentUser.nss : '12345678901';
+    generateMatriculaBarcode(nssVal);
 
     const idAniosPills = document.getElementById('idAniosPills');
     if (idAniosPills) {
@@ -859,8 +860,8 @@ function setCredencialTheme(themeName) {
     if (btnRosa) btnRosa.classList.toggle('active', currentCredencialTheme === 'rosa');
     if (btnCafe) btnCafe.classList.toggle('active', currentCredencialTheme === 'cafe');
 
-    const mat = (currentUser && currentUser.matricula) ? currentUser.matricula : '2026123456';
-    generateMatriculaBarcode(mat);
+    const nssVal = (currentUser && currentUser.nss) ? currentUser.nss : '12345678901';
+    generateMatriculaBarcode(nssVal);
 
     try {
         localStorage.setItem('bibliotec_credencial_theme', currentCredencialTheme);
