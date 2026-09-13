@@ -74,12 +74,28 @@ function initUserSession() {
         try {
             currentUser = JSON.parse(savedUser);
             updateUserUI();
+            refreshUserProfile();
         } catch (e) {
             currentUser = null;
         }
     } else {
         currentUser = null;
         updateUserUI();
+    }
+}
+
+async function refreshUserProfile() {
+    if (!currentUser || !currentUser.id_usuario) return;
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/usuario/${currentUser.id_usuario}/perfil`);
+        const data = await res.json();
+        if (data.success && data.usuario) {
+            currentUser = { ...currentUser, ...data.usuario };
+            localStorage.setItem('bibliotec_user', JSON.stringify(currentUser));
+            updateUserUI();
+        }
+    } catch (e) {
+        console.warn("No se pudo refrescar el perfil desde servidor:", e);
     }
 }
 
@@ -984,10 +1000,19 @@ async function downloadCredencialPDF() {
         };
 
         if (typeof html2pdf !== 'undefined') {
-            await html2pdf().set(opt).from(exportContainer).save();
+            if (window.AndroidHost && typeof window.AndroidHost.savePdfFile === 'function') {
+                const pdfBase64 = await html2pdf().set(opt).from(exportContainer).output('datauristring');
+                window.AndroidHost.savePdfFile(pdfBase64, filename);
+            } else {
+                await html2pdf().set(opt).from(exportContainer).save();
+            }
         } else {
             console.warn('html2pdf no está cargado. Usando modo impresión fallback.');
-            window.print();
+            if (window.AndroidHost && typeof window.AndroidHost.printPage === 'function') {
+                window.AndroidHost.printPage();
+            } else {
+                window.print();
+            }
         }
 
         if (document.body.contains(exportContainer)) {

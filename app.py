@@ -526,6 +526,39 @@ def upload_foto_credencial():
         if cursor:
             try: cursor.close()
             except Exception: pass
+@app.route('/api/usuario/<int:id_usuario>/perfil', methods=['GET'])
+def get_perfil_usuario(id_usuario):
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
+        cursor.execute("""
+            SELECT 
+                p.id_persona, p.nombre, p.a_paterno, p.a_materno, p.correo, p.correo_respaldo, p.telefono, p.foto_url,
+                u.id_usuario, u.matricula, u.puntos, u.es_deudor,
+                cd.licenciatura as carrera, cd.nss, cd.turno, cd.vigencia_inicio, cd.vigencia_fin
+            FROM usuario u
+            JOIN persona p ON u.id_persona = p.id_persona
+            LEFT JOIN credencial_digital cd ON u.id_usuario = cd.id_usuario
+            WHERE u.id_usuario = %s;
+        """, (id_usuario,))
+        user = cursor.fetchone()
+
+        if not user:
+            return jsonify({"success": False, "mensaje": "Usuario no encontrado"}), 404
+
+        v_ini = str(user.get('vigencia_inicio', ''))[:4] if user.get('vigencia_inicio') else '2026'
+        v_fin = str(user.get('vigencia_fin', ''))[:4] if user.get('vigencia_fin') else '2029'
+        user['vigencia'] = f"{v_ini} - {v_fin}"
+
+        return jsonify({"success": True, "usuario": user})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
         release_db_connection(conn)
 
 @app.route('/api/usuario/<int:id_usuario>/prestamos', methods=['GET'])
