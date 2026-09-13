@@ -1801,3 +1801,194 @@ function empezarLecturaDesdeWishlist(titulo, portada) {
     alert(`¡"${titulo}" fue agregado a tus lecturas en proceso al 10%!`);
 }
 
+// 5. MODAL DE SELECCIÓN DE LIBRO Y SINOPSIS EN 2 PASOS
+let currentModalCatalogFilterCategory = 'Todos';
+let currentSelectedBookForProceso = null;
+
+function openModalAgregarLibroProceso() {
+    const inputSearch = document.getElementById('inputModalCatalogSearch');
+    if (inputSearch) inputSearch.value = '';
+    
+    currentModalCatalogFilterCategory = 'Todos';
+    currentSelectedBookForProceso = null;
+
+    const containerFilters = document.querySelector('.modal-quick-filters');
+    if (containerFilters) {
+        const pills = containerFilters.querySelectorAll('.filter-pill');
+        pills.forEach(p => {
+            if (p.textContent.includes('Todos')) p.classList.add('active');
+            else p.classList.remove('active');
+        });
+    }
+
+    const step1 = document.getElementById('stepModalCatalogList');
+    const step2 = document.getElementById('stepModalBookDetail');
+    if (step1) step1.style.display = 'block';
+    if (step2) step2.style.display = 'none';
+
+    renderModalCatalogGrid();
+    openModal('modalAgregarLibroProceso');
+}
+
+function filterModalCatalogCategory(category, btnEl) {
+    currentModalCatalogFilterCategory = category;
+    if (btnEl) {
+        const pills = btnEl.parentElement.querySelectorAll('.filter-pill');
+        pills.forEach(p => p.classList.remove('active'));
+        btnEl.classList.add('active');
+    }
+    renderModalCatalogGrid();
+}
+
+function filterModalCatalogText() {
+    renderModalCatalogGrid();
+}
+
+function renderModalCatalogGrid() {
+    const grid = document.getElementById('modalCatalogGrid');
+    if (!grid) return;
+
+    const inputSearch = document.getElementById('inputModalCatalogSearch');
+    const query = inputSearch ? inputSearch.value.trim().toLowerCase() : '';
+
+    let booksArray = [];
+    if (typeof booksMap !== 'undefined' && booksMap) {
+        booksArray = Object.values(booksMap);
+    } else if (typeof allBooks !== 'undefined' && allBooks) {
+        booksArray = allBooks;
+    }
+
+    let filtered = booksArray.filter(b => {
+        if (!b) return false;
+        const matchesCategory = (currentModalCatalogFilterCategory === 'Todos') || 
+            (b.categoria && b.categoria.toLowerCase().includes(currentModalCatalogFilterCategory.toLowerCase()));
+        
+        const matchesQuery = !query || 
+            (b.titulo && b.titulo.toLowerCase().includes(query)) ||
+            (b.autor && b.autor.toLowerCase().includes(query));
+
+        return matchesCategory && matchesQuery;
+    });
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `
+            <div style="text-align: center; padding: 20px; color: #A97862;">
+                <i class="fa-solid fa-book-bookmark" style="font-size: 28px; color: #D77A9B; margin-bottom: 6px;"></i>
+                <p style="font-size: 12px; margin: 0;">No se encontraron libros para la búsqueda.</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = '';
+    filtered.forEach(book => {
+        const cover = book.portada_url ? `<img src="${book.portada_url}" alt="${book.titulo}">` : `<i class="fa-solid fa-book" style="color: #64748b; font-size: 20px;"></i>`;
+        const safeTitle = (book.titulo || '').replace(/'/g, "\\'");
+        
+        html += `
+            <div class="modal-catalog-card" onclick="selectBookForProcesoPreview(${book.id_libro})">
+                <div class="modal-catalog-cover">
+                    ${cover}
+                </div>
+                <div class="modal-catalog-info">
+                    <h5 class="modal-catalog-title">${book.titulo}</h5>
+                    <p class="modal-catalog-author">${book.autor || 'Autor no especificado'}</p>
+                    <span style="font-size: 10px; font-weight: 700; color: #9333ea; background: #FCEEF3; padding: 2px 6px; border-radius: 8px;">
+                        ${book.categoria || 'Biblioteca'}
+                    </span>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color: #A97862; font-size: 12px;"></i>
+            </div>
+        `;
+    });
+
+    grid.innerHTML = html;
+}
+
+function selectBookForProcesoPreview(id_libro) {
+    let book = null;
+    if (typeof booksMap !== 'undefined' && booksMap[id_libro]) {
+        book = booksMap[id_libro];
+    } else if (typeof allBooks !== 'undefined' && allBooks) {
+        book = allBooks.find(b => b.id_libro == id_libro);
+    }
+
+    if (!book) return;
+    currentSelectedBookForProceso = book;
+
+    const coverImg = document.getElementById('modalDetailCoverImg');
+    const coverFallback = document.getElementById('modalDetailCoverFallback');
+    const titleEl = document.getElementById('modalDetailTitle');
+    const authorEl = document.getElementById('modalDetailAuthor');
+    const categoryTag = document.getElementById('modalDetailCategoryTag');
+    const synopsisText = document.getElementById('modalDetailSynopsisText');
+
+    if (book.portada_url) {
+        if (coverImg) { coverImg.src = book.portada_url; coverImg.style.display = 'block'; }
+        if (coverFallback) coverFallback.style.display = 'none';
+    } else {
+        if (coverImg) coverImg.style.display = 'none';
+        if (coverFallback) coverFallback.style.display = 'block';
+    }
+
+    if (titleEl) titleEl.textContent = book.titulo;
+    if (authorEl) authorEl.textContent = `Autor: ${book.autor || 'Biblioteca'}`;
+    if (categoryTag) categoryTag.textContent = book.categoria || 'Biblioteca';
+    if (synopsisText) synopsisText.textContent = book.sinopsis || 'Sin descripción disponible para este título en la biblioteca.';
+
+    const step1 = document.getElementById('stepModalCatalogList');
+    const step2 = document.getElementById('stepModalBookDetail');
+    if (step1) step1.style.display = 'none';
+    if (step2) step2.style.display = 'block';
+}
+
+function goBackToModalCatalogSearch() {
+    const step1 = document.getElementById('stepModalCatalogList');
+    const step2 = document.getElementById('stepModalBookDetail');
+    if (step1) step1.style.display = 'block';
+    if (step2) step2.style.display = 'none';
+}
+
+function confirmAddSelectedBookToProceso() {
+    if (!currentSelectedBookForProceso) return;
+
+    const book = currentSelectedBookForProceso;
+    const inputPercent = document.getElementById('inputDetailPorcentaje');
+    const percent = inputPercent ? parseInt(inputPercent.value) || 10 : 10;
+
+    const exists = myBooksData.en_proceso.find(b => b.titulo.toLowerCase() === book.titulo.toLowerCase());
+    if (exists) {
+        alert(`"${book.titulo}" ya está en tu lista de lecturas en proceso.`);
+        closeModal('modalAgregarLibroProceso');
+        return;
+    }
+
+    myBooksData.en_proceso.unshift({
+        id: Date.now().toString(),
+        titulo: book.titulo,
+        autor: book.autor || 'Biblioteca',
+        portada: book.portada_url || '',
+        porcentaje: percent,
+        fecha_inicio: new Date().toLocaleDateString('es-MX')
+    });
+
+    saveMyBooksData();
+    closeModal('modalAgregarLibroProceso');
+    renderMisLibrosEnProceso();
+
+    alert(`¡Agregaste "${book.titulo}" a tus lecturas en proceso al ${percent}%!`);
+}
+
+function confirmAddSelectedBookToWishlist() {
+    if (!currentSelectedBookForProceso) return;
+    const book = currentSelectedBookForProceso;
+
+    if (typeof agregarWishlist === 'function') {
+        agregarWishlist(book.id_libro);
+    } else {
+        empezarLecturaDesdeWishlist(book.titulo, book.portada_url);
+    }
+    closeModal('modalAgregarLibroProceso');
+}
+
+

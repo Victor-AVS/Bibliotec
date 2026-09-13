@@ -922,45 +922,93 @@
         </div>
     </div>
 
-    <!-- MODAL POP-UP: AGREGAR / ACTUALIZAR LIBRO EN PROCESO -->
+    <!-- MODAL POP-UP: CATÁLOGO Y DETALLE DE LIBRO PARA AGREGAR A EN PROCESO -->
     <div class="modal-overlay" id="modalAgregarLibroProceso">
-        <div class="modal-box" style="max-width: 420px; text-align: center;">
+        <div class="modal-box modal-box-large" style="max-width: 480px; text-align: center; padding: 18px; border-radius: 24px;">
             <button class="modal-close" onclick="closeModal('modalAgregarLibroProceso')">&times;</button>
-            <div class="modal-header">
-                <i class="fa-solid fa-book-open-reader modal-icon" style="color: #9333ea;"></i>
-                <h3 id="modalProcesoTitle">Agregar a En Proceso</h3>
-                <p>Ingresa el título del libro y tu avance de lectura</p>
+            
+            <!-- PASO 1: BÚSQUEDA EN CATÁLOGO Y FILTROS RÁPIDOS -->
+            <div id="stepModalCatalogList" style="display: block;">
+                <div class="modal-header" style="margin-bottom: 12px; text-align: center;">
+                    <i class="fa-solid fa-book-open-reader modal-icon" style="color: #9333ea; font-size: 32px;"></i>
+                    <h3 style="font-size: 17px; font-weight: 800; color: #6B4035; margin-top: 4px;">Selecciona un Libro</h3>
+                    <p style="font-size: 12px; color: #A97862; margin-top: 2px;">Explora el catálogo o busca por título y carrera</p>
+                </div>
+
+                <!-- BARRA DE BÚSQUEDA Y FILTROS RÁPIDOS -->
+                <div class="modal-catalog-search-box" style="margin-bottom: 12px;">
+                    <div class="search-input-wrapper" style="position: relative; width: 100%;">
+                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #A97862; font-size: 14px;"></i>
+                        <input type="text" id="inputModalCatalogSearch" placeholder="Buscar por título o autor..." oninput="filterModalCatalogText()" style="width: 100%; padding: 10px 10px 10px 36px; border-radius: 14px; border: 1px solid #EFA9BE; font-size: 13px; background: #ffffff; color: #6B4035;">
+                    </div>
+                </div>
+
+                <!-- FILTROS RÁPIDOS POR CATEGORÍA -->
+                <div class="modal-quick-filters" style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px;">
+                    <button class="filter-pill active" onclick="filterModalCatalogCategory('Todos', this)">Todos</button>
+                    <button class="filter-pill" onclick="filterModalCatalogCategory('ISC', this)">💻 ISC</button>
+                    <button class="filter-pill" onclick="filterModalCatalogCategory('IQ', this)">🧪 IQ</button>
+                    <button class="filter-pill" onclick="filterModalCatalogCategory('GASTRO', this)">🍳 GASTRO</button>
+                    <button class="filter-pill" onclick="filterModalCatalogCategory('II', this)">⚙️ II</button>
+                    <button class="filter-pill" onclick="filterModalCatalogCategory('IAD', this)">🎨 IAD</button>
+                    <button class="filter-pill" onclick="filterModalCatalogCategory('Filosofía', this)">📜 Filosofía</button>
+                    <button class="filter-pill" onclick="filterModalCatalogCategory('Ciencias', this)">🔬 Ciencias</button>
+                </div>
+
+                <!-- REJILLA SCROLLABLE DE LIBROS -->
+                <div id="modalCatalogGrid" class="modal-catalog-grid" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 4px;">
+                    <!-- Inyectado dinámicamente vía JS -->
+                </div>
             </div>
-            <div class="modal-body" style="text-align: left;">
-                <div class="form-group" style="margin-bottom: 14px;">
-                    <label style="font-weight: 700; font-size: 13px;"><i class="fa-solid fa-book"></i> Título del Libro:</label>
-                    <input type="text" id="inputProcesoBookTitle" class="form-input" placeholder="Ej. Cien años de soledad" oninput="previewProcesoBookSearch()" style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid #EFA9BE; font-size: 13px;">
+
+            <!-- PASO 2: VISTA PREVIA DEL LIBRO SELECCIONADO CON SINOPSIS -->
+            <div id="stepModalBookDetail" style="display: none; text-align: left;">
+                <div class="modal-detail-top-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <button type="button" class="btn-back-step" onclick="goBackToModalCatalogSearch()" style="background: #FCEEF3; border: 1px solid #EFA9BE; color: #6B4035; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <span style="font-size: 13px; font-weight: 800; color: #6B4035;">Detalles del Libro</span>
+                    <div style="width: 34px;"></div>
                 </div>
 
-                <!-- VISTA PREVIA DEL LIBRO -->
-                <div class="read-book-preview-card" id="procesoBookPreviewCard" style="margin-bottom: 14px;">
-                    <div class="preview-cover-box" id="procesoPreviewCoverBox">
-                        <i class="fa-solid fa-book fallback-grey-book"></i>
+                <div class="modal-book-detail-card" style="text-align: center; background: #ffffff; padding: 14px; border-radius: 18px; border: 1px solid #EFA9BE; margin-bottom: 14px;">
+                    <div class="modal-detail-cover" style="width: 90px; height: 125px; margin: 0 auto 10px auto; border-radius: 12px; overflow: hidden; background: #e2e8f0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); display: flex; align-items: center; justify-content: center;">
+                        <img id="modalDetailCoverImg" src="" alt="Portada" style="width: 100%; height: 100%; object-fit: cover;">
+                        <i id="modalDetailCoverFallback" class="fa-solid fa-book" style="font-size: 42px; color: #64748b; display: none;"></i>
                     </div>
-                    <div class="preview-info">
-                        <h5 id="procesoPreviewBookTitle" style="font-size: 14px; font-weight: 800; margin-bottom: 4px;">Libro no especificado</h5>
-                        <p id="procesoPreviewBookStatus" style="font-size: 11px; color: #64748b; margin-top: 4px; margin-bottom: 0;">Ingresa el nombre para buscarlo en la biblioteca.</p>
+
+                    <h4 id="modalDetailTitle" style="font-size: 16px; font-weight: 900; color: #6B4035; margin-bottom: 4px;">-</h4>
+                    <p id="modalDetailAuthor" style="font-size: 12px; color: #A97862; margin-bottom: 8px;">-</p>
+                    <span id="modalDetailCategoryTag" style="display: inline-block; padding: 3px 10px; background: #FCEEF3; color: #9333ea; border-radius: 12px; font-size: 11px; font-weight: 800; margin-bottom: 12px;">-</span>
+
+                    <!-- BLOQUE DE SINOPSIS -->
+                    <div class="modal-detail-synopsis-box" style="text-align: left; background: #FCEEF3; padding: 12px; border-radius: 14px; border: 1px solid #EFA9BE; max-height: 120px; overflow-y: auto;">
+                        <h5 style="font-size: 11px; font-weight: 800; color: #6B4035; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                            <i class="fa-solid fa-align-left"></i> Sinopsis:
+                        </h5>
+                        <p id="modalDetailSynopsisText" style="font-size: 11.5px; color: #3E2723; line-height: 1.4; margin: 0;">-</p>
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 14px;">
+                <!-- SELECCIÓN DE PORCENTAJE INICIAL DE LECTURA -->
+                <div class="form-group" style="margin-bottom: 14px; background: #ffffff; padding: 12px; border-radius: 14px; border: 1px solid #EFA9BE;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <label style="font-weight: 700; font-size: 13px;"><i class="fa-solid fa-percent"></i> Porcentaje de Avance:</label>
-                        <span id="labelProcentajeValue" style="font-weight: 800; color: #9333ea; font-size: 14px;">50%</span>
+                        <label style="font-weight: 700; font-size: 12px; color: #6B4035;"><i class="fa-solid fa-percent"></i> Avance inicial de lectura:</label>
+                        <span id="labelDetailPorcentajeValue" style="font-weight: 800; color: #9333ea; font-size: 13px;">10%</span>
                     </div>
-                    <input type="range" id="inputProcesoPorcentaje" min="0" max="100" value="50" oninput="document.getElementById('labelProcentajeValue').textContent = this.value + '%'" style="width: 100%; accent-color: #9333ea; cursor: pointer;">
+                    <input type="range" id="inputDetailPorcentaje" min="0" max="100" value="10" oninput="document.getElementById('labelDetailPorcentajeValue').textContent = this.value + '%'" style="width: 100%; accent-color: #9333ea; cursor: pointer;">
                 </div>
 
-                <div style="display: flex; gap: 10px; margin-top: 18px;">
-                    <button type="button" class="btn-secondary" onclick="closeModal('modalAgregarLibroProceso')" style="flex: 1; padding: 10px; border-radius: 12px;">Cancelar</button>
-                    <button type="button" class="btn-primary" onclick="confirmSaveLibroEnProceso()" style="flex: 1; padding: 10px; border-radius: 12px;"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn-secondary" onclick="confirmAddSelectedBookToWishlist()" style="flex: 1; padding: 10px; border-radius: 12px; font-size: 12px; background: #ffffff; border: 1px solid #EFA9BE; color: #ec4899;">
+                        <i class="fa-solid fa-heart"></i> Quiero leer
+                    </button>
+                    <button type="button" class="btn-primary" onclick="confirmAddSelectedBookToProceso()" style="flex: 1.5; padding: 10px; border-radius: 12px; font-size: 12px; background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);">
+                        <i class="fa-solid fa-plus"></i> Agregar a En proceso
+                    </button>
                 </div>
             </div>
+
         </div>
     </div>
 

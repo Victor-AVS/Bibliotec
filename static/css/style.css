@@ -2722,3 +2722,101 @@ body.dark-mode .empty-state-box i {
     color: rgba(255, 255, 255, 0.4);
 }
 
+/* MODAL CATALOG GRID AND ITEMS */
+.modal-catalog-card {
+    background: #ffffff;
+    border: 1px solid #EFA9BE;
+    border-radius: 14px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    text-align: left;
+}
+
+.modal-catalog-card:hover {
+    background: #FCEEF3;
+    transform: translateY(-2px);
+}
+
+body.dark-mode .modal-catalog-card {
+    background: #331b2c;
+    border-color: #542b49;
+}
+
+body.dark-mode .modal-catalog-card:hover {
+    background: #45243c;
+}
+
+.modal-catalog-cover {
+    width: 44px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.modal-catalog-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal-catalog-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.modal-catalog-title {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #6B4035;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body.dark-mode .modal-catalog-title {
+    color: #FCEEF3;
+}
+
+.modal-catalog-author {
+    font-size: 11px;
+    color: #A97862;
+    margin-bottom: 4px;
+}
+
+body.dark-mode .modal-catalog-author {
+    color: #EFA9BE;
+}
+
+body.dark-mode .modal-book-detail-card {
+    background: #271424 !important;
+    border-color: #542b49 !important;
+}
+
+body.dark-mode #modalDetailTitle {
+    color: #FCEEF3 !important;
+}
+
+body.dark-mode #modalDetailAuthor {
+    color: #EFA9BE !important;
+}
+
+body.dark-mode .modal-detail-synopsis-box {
+    background: #331b2c !important;
+    border-color: #542b49 !important;
+}
+
+body.dark-mode #modalDetailSynopsisText {
+    color: #FCEEF3 !important;
+}
+
+
