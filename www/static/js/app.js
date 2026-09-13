@@ -760,8 +760,173 @@ async function loadUserWishlist() {
 
 // MODALS CONTROL
 function openCredencialModal() {
-    document.getElementById('modalCredencial').classList.add('active');
+    if (!isLoggedIn()) {
+        openAuthRequiredModal();
+        return;
+    }
+
+    const modal = document.getElementById('modalCredencial');
+    if (!modal) return;
+
+    const nombre = currentUser.nombre ? `${currentUser.nombre} ${currentUser.a_paterno || ''}`.trim() : 'Estudiante TESCHI';
+    const matricula = currentUser.matricula || '2026123456';
+    const carrera = currentUser.carrera || currentUser.licenciatura || 'Ing. Sistemas Computacionales';
+    const turno = currentUser.turno || 'Matutino';
+
+    let vIni = 2026;
+    let vFin = 2029;
+    if (currentUser.vigencia) {
+        const parts = String(currentUser.vigencia).split('-');
+        if (parts.length >= 2) {
+            vIni = parseInt(parts[0].trim()) || 2026;
+            vFin = parseInt(parts[1].trim()) || 2029;
+        }
+    }
+    const vigenciaStr = `${vIni} - ${vFin}`;
+
+    const idNombre = document.getElementById('idNombre');
+    const idMatricula = document.getElementById('idMatricula');
+    const idCarrera = document.getElementById('idCarrera');
+    const idTurno = document.getElementById('idTurno');
+    const idVigencia = document.getElementById('idVigencia');
+    const idPhotoImg = document.getElementById('idPhotoImg');
+    const idPhotoDefaultIcon = document.getElementById('idPhotoDefaultIcon');
+
+    if (idNombre) idNombre.textContent = nombre;
+    if (idMatricula) idMatricula.textContent = matricula;
+    if (idCarrera) idCarrera.textContent = carrera;
+    if (idTurno) idTurno.textContent = turno;
+    if (idVigencia) idVigencia.textContent = vigenciaStr;
+
+    if (currentUser.foto_url && String(currentUser.foto_url).trim() !== '') {
+        if (idPhotoImg) {
+            idPhotoImg.src = currentUser.foto_url;
+            idPhotoImg.style.display = 'block';
+        }
+        if (idPhotoDefaultIcon) idPhotoDefaultIcon.style.display = 'none';
+    } else {
+        if (idPhotoImg) idPhotoImg.style.display = 'none';
+        if (idPhotoDefaultIcon) idPhotoDefaultIcon.style.display = 'block';
+    }
+
+    generateMatriculaBarcode(matricula);
+
+    const idAniosPills = document.getElementById('idAniosPills');
+    if (idAniosPills) {
+        let pillsHtml = '';
+        for (let y = vIni; y <= vFin; y++) {
+            pillsHtml += `<div class="anio-pill">${y}</div>`;
+        }
+        idAniosPills.innerHTML = pillsHtml;
+    }
+
+    switchCredencialSide('anverso');
+
+    modal.classList.add('active');
 }
+
+function switchCredencialSide(side) {
+    const cardAnverso = document.getElementById('cardAnverso');
+    const cardReverso = document.getElementById('cardReverso');
+    const btnAnverso = document.getElementById('btnSideAnverso');
+    const btnReverso = document.getElementById('btnSideReverso');
+
+    if (side === 'anverso') {
+        if (cardAnverso) cardAnverso.style.display = 'flex';
+        if (cardReverso) cardReverso.style.display = 'none';
+        if (btnAnverso) btnAnverso.classList.add('active');
+        if (btnReverso) btnReverso.classList.remove('active');
+    } else {
+        if (cardAnverso) cardAnverso.style.display = 'none';
+        if (cardReverso) cardReverso.style.display = 'flex';
+        if (btnAnverso) btnAnverso.classList.remove('active');
+        if (btnReverso) btnReverso.classList.add('active');
+    }
+}
+
+function generateMatriculaBarcode(matricula) {
+    const svg = document.getElementById('svgBarcode');
+    const textEl = document.getElementById('idBarcodeText');
+
+    if (textEl) textEl.textContent = matricula;
+    if (!svg) return;
+
+    const digits = String(matricula).replace(/\D/g, '');
+    let barsHtml = `<rect x="0" y="0" width="200" height="60" fill="#ffffff"/>`;
+    barsHtml += `<g fill="#1f2937">`;
+
+    let currentX = 10;
+    barsHtml += `<rect x="${currentX}" y="4" width="3" height="46"/>`; currentX += 5;
+    barsHtml += `<rect x="${currentX}" y="4" width="2" height="46"/>`; currentX += 4;
+
+    for (let i = 0; i < digits.length; i++) {
+        const num = parseInt(digits[i]) || 0;
+        const w1 = (num % 3) + 2;
+        const gap = (num % 2) + 2;
+        const w2 = Math.floor(num / 3) + 2;
+
+        barsHtml += `<rect x="${currentX}" y="4" width="${w1}" height="46"/>`;
+        currentX += w1 + gap;
+        barsHtml += `<rect x="${currentX}" y="4" width="${w2}" height="46"/>`;
+        currentX += w2 + gap;
+    }
+
+    barsHtml += `<rect x="${currentX}" y="4" width="3" height="46"/>`; currentX += 5;
+    barsHtml += `<rect x="${currentX}" y="4" width="2" height="46"/>`;
+
+    barsHtml += `</g>`;
+    svg.innerHTML = barsHtml;
+}
+
+function handleFotoCredencialUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+        alert("Por favor selecciona un archivo de imagen válido (JPG, PNG, WEBP).");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const b64Data = e.target.result;
+
+        const idPhotoImg = document.getElementById('idPhotoImg');
+        const idPhotoDefaultIcon = document.getElementById('idPhotoDefaultIcon');
+
+        if (idPhotoImg) {
+            idPhotoImg.src = b64Data;
+            idPhotoImg.style.display = 'block';
+        }
+        if (idPhotoDefaultIcon) idPhotoDefaultIcon.style.display = 'none';
+
+        if (currentUser) {
+            currentUser.foto_url = b64Data;
+            localStorage.setItem('bibliotec_user', JSON.stringify(currentUser));
+
+            if (currentUser.id_persona) {
+                const backendUrl = getBackendUrl();
+                fetch(`${backendUrl}/api/credencial/upload_foto`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id_persona: currentUser.id_persona,
+                        foto_b64: b64Data
+                    })
+                }).then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log("Foto guardada en servidor exitosamente.");
+                    }
+                }).catch(err => console.warn("Sincronización de foto offline:", err));
+            }
+        }
+
+        alert("¡Fotografía de credencial actualizada exitosamente!");
+    };
+    reader.readAsDataURL(file);
+}
+
 
 function openInsigniasModal() {
     document.getElementById('modalInsignias').classList.add('active');

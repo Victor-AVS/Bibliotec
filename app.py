@@ -348,7 +348,7 @@ def login_usuario():
             SELECT 
                 p.id_persona, p.nombre, p.a_paterno, p.a_materno, p.correo, p.correo_respaldo, p.telefono, p.foto_url,
                 u.id_usuario, u.matricula, u.puntos, u.es_deudor,
-                cd.licenciatura as carrera, cd.nss, cd.vigencia_inicio, cd.vigencia_fin
+                cd.licenciatura as carrera, cd.nss, cd.turno, cd.vigencia_inicio, cd.vigencia_fin
             FROM persona p
             JOIN usuario u ON p.id_persona = u.id_persona
             LEFT JOIN credencial_digital cd ON u.id_usuario = cd.id_usuario
@@ -502,5 +502,32 @@ def registro_usuario():
             except Exception: pass
         release_db_connection(conn)
 
+@app.route('/api/credencial/upload_foto', methods=['POST'])
+def upload_foto_credencial():
+    data = request.get_json() or {}
+    id_persona = data.get('id_persona')
+    foto_b64 = data.get('foto_b64')
+
+    if not id_persona or not foto_b64:
+        return jsonify({"success": False, "mensaje": "id_persona y foto_b64 son requeridos."}), 400
+
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
+        cursor.execute("UPDATE persona SET foto_url = %s WHERE id_persona = %s;", (foto_b64, id_persona))
+        conn.commit()
+        return jsonify({"success": True, "mensaje": "Fotografía actualizada exitosamente.", "foto_url": foto_b64})
+    except Exception as e:
+        if conn: conn.rollback()
+        return jsonify({"success": False, "mensaje": str(e)}), 500
+    finally:
+        if cursor:
+            try: cursor.close()
+            except Exception: pass
+        release_db_connection(conn)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+

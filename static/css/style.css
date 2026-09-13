@@ -1185,80 +1185,366 @@ body.dark-mode .input-group select {
     font-weight: 600;
 }
 
-/* CREDENCIAL DIGITAL CARD */
-.digital-id-card {
-    background: linear-gradient(135deg, #6B4035 0%, #A97862 100%);
-    color: #FFEBF2;
-    border-radius: 20px;
-    padding: 16px;
-    box-shadow: 0 10px 25px rgba(107, 64, 53, 0.3);
-    border: 1px solid #EFA9BE;
+/* CREDENCIAL DIGITAL CARD (ESTÁNDAR CR80 OFICIAL TESCHI) */
+.credencial-modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 0;
 }
 
-body.dark-mode .digital-id-card {
-    background: linear-gradient(135deg, #3a1c2f 0%, #5c2d4a 100%);
+.credencial-actions-bar {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 8px;
 }
 
-.id-header {
-    font-size: 10px;
-    font-weight: 800;
+.credencial-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    width: 100%;
+    max-width: 380px;
+}
+
+.credencial-card {
+    width: 100%;
+    max-width: 340px;
+    height: 215px;
+    background-color: #dcedc8 !important;
+    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border: 1px solid #c5e1a5;
+    display: flex;
+    flex-direction: column;
+    color: #1f2937;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    user-select: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.credencial-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Patrón de puntos decorativos */
+.credencial-card .dots-pattern {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 180px;
+    height: 120px;
+    background-image: radial-gradient(#ffffff 1.2px, transparent 1.2px);
+    background-size: 6px 6px;
+    opacity: 0.45;
+    z-index: 1;
+}
+
+/* Ondas gráficas verdes */
+.credencial-card .onda-superior-fondo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 85px;
+    background: #aed581 !important;
+    border-bottom-left-radius: 50% 40%;
+    border-bottom-right-radius: 50% 30%;
+    z-index: 1;
+}
+
+.credencial-card .onda-superior-principal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #689f38 !important;
+    border-bottom-left-radius: 60% 50%;
+    border-bottom-right-radius: 40% 30%;
+    z-index: 2;
+}
+
+.credencial-card .onda-inferior {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 48px;
+    background: #7cb342 !important;
+    border-top-left-radius: 60% 50%;
+    border-top-right-radius: 50% 40%;
+    z-index: 1;
+}
+
+.credencial-card .card-content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 6px 10px;
+    justify-content: space-between;
+}
+
+/* Encabezado Logo TESCHI */
+.credencial-card .header-top {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.credencial-card .logo-teschi {
+    background: #ffffff !important;
+    padding: 2px 6px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: right;
+    line-height: 1;
+}
+
+.credencial-card .logo-teschi .tes-text {
+    font-size: 11px;
+    font-weight: 900;
+    color: #558b2f;
     letter-spacing: 0.5px;
+}
+
+.credencial-card .logo-teschi .teschi-sub {
+    font-size: 5px;
+    font-weight: 700;
+    color: #333;
+    text-transform: uppercase;
+    display: block;
+}
+
+/* Título central superior */
+.credencial-card .school-title-center {
+    text-align: center;
+    margin-top: -3px;
+    margin-bottom: 2px;
+}
+
+.credencial-card .school-title-center h1 {
+    font-size: 8px;
+    color: #558b2f;
+    font-weight: 600;
+    line-height: 1;
+    margin: 0;
+}
+
+.credencial-card .school-title-center h2 {
+    font-size: 10.5px;
+    color: #33691e;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0;
+}
+
+/* ANVERSO */
+.credencial-card .anverso-body {
     display: flex;
-    align-items: center;
     gap: 8px;
-    border-bottom: 1px solid rgba(255, 248, 245, 0.3);
-    padding-bottom: 8px;
-    margin-bottom: 12px;
-}
-
-.id-body {
-    display: flex;
-    gap: 14px;
     align-items: center;
+    margin-top: 1px;
 }
 
-.id-photo {
-    width: 65px;
-    height: 75px;
-    background-color: rgba(255, 248, 245, 0.2);
-    border-radius: 12px;
+.credencial-card .foto-container {
+    width: 78px;
+    height: 88px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2.5px solid #689f38;
+    flex-shrink: 0;
+    background: #ffffff;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
-    border: 1px solid #EFA9BE;
 }
 
-.id-details h4 {
-    font-size: 16px;
-    font-weight: 800;
-    color: #FCEEF3;
+.credencial-card .foto-estudiante {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.id-details p {
-    font-size: 11px;
-    margin-top: 2px;
-    opacity: 0.9;
+.credencial-card .foto-default-icon {
+    font-size: 36px;
+    color: #689f38;
 }
 
-.id-footer {
+.credencial-card .datos-column {
+    flex: 1;
     display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.credencial-card .campo-blanco {
+    background: #ffffff !important;
+    border-radius: 20px;
+    padding: 2px 8px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+}
+
+.credencial-card .campo-blanco .valor {
+    font-size: 9px;
+    font-weight: 800;
+    color: #1f2937;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.credencial-card .campo-blanco .label {
+    font-size: 6px;
+    font-weight: 700;
+    color: #558b2f;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-top: 1px;
+}
+
+.credencial-card .fila-doble {
+    display: flex;
+    gap: 4px;
+}
+
+.credencial-card .fila-doble .campo-blanco {
+    flex: 1;
+    min-width: 0;
+}
+
+.credencial-card .footer-biblio-box {
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-radius: 10px;
+    padding: 3px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    margin-top: 1px;
+}
+
+.credencial-card .footer-biblio-box p {
+    font-size: 6px;
+    color: #33691e;
+    font-weight: 700;
+    line-height: 1.1;
+    text-align: center;
+    margin: 0;
+}
+
+/* REVERSO */
+.credencial-card .reverso-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: -2px;
+}
+
+.credencial-card .reverso-aprobacion {
+    font-size: 9px;
+    font-weight: 800;
+    color: #33691e;
+    text-transform: uppercase;
+    margin-bottom: 1px;
+}
+
+.credencial-card .layout-reverso-grid {
+    display: flex;
+    width: 100%;
     justify-content: space-between;
     align-items: center;
-    margin-top: 14px;
-    padding-top: 8px;
-    border-top: 1px dashed rgba(255, 248, 245, 0.3);
+    padding: 0 2px;
 }
 
-.id-barcode {
-    font-family: monospace;
-    letter-spacing: 2px;
-    font-size: 11px;
+.credencial-card .anios-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 70px;
 }
 
-.id-validity {
-    font-size: 10px;
-    font-weight: 700;
+.credencial-card .anio-pill {
+    background: #558b2f !important;
+    color: #ffffff !important;
+    text-align: center;
+    padding: 2px 0;
+    border-radius: 15px;
+    font-size: 9px;
+    font-weight: 800;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    letter-spacing: 0.5px;
+}
+
+.credencial-card .barcode-section {
+    background: #ffffff !important;
+    padding: 4px 6px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    width: 210px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.credencial-card .barcode-svg {
+    width: 190px;
+    height: 52px;
+    display: block;
+}
+
+.credencial-card .barcode-text {
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #4b5563;
+    margin-top: 2px;
+}
+
+.credencial-card .info-institucional-reverso {
+    text-align: center;
+    margin-top: 2px;
+}
+
+.credencial-card .info-institucional-reverso .biblio-title {
+    font-size: 7px;
+    font-weight: 800;
+    color: #558b2f;
+    text-transform: uppercase;
+}
+
+.credencial-card .info-institucional-reverso .teschi-name {
+    font-size: 7.5px;
+    font-weight: 900;
+    color: #33691e;
+}
+
+.credencial-card .info-institucional-reverso .address-text {
+    font-size: 5px;
+    color: #4b5563;
+    font-weight: 600;
+    line-height: 1.1;
 }
 
 /* BADGES GRID */
