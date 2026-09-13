@@ -362,6 +362,8 @@ def login_usuario():
         v_ini = str(user.get('vigencia_inicio', ''))[:4] if user.get('vigencia_inicio') else '2026'
         v_fin = str(user.get('vigencia_fin', ''))[:4] if user.get('vigencia_fin') else '2029'
         user['vigencia'] = f"{v_ini} - {v_fin}"
+        if 'vigencia_inicio' in user: user['vigencia_inicio'] = str(user['vigencia_inicio']) if user['vigencia_inicio'] else None
+        if 'vigencia_fin' in user: user['vigencia_fin'] = str(user['vigencia_fin']) if user['vigencia_fin'] else None
 
         return jsonify({
             "success": True,
@@ -551,6 +553,8 @@ def get_perfil_usuario(id_usuario):
         v_ini = str(user.get('vigencia_inicio', ''))[:4] if user.get('vigencia_inicio') else '2026'
         v_fin = str(user.get('vigencia_fin', ''))[:4] if user.get('vigencia_fin') else '2029'
         user['vigencia'] = f"{v_ini} - {v_fin}"
+        if 'vigencia_inicio' in user: user['vigencia_inicio'] = str(user['vigencia_inicio']) if user['vigencia_inicio'] else None
+        if 'vigencia_fin' in user: user['vigencia_fin'] = str(user['vigencia_fin']) if user['vigencia_fin'] else None
 
         return jsonify({"success": True, "usuario": user})
     except Exception as e:

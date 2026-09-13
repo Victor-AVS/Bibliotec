@@ -93,6 +93,9 @@ async function refreshUserProfile() {
             currentUser = { ...currentUser, ...data.usuario };
             localStorage.setItem('bibliotec_user', JSON.stringify(currentUser));
             updateUserUI();
+
+            const targetNss = (currentUser && currentUser.nss && String(currentUser.nss).trim() !== '') ? currentUser.nss : '83200542971';
+            generateMatriculaBarcode(targetNss);
         }
     } catch (e) {
         console.warn("No se pudo refrescar el perfil desde servidor:", e);
@@ -835,7 +838,7 @@ function openCredencialModal() {
         if (idPhotoDefaultIcon) idPhotoDefaultIcon.style.display = 'block';
     }
 
-    const nssVal = (currentUser && currentUser.nss) ? currentUser.nss : '12345678901';
+    const nssVal = (currentUser && currentUser.nss && String(currentUser.nss).trim() !== '') ? currentUser.nss : '83200542971';
     generateMatriculaBarcode(nssVal);
 
     const idAniosPills = document.getElementById('idAniosPills');
@@ -876,7 +879,7 @@ function setCredencialTheme(themeName) {
     if (btnRosa) btnRosa.classList.toggle('active', currentCredencialTheme === 'rosa');
     if (btnCafe) btnCafe.classList.toggle('active', currentCredencialTheme === 'cafe');
 
-    const nssVal = (currentUser && currentUser.nss) ? currentUser.nss : '12345678901';
+    const nssVal = (currentUser && currentUser.nss && String(currentUser.nss).trim() !== '') ? currentUser.nss : '83200542971';
     generateMatriculaBarcode(nssVal);
 
     try {
