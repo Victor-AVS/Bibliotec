@@ -690,6 +690,22 @@ async function addToWishlist() {
 
     if (!currentSelectedBook) return;
 
+    if (typeof myBooksData !== 'undefined') {
+        if (!myBooksData.deseos) myBooksData.deseos = [];
+        const exists = myBooksData.deseos.some(d => d.titulo.toLowerCase() === currentSelectedBook.titulo.toLowerCase());
+        if (!exists) {
+            myBooksData.deseos.unshift({
+                id_libro: currentSelectedBook.id_libro,
+                titulo: currentSelectedBook.titulo,
+                autor: currentSelectedBook.autor || 'Biblioteca',
+                portada: currentSelectedBook.portada_url || '',
+                categoria: currentSelectedBook.categoria || 'Biblioteca',
+                fecha: new Date().toLocaleDateString('es-MX')
+            });
+            saveMyBooksData();
+        }
+    }
+
     try {
         const res = await fetch(`${API_BASE_URL}/api/wishlist/agregar`, {
             method: 'POST',
@@ -705,11 +721,11 @@ async function addToWishlist() {
             alert(`📌 ¡Guardado en tu Lista de Deseos!\n"${currentSelectedBook.titulo}" ya está en tus pendientes de lectura.`);
             loadUserWishlist();
         } else {
-            alert(data.mensaje || 'Error al agregar a tu lista de deseos.');
+            alert(`📌 ¡Guardado en tu Lista de Deseos local!\n"${currentSelectedBook.titulo}" ya está en tus pendientes.`);
         }
     } catch (err) {
-        console.error("Error al agregar a wishlist:", err);
-        alert('Error de conexión con el servidor.');
+        console.warn("Servidor no disponible al agregar wishlist, guardado localmente:", err);
+        alert(`📌 ¡Guardado en tu Lista de Deseos local!\n"${currentSelectedBook.titulo}" ya está en tus pendientes.`);
     }
 }
 
@@ -1388,8 +1404,10 @@ function confirmRegisterReadBook() {
 
 let myBooksData = JSON.parse(localStorage.getItem('bibliotec_my_books')) || {
     en_proceso: [],
+    deseos: [],
     leidos: []
 };
+if (!myBooksData.deseos) myBooksData.deseos = [];
 
 function saveMyBooksData() {
     localStorage.setItem('bibliotec_my_books', JSON.stringify(myBooksData));
@@ -1480,7 +1498,7 @@ function renderMisLibrosEnProceso() {
                     </div>
 
                     <div class="my-book-actions">
-                        <button class="btn-secondary btn-sm" onclick="openModalAgregarLibroProceso(${index})" style="font-size: 11px; padding: 4px 10px;">
+                        <button class="btn-secondary btn-sm" onclick="openModalActualizarAvance(${index})" style="font-size: 11px; padding: 4px 10px;">
                             <i class="fa-solid fa-pen"></i> Actualizar Avance
                         </button>
                         <button class="btn-primary btn-sm" onclick="marcarLibroProcesoLeido(${index})" style="font-size: 11px; padding: 4px 10px; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
@@ -1500,65 +1518,79 @@ async function renderMisLibrosDeseos() {
     const container = document.getElementById('containerLibrosDeseos');
     if (!container) return;
 
-    container.innerHTML = `<p style="color: #A97862; font-size: 12px; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando lista de deseos...</p>`;
+    if (!myBooksData.deseos) myBooksData.deseos = [];
 
-    if (!currentUser || !currentUser.id_usuario) {
+    // Intento de sincronizar wishlist desde el servidor si hay usuario e IP configurada
+    if (currentUser && currentUser.id_usuario) {
+        try {
+            const backendUrl = getBackendUrl();
+            const res = await fetch(`${backendUrl}/api/wishlist/${currentUser.id_usuario}`);
+            const data = await res.json();
+
+            if (data.success && data.wishlist && data.wishlist.length > 0) {
+                data.wishlist.forEach(srvItem => {
+                    const exists = myBooksData.deseos.some(d => 
+                        (d.id_libro && d.id_libro == srvItem.id_libro) || 
+                        (d.titulo && d.titulo.toLowerCase() === srvItem.titulo.toLowerCase())
+                    );
+                    if (!exists) {
+                        myBooksData.deseos.unshift({
+                            id_libro: srvItem.id_libro,
+                            titulo: srvItem.titulo,
+                            autor: srvItem.autor || 'Biblioteca',
+                            portada: srvItem.portada_url || '',
+                            categoria: srvItem.categoria || 'Biblioteca',
+                            fecha: srvItem.fecha_agregado ? srvItem.fecha_agregado.split('T')[0] : new Date().toLocaleDateString('es-MX')
+                        });
+                    }
+                });
+                saveMyBooksData();
+            }
+        } catch (err) {
+            console.warn("Servidor no disponible para cargar wishlist online, mostrando datos locales:", err);
+        }
+    }
+
+    if (!myBooksData.deseos || myBooksData.deseos.length === 0) {
         container.innerHTML = `
             <div class="empty-state-box">
                 <i class="fa-solid fa-heart"></i>
-                <h5 style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">Inicia sesión para guardar tu Wishlist</h5>
+                <h5 style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">Tu Lista de Deseos está vacía</h5>
+                <p style="font-size: 12px;">Guarda libros desde el catálogo principal o desde el apartado en proceso seleccionando "Quiero leer".</p>
             </div>
         `;
         return;
     }
 
-    try {
-        const backendUrl = getBackendUrl();
-        const res = await fetch(`${backendUrl}/api/wishlist/${currentUser.id_usuario}`);
-        const data = await res.json();
+    let html = '';
+    myBooksData.deseos.forEach((item, index) => {
+        const coverHtml = item.portada ? `<img src="${item.portada}" alt="${item.titulo}">` : `<i class="fa-solid fa-book fallback-icon"></i>`;
+        const fecha = item.fecha || new Date().toLocaleDateString('es-MX');
 
-        if (data.success && data.wishlist && data.wishlist.length > 0) {
-            let html = '';
-            data.wishlist.forEach(item => {
-                const coverHtml = item.portada_url ? `<img src="${item.portada_url}" alt="${item.titulo}">` : `<i class="fa-solid fa-book fallback-icon"></i>`;
-                const fecha = item.fecha_agregado ? item.fecha_agregado.split('T')[0] : '';
-                const safeTitle = (item.titulo || '').replace(/'/g, "\\'");
-                const safePortada = (item.portada_url || '').replace(/'/g, "\\'");
-
-                html += `
-                    <div class="my-book-card">
-                        <div class="my-book-cover">
-                            ${coverHtml}
-                        </div>
-                        <div class="my-book-info">
-                            <h5 class="my-book-title">${item.titulo}</h5>
-                            <p class="my-book-author"><i class="fa-solid fa-layer-group"></i> ${item.categoria || 'Biblioteca'}</p>
-                            <span style="font-size: 11px; color: #ec4899; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
-                                <i class="fa-solid fa-bookmark"></i> En Lista de Deseos (${fecha})
-                            </span>
-                            <div class="my-book-actions" style="margin-top: 6px;">
-                                <button class="btn-primary btn-sm" onclick="empezarLecturaDesdeWishlist('${safeTitle}', '${safePortada}')" style="font-size: 11px; padding: 4px 10px; background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);">
-                                    <i class="fa-solid fa-play"></i> Empezar a Leer
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        } else {
-            container.innerHTML = `
-                <div class="empty-state-box">
-                    <i class="fa-solid fa-heart"></i>
-                    <h5 style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">Tu Lista de Deseos está vacía</h5>
-                    <p style="font-size: 12px;">Guarda libros desde el catálogo principal presionando "Agregar a Lista de Deseos".</p>
+        html += `
+            <div class="my-book-card">
+                <div class="my-book-cover">
+                    ${coverHtml}
                 </div>
-            `;
-        }
-    } catch (err) {
-        console.error("Error al obtener wishlist para Mis Libros:", err);
-        container.innerHTML = `<p style="color: #ef4444; font-size: 12px; text-align: center; padding: 20px;">No se pudo conectar con el servidor para cargar la lista de deseos.</p>`;
-    }
+                <div class="my-book-info">
+                    <h5 class="my-book-title">${item.titulo}</h5>
+                    <p class="my-book-author"><i class="fa-solid fa-layer-group"></i> ${item.categoria || 'Biblioteca'}</p>
+                    <span style="font-size: 11px; color: #ec4899; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                        <i class="fa-solid fa-bookmark"></i> En Lista de Deseos (${fecha})
+                    </span>
+                    <div class="my-book-actions" style="margin-top: 6px;">
+                        <button class="btn-primary btn-sm" onclick="empezarLecturaDesdeWishlistIndex(${index})" style="font-size: 11px; padding: 4px 10px; background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);">
+                            <i class="fa-solid fa-play"></i> Empezar a Leer
+                        </button>
+                        <button class="btn-secondary btn-sm" onclick="eliminarDeWishlist(${index})" style="font-size: 11px; padding: 4px 10px; border-color: #ef4444; color: #ef4444; background: #ffffff;">
+                            <i class="fa-solid fa-trash"></i> Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
 }
 
 // 3. RENDERIZAR LIBROS YA LEÍDOS
@@ -1859,12 +1891,72 @@ function confirmAddSelectedBookToWishlist() {
     if (!currentSelectedBookForProceso) return;
     const book = currentSelectedBookForProceso;
 
-    if (typeof agregarWishlist === 'function') {
-        agregarWishlist(book.id_libro);
-    } else {
-        empezarLecturaDesdeWishlist(book.titulo, book.portada_url);
+    if (!myBooksData.deseos) myBooksData.deseos = [];
+    const exists = myBooksData.deseos.some(d => d.titulo.toLowerCase() === book.titulo.toLowerCase());
+    if (exists) {
+        alert(`"${book.titulo}" ya está en tu Lista de Deseos.`);
+        closeModal('modalAgregarLibroProceso');
+        return;
     }
+
+    myBooksData.deseos.unshift({
+        id_libro: book.id_libro,
+        titulo: book.titulo,
+        autor: book.autor || 'Biblioteca',
+        portada: book.portada_url || '',
+        categoria: book.categoria || 'Biblioteca',
+        fecha: new Date().toLocaleDateString('es-MX')
+    });
+
+    saveMyBooksData();
     closeModal('modalAgregarLibroProceso');
+
+    switchTabMisLibros('deseos');
+    alert(`¡Agregaste "${book.titulo}" a tu Lista de Deseos!`);
+
+    if (currentUser && currentUser.id_usuario && book.id_libro) {
+        const backendUrl = getBackendUrl();
+        fetch(`${backendUrl}/api/wishlist/agregar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id_usuario: currentUser.id_usuario,
+                id_libro: book.id_libro
+            })
+        }).catch(err => console.warn("Sync wishlist error:", err));
+    }
 }
+
+function empezarLecturaDesdeWishlistIndex(index) {
+    if (!myBooksData.deseos || !myBooksData.deseos[index]) return;
+    const item = myBooksData.deseos[index];
+
+    if (!myBooksData.en_proceso) myBooksData.en_proceso = [];
+    myBooksData.en_proceso.unshift({
+        id: Date.now().toString(),
+        titulo: item.titulo,
+        autor: item.autor || 'Biblioteca',
+        portada: item.portada || '',
+        porcentaje: 10,
+        fecha_inicio: new Date().toLocaleDateString('es-MX')
+    });
+
+    myBooksData.deseos.splice(index, 1);
+    saveMyBooksData();
+
+    switchTabMisLibros('proceso');
+    alert(`¡Moviste "${item.titulo}" a lecturas en proceso!`);
+}
+
+function eliminarDeWishlist(index) {
+    if (!myBooksData.deseos || !myBooksData.deseos[index]) return;
+    const item = myBooksData.deseos[index];
+    if (confirm(`¿Quitar "${item.titulo}" de tu Lista de Deseos?`)) {
+        myBooksData.deseos.splice(index, 1);
+        saveMyBooksData();
+        renderMisLibrosDeseos();
+    }
+}
+
 
 
