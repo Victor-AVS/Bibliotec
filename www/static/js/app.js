@@ -875,6 +875,7 @@ function toggleCredencialFlip() {
 /**
  * Genera y descarga un PDF de la credencial digital (9 cm x 5.67 cm, anverso y reverso centrados en A4)
  * sin abrir el diálogo de impresión nativo del navegador/sistema.
+ * Nombre del archivo: Credencial_TESCHI_<Matricula>_Biblioteca.pdf
  */
 async function downloadCredencialPDF() {
     const printBtn = document.querySelector('.floating-print-btn');
@@ -889,7 +890,7 @@ async function downloadCredencialPDF() {
     try {
         const nombre = document.getElementById('idNombre')?.innerText || 'Estudiante';
         const matricula = document.getElementById('idMatricula')?.innerText || 'TESCHI';
-        const cleanMatricula = matricula.replace(/[^a-zA-Z0-9]/g, '');
+        const cleanMatricula = String(matricula).replace(/[^a-zA-Z0-9]/g, '');
 
         const frontFace = document.querySelector('.credencial-card-face.face-front')?.cloneNode(true);
         const backFace = document.querySelector('.credencial-card-face.face-back')?.cloneNode(true);
@@ -898,6 +899,45 @@ async function downloadCredencialPDF() {
             alert('No se pudo encontrar la credencial para exportar.');
             return;
         }
+
+        // Sincronizar elementos dinámicos (Foto y Código de Barras SVG) en los clones
+        const origPhotoImg = document.getElementById('idPhotoImg');
+        const clonedPhotoImg = frontFace.querySelector('#idPhotoImg');
+        if (origPhotoImg && clonedPhotoImg) {
+            clonedPhotoImg.src = origPhotoImg.src;
+            clonedPhotoImg.style.display = origPhotoImg.style.display;
+        }
+
+        const origPhotoIcon = document.getElementById('idPhotoDefaultIcon');
+        const clonedPhotoIcon = frontFace.querySelector('#idPhotoDefaultIcon');
+        if (origPhotoIcon && clonedPhotoIcon) {
+            clonedPhotoIcon.style.display = origPhotoIcon.style.display;
+        }
+
+        const origBarcodeSvg = document.getElementById('svgBarcode');
+        const clonedBarcodeSvg = backFace.querySelector('#svgBarcode');
+        if (origBarcodeSvg && clonedBarcodeSvg) {
+            clonedBarcodeSvg.innerHTML = origBarcodeSvg.innerHTML;
+        }
+
+        // Forzar reinicio de propiedades de transformaciones 3D e visibilidad en los clones
+        [frontFace, backFace].forEach(face => {
+            face.style.position = 'relative';
+            face.style.transform = 'none';
+            face.style.webkitTransform = 'none';
+            face.style.top = 'auto';
+            face.style.left = 'auto';
+            face.style.backfaceVisibility = 'visible';
+            face.style.webkitBackfaceVisibility = 'visible';
+            face.style.opacity = '1';
+            face.style.visibility = 'visible';
+            face.style.width = '90mm';
+            face.style.height = '56.7mm';
+            face.style.borderRadius = '12px';
+            face.style.boxShadow = '0 4px 14px rgba(0, 0, 0, 0.12)';
+            face.style.overflow = 'hidden';
+            face.style.boxSizing = 'border-box';
+        });
 
         const pdfWrapper = document.createElement('div');
         pdfWrapper.className = `pdf-export-wrapper theme-${currentCredencialTheme}`;
@@ -911,20 +951,25 @@ async function downloadCredencialPDF() {
 
         document.body.appendChild(pdfWrapper);
 
-        // Breve espera para asegurar el renderizado de estilos, tipografía y SVG
-        await new Promise(resolve => setTimeout(resolve, 350));
+        // Espera para garantizar renderizado completo de fuentes y vectores
+        await new Promise(resolve => setTimeout(resolve, 400));
 
-        const themeLabel = currentCredencialTheme.charAt(0).toUpperCase() + currentCredencialTheme.slice(1);
-        const filename = `Credencial_TESCHI_${cleanMatricula || 'Estudiante'}_${themeLabel}.pdf`;
+        // Formato de nombre solicitado: Credencial_TESCHI_<Matricula>_Biblioteca.pdf
+        const filename = `Credencial_TESCHI_${cleanMatricula || 'Estudiante'}_Biblioteca.pdf`;
 
         const opt = {
             margin:       0,
             filename:     filename,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { 
-                scale: 3, 
+                scale: 2, 
                 useCORS: true, 
                 logging: false,
+                scrollX: 0,
+                scrollY: 0,
+                x: 0,
+                y: 0,
+                windowWidth: 1024,
                 backgroundColor: '#ffffff'
             },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
