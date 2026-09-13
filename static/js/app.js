@@ -933,33 +933,9 @@ async function loadStudentLibraryStatus() {
     } catch (e) {
         studentStatusData = {
             es_deudor: false,
-            pendientes: [
-                {
-                    id_prestamo: 1,
-                    titulo: "Estructuras de Datos y Algoritmos en Java",
-                    portada_url: "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=300",
-                    fecha_prestamo: "08/09/2026",
-                    fecha_devolucion_esperada: "22/09/2026",
-                    es_vencido: false
-                }
-            ],
-            historial: [
-                {
-                    id_prestamo: 2,
-                    titulo: "Cálculo Multivariable y Vectorial",
-                    portada_url: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300",
-                    fecha_prestamo: "15/08/2026",
-                    fecha_devolucion_real: "28/08/2026"
-                },
-                {
-                    id_prestamo: 3,
-                    titulo: "Fundamentos de Redes de Computadoras",
-                    portada_url: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300",
-                    fecha_prestamo: "01/08/2026",
-                    fecha_devolucion_real: "12/08/2026"
-                }
-            ],
-            total_historial: 2
+            pendientes: [],
+            historial: [],
+            total_historial: 0
         };
     }
 
