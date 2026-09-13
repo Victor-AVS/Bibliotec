@@ -1970,8 +1970,53 @@ body.dark-mode .theme-select-btn.active {
     font-weight: 900;
 }
 
-.theme-cafe .info-institucional-reverso .address-text {
-    color: #231714 !important;
+}
+
+/* ESTILOS PARA LA EXPORTACIÓN DIRECTA EN PDF DE CREDENCIAL (MÓVIL Y PC) */
+#pdfExportContainer {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 700px !important;
+    height: 990px !important;
+    background-color: #ffffff !important;
+    z-index: 999999 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 40px !important;
+    padding: 40px 20px !important;
+    box-sizing: border-box !important;
+    font-family: 'Montserrat', 'Inter', system-ui, sans-serif !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: none !important;
+}
+
+#pdfExportContainer .credencial-card-face {
+    position: relative !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+    top: auto !important;
+    left: auto !important;
+    backface-visibility: visible !important;
+    -webkit-backface-visibility: visible !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+    width: 340px !important;
+    height: 215px !important;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    margin: 0 auto !important;
+}
+
+#pdfExportContainer .credencial-card-face.face-back {
+    transform: none !important;
+    -webkit-transform: none !important;
 }
 
 /* ================= SECCIÓN ESTADO DEL ESTUDIANTE EN LA BIBLIOTECA ================= */

@@ -875,21 +875,133 @@ function toggleCredencialFlip() {
 }
 
 /**
- * Genera la impresión / guardado directo en PDF de la credencial digital (Anverso y Reverso en la misma página)
- * Nombre del archivo al guardar como PDF: Credencial_TESCHI_<Matricula>_Biblioteca.pdf
+ * Genera y descarga directamente el archivo PDF de la credencial digital (Anverso y Reverso centrados)
+ * tanto en dispositivos móviles (Android/Capacitor) como en PC.
+ * Nombre del archivo: Credencial_TESCHI_<Matricula>_Biblioteca.pdf
  */
-function downloadCredencialPDF() {
-    const matricula = document.getElementById('idMatricula')?.innerText || 'TESCHI';
-    const cleanMatricula = String(matricula).replace(/[^a-zA-Z0-9]/g, '');
+async function downloadCredencialPDF() {
+    const printBtn = document.querySelector('.floating-print-btn');
+    const originalBtnContent = printBtn ? printBtn.innerHTML : '';
+    
+    if (printBtn) {
+        printBtn.disabled = true;
+        printBtn.style.opacity = '0.85';
+        printBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Generando PDF...</span>';
+    }
 
-    const originalTitle = document.title;
-    document.title = `Credencial_TESCHI_${cleanMatricula || 'Estudiante'}_Biblioteca`;
+    try {
+        const nombre = document.getElementById('idNombre')?.innerText || 'Estudiante';
+        const matricula = document.getElementById('idMatricula')?.innerText || 'TESCHI';
+        const cleanMatricula = String(matricula).replace(/[^a-zA-Z0-9]/g, '');
 
-    window.print();
+        const frontOrig = document.querySelector('.credencial-card-face.face-front');
+        const backOrig = document.querySelector('.credencial-card-face.face-back');
 
-    setTimeout(() => {
-        document.title = originalTitle;
-    }, 1500);
+        if (!frontOrig || !backOrig) {
+            alert('No se pudo encontrar la credencial para generar el PDF.');
+            return;
+        }
+
+        // 1. Clonar anverso y reverso
+        const frontClone = frontOrig.cloneNode(true);
+        const backClone = backOrig.cloneNode(true);
+
+        // Sincronizar fotografía y código de barras SVG
+        const origPhotoImg = document.getElementById('idPhotoImg');
+        const clonedPhotoImg = frontClone.querySelector('#idPhotoImg');
+        if (origPhotoImg && clonedPhotoImg) {
+            clonedPhotoImg.src = origPhotoImg.src;
+            clonedPhotoImg.style.display = origPhotoImg.style.display;
+        }
+
+        const origPhotoIcon = document.getElementById('idPhotoDefaultIcon');
+        const clonedPhotoIcon = frontClone.querySelector('#idPhotoDefaultIcon');
+        if (origPhotoIcon && clonedPhotoIcon) {
+            clonedPhotoIcon.style.display = origPhotoIcon.style.display;
+        }
+
+        const origBarcodeSvg = document.getElementById('svgBarcode');
+        const clonedBarcodeSvg = backClone.querySelector('#svgBarcode');
+        if (origBarcodeSvg && clonedBarcodeSvg) {
+            clonedBarcodeSvg.innerHTML = origBarcodeSvg.innerHTML;
+        }
+
+        // Forzar reinicio de transformaciones 3D e visibilidad en los clones
+        [frontClone, backClone].forEach(card => {
+            card.style.position = 'relative';
+            card.style.transform = 'none';
+            card.style.webkitTransform = 'none';
+            card.style.top = 'auto';
+            card.style.left = 'auto';
+            card.style.backfaceVisibility = 'visible';
+            card.style.webkitBackfaceVisibility = 'visible';
+            card.style.opacity = '1';
+            card.style.visibility = 'visible';
+            card.style.display = 'flex';
+            card.style.width = '340px';
+            card.style.height = '215px';
+            card.style.borderRadius = '14px';
+            card.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.12)';
+            card.style.overflow = 'hidden';
+            card.style.boxSizing = 'border-box';
+            card.style.margin = '0 auto';
+        });
+
+        // 2. Crear contenedor A4 independiente en píxeles (evita recortes de pantalla en móviles)
+        const exportContainer = document.createElement('div');
+        exportContainer.id = 'pdfExportContainer';
+        exportContainer.className = `theme-${currentCredencialTheme}`;
+
+        exportContainer.appendChild(frontClone);
+        exportContainer.appendChild(backClone);
+
+        document.body.appendChild(exportContainer);
+
+        // Breve espera para asegurar renderizado completo en el DOM
+        await new Promise(resolve => setTimeout(resolve, 400));
+
+        const filename = `Credencial_TESCHI_${cleanMatricula || 'Estudiante'}_Biblioteca.pdf`;
+
+        const opt = {
+            margin:       0,
+            filename:     filename,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { 
+                scale: 2, 
+                useCORS: true, 
+                allowTaint: true,
+                logging: false,
+                windowWidth: 1000,
+                windowHeight: 1300,
+                scrollX: 0,
+                scrollY: 0,
+                x: 0,
+                y: 0,
+                backgroundColor: '#ffffff'
+            },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        if (typeof html2pdf !== 'undefined') {
+            await html2pdf().set(opt).from(exportContainer).save();
+        } else {
+            console.warn('html2pdf no está cargado. Usando modo impresión fallback.');
+            window.print();
+        }
+
+        if (document.body.contains(exportContainer)) {
+            document.body.removeChild(exportContainer);
+        }
+    } catch (err) {
+        console.error("Error al descargar el PDF de la credencial:", err);
+        alert("Ocurrió un error al descargar el PDF. Por favor, intenta de nuevo.");
+    } finally {
+        if (printBtn) {
+            printBtn.disabled = false;
+            printBtn.style.opacity = '1';
+            printBtn.innerHTML = originalBtnContent;
+        }
+    }
 }
 
 /* ================= LÓGICA DE ESTADO DEL ESTUDIANTE EN LA BIBLIOTECA (PENDIENTES E HISTORIAL) ================= */
